@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2016. Vv <envyfan@qq.com><http://www.v-sounds.com/>
+  ~
+  ~ This file is part of AndroidReview (Android面试复习)
+  ~
+  ~ AndroidReview is free software: you can redistribute it and/or modify
+  ~  it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~  AndroidReview is distributed in the hope that it will be useful,
+  ~  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~  GNU General Public License for more details.
+  ~
+  ~  You should have received a copy of the GNU General Public License
+  ~ along with AndroidReview.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="@style/BaseAppTheme">
+
+    </style>
+
+    <!--<style name="selectableItemBackground">-->
+        <!--<item name="android:background">?android:attr/selectableItemBackground</item>-->
+    <!--</style>-->
+    <!--获取排行榜单：-->
+    <!--http://kbangserver.kuwo.cn/ksong.s?from=pc&fmt=json&type=bang&data=content&id=2-->
+
+    <!--获取歌曲封面，小图：-->
+    <!--http://artistpicserver.kuwo.cn/pic.web?type=rid_pic&pictype=url&size=70&rid=5237384-->
+
+    <!--获取音乐文件：-->
+    <!--http://antiserver.kuwo.cn/anti.s?rid=MUSIC_5237384&response=url&type=convert_url&format=aac|mp3-->
+
+
+    <!--获取专辑相关图片：-->
+    <!--http://artistpicserver.kuwo.cn/pic.web?type=big_artist_pic&pictype=url&content=list&&id=0&name=%E7%8E%8B%E8%8F%B2&rid=5354512&from=pc&json=1&version=1&width=1920&height=1080-->
+
+    <!--获取歌词：-->
+    <!--http://player.kuwo.cn/webmusic/st/getNewMuiseByRid?rid=MUSIC_7207656-->
+    <!--http://newlyric.kuwo.cn/newlyricl?DBYAHlReXEpRUEAeCgxVEgAORRgLG0MXCRgaCwoRAB5UAwEaBAkEBhwaXxcAHVReSAsMAVEkOj0wJjpbW19ZT1BT-->
+
+    <!--http://ttlyrics.duapp.com/api/lrc/?sh?Artist=shakira&Title=try%20everything&api=true-->
+    <!--http://ttlyrics.duapp.com/api/lrc/?dl?Id=510529378-->
+
+
+    <!--color="#000000"-->
+
+    <!--搜索歌曲-->
+    <!--http://search.kuwo.cn/r.s?client=kt&all=%D6%D0%B9%FA%C8%CB&pn=0&rn=1000&ft=music-->
+    <!--http://search.kuwo.cn/r.s?client=kt&all=%D7%B7%C3%CE%C8%CB&pn=0&rn=1000&ft=music&plat=pc&cluster=0&result=json&strategy=2012&itemset=newkm&ver=mbox&show_copyright_off=1&vipver=MUSIC_8.4.0.0_W2-->
+    <!--http://sou.kuwo.cn/ws/NSearch?key=搜索关键字&type=music&pn=页数&catalog=yueku2016【网页版，暂不考虑】-->
+
+    <!--酷我获取歌曲信息-->
+    <!--http://player.kuwo.cn/webmusic/st/getNewMuiseByRid?rid=MUSIC_7044786-->
+
+
+    <!--获取歌手列表：【Category：0开始，pn是页面，rn是每页的个数】-->
+    <!--http://artistlistinfo.kuwo.cn/mb.slist?stype=artistlist&category=1&order=hot&pn=0&rn=100【热门歌手】-->
+    <!--http://artistlistinfo.kuwo.cn/mb.slist?stype=artistlist&category=1&order=hot&pn=0&rn=100&prefix=a【字母a开头的歌手】-->
+    <!--歌手头像：-->
+    <!--http://img1.sycdn.kuwo.cn/star/starheads/120/42/97/3914752958.jpg-->
+
+    <!--搜索时候的下拉tip提示列表：-->
+    <!--http://tips.kuwo.cn/t.s?type=2014&c=mbox&w=【输入内容】-->
+
+    <!--搜索输入词的纠错：-->
+    <!--http://jiucuo.search.kuwo.cn/correct.s?key=yanyua-->
+
+
+
+    <!--网络图片-->
+    <!--http://e.hiphotos.baidu.com/image/pic/item/21a4462309f79052cc7b95370ef3d7ca7bcbd557.jpg-->
+
+    <!--color="#000000"-->
+
+
+    <!--http://search.kuwo.cn/r.s?client=kt&all=%D6%D0%B9%FA%C8%CB&pn=0&rn=1000&ft=music&plat=pc&cluster=0&result=json&strategy=2012&itemset=newkm&ver=mbox&show_copyright_off=1&vipver=MUSIC_8.4.0.0_W2-->
+
+</resources>
