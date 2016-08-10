@@ -1,4 +1,4 @@
-package com.yuqf.fengmomusic.ui.Activity;
+package com.yuqf.fengmomusic.ui.activity;
 
 import android.app.Activity;
 import android.content.Intent;

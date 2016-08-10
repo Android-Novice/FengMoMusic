@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#FFD700</color>
+    <color name="colorPrimary">#696969</color>
     <color name="colorPrimaryDark">#696969</color>
     <color name="colorAccent">#ffff</color>
     <color name="orange">#FFA500</color>
     <color name="black_overlay">#66000000</color>
+    <color name="top_divider_line">#3B3B3B</color>
+
+    <color name="progressbar_second">#878787</color>
+    <color name="progressbar_default">#787878</color>
 </resources>
