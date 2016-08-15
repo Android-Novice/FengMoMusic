@@ -3,6 +3,7 @@ package com.yuqf.fengmomusic.utils;
 import android.app.Activity;
 import android.graphics.Rect;
 import android.util.DisplayMetrics;
+import android.view.View;
 
 public class CommonUtils {
 
@@ -34,5 +35,15 @@ public class CommonUtils {
             else
                 return 40;
         }
+    }
+
+    //the item of RecyclerView click listener
+    public interface OnRecyclerViewItemClickListener {
+        void onItemClick(View view, int position);
+    }
+
+    public class UrlHelper {
+        public final static String Singer_Base_Url = "http://artistlistinfo.kuwo.cn/";
+        public final static String Singer_Head_Base_Url = "http://img1.sycdn.kuwo.cn/star/starheads/";
     }
 }
