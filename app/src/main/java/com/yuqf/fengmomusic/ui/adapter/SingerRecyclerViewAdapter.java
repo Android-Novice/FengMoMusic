@@ -2,6 +2,7 @@ package com.yuqf.fengmomusic.ui.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,18 +19,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SingerRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    private final String logTag = "RecyclerViewAdapter";
     private List<GsonSingerList.Singer> singerList;
     private LayoutInflater layoutInflater;
     private final int SingerType = 1;
     private final int FooterType = 2;
     private CommonUtils.OnRecyclerViewItemClickListener viewItemClickListener;
-    private Context context;
+    private boolean loading;
+    private Picasso picasso;
 
     public SingerRecyclerViewAdapter(Context context) {
         super();
         singerList = new ArrayList<>();
         layoutInflater = LayoutInflater.from(context);
-        this.context = context;
+        this.picasso = MyApplication.getPicasso();
     }
 
     @Override
@@ -60,11 +63,16 @@ public class SingerRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
             ((SingerHolder) holder).singerNameTV.setText(name);
             ((SingerHolder) holder).playCountTV.setText(playCount);
             ((SingerHolder) holder).musicCountTV.setText(musicCount);
-            Picasso.Builder builder = new Picasso.Builder(context);
-            builder.build().load(url).placeholder(R.drawable.head_default).error(R.drawable.head_default).into(((SingerHolder) holder).singerHeadIV);
+            final ImageView headIV = ((SingerHolder) holder).singerHeadIV;
+            picasso.load(url).placeholder(R.drawable.head_default).error(R.drawable.head_default).into(headIV);
         } else if (holder instanceof FooterHolder) {
-            ((FooterHolder) holder).loadingView.setVisibility(View.INVISIBLE);
-            ((FooterHolder) holder).loadMoreView.setVisibility(View.VISIBLE);
+            if (loading) {
+                ((FooterHolder) holder).loadingView.setVisibility(View.VISIBLE);
+                ((FooterHolder) holder).loadMoreView.setVisibility(View.GONE);
+            } else {
+                ((FooterHolder) holder).loadingView.setVisibility(View.GONE);
+                ((FooterHolder) holder).loadMoreView.setVisibility(View.VISIBLE);
+            }
         }
     }
 
@@ -78,6 +86,7 @@ public class SingerRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
 
     @Override
     public int getItemCount() {
+        Log.d(logTag, "getItemCount:");
         if (singerList.size() > 0)
             return singerList.size() + 1;
         else
@@ -86,10 +95,17 @@ public class SingerRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
 
     @Override
     public int getItemViewType(int position) {
+        Log.d(logTag, "getItemViewType:");
         if (position + 1 == getItemCount())
             return FooterType;
         else
             return SingerType;
+    }
+
+    public void notifyLoadStatus(boolean loading) {
+        this.loading = loading;
+        if (loading)
+            notifyDataSetChanged();
     }
 
     public void addItem(GsonSingerList.Singer singer) {
@@ -98,6 +114,12 @@ public class SingerRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
     }
 
     public void addItems(List<GsonSingerList.Singer> singers) {
+        singerList.addAll(singers);
+        notifyDataSetChanged();
+    }
+
+    public void reloadItems(List<GsonSingerList.Singer> singers) {
+        singerList.clear();
         singerList.addAll(singers);
         notifyDataSetChanged();
     }

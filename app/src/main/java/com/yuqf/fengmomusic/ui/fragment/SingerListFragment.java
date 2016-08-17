@@ -3,7 +3,6 @@ package com.yuqf.fengmomusic.ui.fragment;
 
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -53,7 +52,7 @@ public class SingerListFragment extends Fragment implements SwipeRefreshLayout.O
     private int prefix = -1;
     private String[] orderArr = null;
     private boolean isLoading;
-
+    private int lastVisibleItemIndex;
     //value is false until all pages of current kind are loaded;
     private boolean loadAllFinish;
 
@@ -98,11 +97,29 @@ public class SingerListFragment extends Fragment implements SwipeRefreshLayout.O
         recyclerView.setHasFixedSize(true);
         adapter = new SingerRecyclerViewAdapter(getContext());
         recyclerView.setAdapter(adapter);
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
+        final GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
         gridLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(gridLayoutManager);
         recyclerView.addItemDecoration(new GridSpacingItemDecoration(20, 2, true));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                if (newState == RecyclerView.SCROLL_STATE_IDLE && lastVisibleItemIndex == adapter.getItemCount() - 1) {
+                    adapter.notifyLoadStatus(true);
+                    loadSinger();
+                }
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                int firstShowIndex = gridLayoutManager.findFirstCompletelyVisibleItemPosition();
+                lastVisibleItemIndex = gridLayoutManager.findLastCompletelyVisibleItemPosition();
+                swipeRefreshLayout.setEnabled(firstShowIndex <= 0);
+            }
+        });
     }
 
     private void initSwipeRefreshLayout() {
@@ -116,28 +133,12 @@ public class SingerListFragment extends Fragment implements SwipeRefreshLayout.O
 
     @Override
     public void onRefresh() {
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                Log.d(logTag, "refreshing....1");
-                refreshAreaView.setVisibility(View.VISIBLE);
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Log.d(logTag, "refreshing....2");
-                        try {
-                            Log.d(logTag, "refreshing....3");
-                            Thread.sleep(2000);
-//                    refreshAreaView.setVisibility(View.GONE);
-//                    swipeRefreshLayout.setRefreshing(false);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        Log.d(logTag, "refreshing....3");
-                    }
-                }).start();
-            }
-        }, 2500);
+        swipeRefreshLayout.setRefreshing(true);
+        Log.d(logTag, "refreshing....1");
+        refreshAreaView.setVisibility(View.VISIBLE);
+        pageIndex = -1;
+        loadSinger();
+        Log.d(logTag, "refreshing....3");
     }
 
     public void loadSinger() {
@@ -151,7 +152,6 @@ public class SingerListFragment extends Fragment implements SwipeRefreshLayout.O
 //                .addConverterFactory(RetrofitServices.SingerConverterFactory.create())
                 .build();
 
-        final int curCategory = category;
         RetrofitServices.SingerService singerService = retrofit.create(RetrofitServices.SingerService.class);
 
         Call<ResponseBody> call = null;
@@ -182,9 +182,8 @@ public class SingerListFragment extends Fragment implements SwipeRefreshLayout.O
                     error = errorBody.toString();
                 Log.d(logTag, "=============" + String.valueOf(code) + "\n" + message + "\n" + msg + "\n" + error);
                 if (response.isSuccessful()) {
-                    String body = null;
                     try {
-                        body = response.body().string();
+                        String body = response.body().string();
                         Gson gson = new GsonBuilder().create();
                         GsonSingerList gsonSingerList = gson.fromJson(body.replace("'", "\""), GsonSingerList.class);
                         if (gsonSingerList.getTotal() == 0)
@@ -193,8 +192,14 @@ public class SingerListFragment extends Fragment implements SwipeRefreshLayout.O
                             List<GsonSingerList.Singer> singers = gsonSingerList.getArtistlist();
                             if (singers == null || singers.size() == 0)
                                 loadAllFinish = true;
-                            else
-                                adapter.addItems(singers);
+                            else {
+                                if (swipeRefreshLayout.isRefreshing()) {
+                                    finishRefreshing();
+                                    adapter.reloadItems(singers);
+                                } else {
+                                    adapter.addItems(singers);
+                                }
+                            }
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -222,8 +227,16 @@ public class SingerListFragment extends Fragment implements SwipeRefreshLayout.O
             public void onFailure(Call<ResponseBody> call, Throwable t) {
                 Log.e(logTag, "=============Error:" + t.getMessage() + "\n" + t.getStackTrace().toString() + "\n");
                 t.printStackTrace();
+                finishRefreshing();
                 isLoading = false;
             }
         });
+    }
+
+    private void finishRefreshing() {
+        refreshAreaView.setVisibility(View.GONE);
+        if (swipeRefreshLayout.isRefreshing()) {
+            swipeRefreshLayout.setRefreshing(false);
+        }
     }
 }
