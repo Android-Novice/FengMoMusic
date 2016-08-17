@@ -61,9 +61,7 @@ public class SingerRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
             ((SingerHolder) holder).playCountTV.setText(playCount);
             ((SingerHolder) holder).musicCountTV.setText(musicCount);
             Picasso.Builder builder = new Picasso.Builder(context);
-            int width = (int) context.getResources().getDimension(R.dimen.singer_head_width);
-            int height = (int) context.getResources().getDimension(R.dimen.singer_head_height);
-            builder.build().load(url).placeholder(R.drawable.head_default).error(R.drawable.head_default).resize(width, height).into(((SingerHolder) holder).singerHeadIV);
+            builder.build().load(url).placeholder(R.drawable.head_default).error(R.drawable.head_default).into(((SingerHolder) holder).singerHeadIV);
         } else if (holder instanceof FooterHolder) {
             ((FooterHolder) holder).loadingView.setVisibility(View.INVISIBLE);
             ((FooterHolder) holder).loadMoreView.setVisibility(View.VISIBLE);
