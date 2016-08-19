@@ -1,5 +1,7 @@
 # FengMoMusic
-the demo for music player
+疯魔音乐，取“不疯魔，不成活”之意；
+当前app是本人自学Android后，做的第一个App，正在进行中...
+
 #2016-08-16 疑难杂症
 1. 从网上下载json文件，利用Retrofit2进行解析，但是json文件不标准，怎么定义GsonConverter；
 
