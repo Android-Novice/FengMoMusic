@@ -2,6 +2,7 @@ package com.yuqf.fengmomusic.ui.fragment;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -37,21 +38,29 @@ public class SingerFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        parentView = inflater.inflate(R.layout.fragment_singer, container, false);
-
-        selectedColor = getResources().getColor(R.color.colorPrimaryDark);
-        normalColor = getResources().getColor(R.color.colorAccent);
-
-//        loadingCoverIV = (ImageView) parentView.findViewById(R.id.loading_iv);
-//        loadingCoverIV.setImageResource(R.drawable.loading_list);
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         fragmentList = new ArrayList<>();
         singerKindOrderList = new ArrayList<>();
-        initChoiceLayout();
-        return parentView;
     }
 
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        if (parentView == null) {
+            parentView = inflater.inflate(R.layout.fragment_singer, container, false);
+
+            selectedColor = getResources().getColor(R.color.colorPrimaryDark);
+            normalColor = getResources().getColor(R.color.colorAccent);
+
+            initChoiceLayout();
+        } else {
+            ViewGroup viewGroup = (ViewGroup) parentView.getParent();
+            if (viewGroup != null)
+                viewGroup.removeView(parentView);
+        }
+        return parentView;
+    }
 
     private void initChoiceLayout() {
         singerKindContainer = (LinearLayout) parentView.findViewById(R.id.singer_kinds_view);

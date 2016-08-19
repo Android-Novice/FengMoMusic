@@ -2,7 +2,6 @@ package com.yuqf.fengmomusic.ui.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,7 +56,7 @@ public class SingerRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
         if (holder instanceof SingerHolder) {
             GsonSingerList.Singer singer = singerList.get(position);
             String name = singer.getName();
-            String url = CommonUtils.UrlHelper.Singer_Head_Base_Url + singer.getPic();
+            String url = CommonUtils.UrlHelper.Singer_Head_Get_Base_Url + singer.getPic();
             String playCount = String.valueOf(singer.getListen()) + MyApplication.getContext().getResources().getString(R.string.play_count_suffix);
             String musicCount = String.valueOf(singer.getMusic_num()) + MyApplication.getContext().getResources().getString(R.string.music_count_suffix);
             ((SingerHolder) holder).singerNameTV.setText(name);
@@ -86,7 +85,6 @@ public class SingerRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
 
     @Override
     public int getItemCount() {
-        Log.d(logTag, "getItemCount:");
         if (singerList.size() > 0)
             return singerList.size() + 1;
         else
@@ -95,7 +93,6 @@ public class SingerRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
 
     @Override
     public int getItemViewType(int position) {
-        Log.d(logTag, "getItemViewType:");
         if (position + 1 == getItemCount())
             return FooterType;
         else
@@ -148,15 +145,15 @@ public class SingerRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
             playCountTV = (TextView) itemView.findViewById(R.id.play_count_tv);
         }
     }
+}
 
-    class FooterHolder extends RecyclerView.ViewHolder {
-        private View loadingView;
-        private View loadMoreView;
+class FooterHolder extends RecyclerView.ViewHolder {
+    public View loadingView;
+    public View loadMoreView;
 
-        public FooterHolder(View itemView) {
-            super(itemView);
-            loadingView = itemView.findViewById(R.id.loading_view);
-            loadMoreView = itemView.findViewById(R.id.load_more_view);
-        }
+    public FooterHolder(View itemView) {
+        super(itemView);
+        loadingView = itemView.findViewById(R.id.loading_view);
+        loadMoreView = itemView.findViewById(R.id.load_more_view);
     }
 }

@@ -3,7 +3,7 @@ package com.yuqf.fengmomusic;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.View;
@@ -75,7 +75,7 @@ public class MainActivity extends BaseActivity {
         topTextViews[0].performClick();
     }
 
-    private class ViewPagerAdapter extends FragmentStatePagerAdapter {
+    private class ViewPagerAdapter extends FragmentPagerAdapter {
         public ViewPagerAdapter(FragmentManager fm) {
             super(fm);
         }

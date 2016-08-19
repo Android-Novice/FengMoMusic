@@ -43,7 +43,9 @@ public class CommonUtils {
     }
 
     public class UrlHelper {
-        public final static String Singer_Base_Url = "http://artistlistinfo.kuwo.cn/";
-        public final static String Singer_Head_Base_Url = "http://img1.sycdn.kuwo.cn/star/starheads/";
+        public final static String Singer_Get_Base_Url = "http://artistlistinfo.kuwo.cn/";
+        public final static String Singer_Head_Get_Base_Url = "http://img1.sycdn.kuwo.cn/star/starheads/";
+
+        public final static String Ranking_Get_Base_Url = "http://qukudata.kuwo.cn/";
     }
 }

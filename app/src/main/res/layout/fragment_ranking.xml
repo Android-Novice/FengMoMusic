@@ -4,12 +4,6 @@
     android:layout_height="match_parent"
     tools:context="com.yuqf.fengmomusic.ui.fragment.RankingFragment">
 
-    <TextView
-        android:textSize="30sp"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="2" />
+    <include layout="@layout/fragment_singer_list" />
 
 </FrameLayout>

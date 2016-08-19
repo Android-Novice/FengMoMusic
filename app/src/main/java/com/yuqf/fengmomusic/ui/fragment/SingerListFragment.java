@@ -3,6 +3,7 @@ package com.yuqf.fengmomusic.ui.fragment;
 
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -14,6 +15,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -43,6 +46,7 @@ public class SingerListFragment extends Fragment implements SwipeRefreshLayout.O
     private RecyclerView recyclerView;
     private SingerRecyclerViewAdapter adapter;
     private ImageView loadingCoverIV;
+    private LinearLayout noAudioDataView;
 
     private int category = -1;//0-10,singer kind
     private int pageIndex = -1; //current kind showing page index
@@ -79,10 +83,17 @@ public class SingerListFragment extends Fragment implements SwipeRefreshLayout.O
     }
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        adapter = new SingerRecyclerViewAdapter(getContext());
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         parentView = inflater.inflate(R.layout.fragment_singer_list, container, false);
 
+        noAudioDataView = (LinearLayout) parentView.findViewById(R.id.no_data_view);
         refreshAreaView = parentView.findViewById(R.id.refresh_area_view);
         loadingCoverIV = (ImageView) parentView.findViewById(R.id.loading_iv);
         loadingCoverIV.setImageResource(R.drawable.loading_list);
@@ -95,12 +106,19 @@ public class SingerListFragment extends Fragment implements SwipeRefreshLayout.O
     private void initRecyclerView() {
         recyclerView = (RecyclerView) parentView.findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
-        adapter = new SingerRecyclerViewAdapter(getContext());
         recyclerView.setAdapter(adapter);
-        final GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
+        int screenWidth = CommonUtils.getScreenWidth(getActivity());
+        int spanCount = 2;
+        if (screenWidth >= 720 && screenWidth <= 900)
+            spanCount = 3;
+        else if (screenWidth > 900 && screenWidth <= 1200)
+            spanCount = 4;
+        else if (screenWidth > 1200)
+            spanCount = 5;
+        final GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), spanCount);
         gridLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(gridLayoutManager);
-        recyclerView.addItemDecoration(new GridSpacingItemDecoration(20, 2, true));
+        recyclerView.addItemDecoration(new GridSpacingItemDecoration(20, spanCount, true));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -147,7 +165,7 @@ public class SingerListFragment extends Fragment implements SwipeRefreshLayout.O
         isLoading = true;
         this.pageIndex++;
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(CommonUtils.UrlHelper.Singer_Base_Url)
+                .baseUrl(CommonUtils.UrlHelper.Singer_Get_Base_Url)
                 .addConverterFactory(GsonConverterFactory.create())
 //                .addConverterFactory(RetrofitServices.SingerConverterFactory.create())
                 .build();
@@ -168,11 +186,7 @@ public class SingerListFragment extends Fragment implements SwipeRefreshLayout.O
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (pageIndex == 0) {
-                    Log.d(logTag, "=============First load singer infomation success, set loadingCoverIV's Visibility as Gone");
-                    ((AnimationDrawable) loadingCoverIV.getDrawable()).stop();
-                    loadingCoverIV.setVisibility(View.GONE);
-                }
+                hideLoadingIV();
                 int code = response.code();
                 String message = response.message();
                 String msg = response.raw().message();
@@ -185,7 +199,10 @@ public class SingerListFragment extends Fragment implements SwipeRefreshLayout.O
                     try {
                         String body = response.body().string();
                         Gson gson = new GsonBuilder().create();
-                        GsonSingerList gsonSingerList = gson.fromJson(body.replace("'", "\""), GsonSingerList.class);
+
+                        body = body.replace("\"", "");
+                        body = body.replace("'", "\"");
+                        GsonSingerList gsonSingerList = gson.fromJson(body, GsonSingerList.class);
                         if (gsonSingerList.getTotal() == 0)
                             loadAllFinish = true;
                         else {
@@ -203,6 +220,8 @@ public class SingerListFragment extends Fragment implements SwipeRefreshLayout.O
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
                     }
 //不再下载保存到手机sdcard
 //                    try {
@@ -221,6 +240,7 @@ public class SingerListFragment extends Fragment implements SwipeRefreshLayout.O
 
                 }
                 isLoading = false;
+                updateShowingState(true);
             }
 
             @Override
@@ -229,8 +249,31 @@ public class SingerListFragment extends Fragment implements SwipeRefreshLayout.O
                 t.printStackTrace();
                 finishRefreshing();
                 isLoading = false;
+                hideLoadingIV();
+                updateShowingState(false);
             }
         });
+    }
+
+    private void updateShowingState(boolean success) {
+        if (adapter.getItemCount() > 0) {
+            noAudioDataView.setVisibility(View.GONE);
+        } else {
+            noAudioDataView.setVisibility(View.VISIBLE);
+            TextView noDataTV = (TextView) parentView.findViewById(R.id.no_data_tv);
+            if (success)
+                noDataTV.setText(getResources().getString(R.string.no_audio_data));
+            else
+                noDataTV.setText(getResources().getString(R.string.net_error));
+        }
+    }
+
+    private void hideLoadingIV() {
+        if (pageIndex == 0) {
+            Log.d(logTag, "=============First load singer infomation success, set loadingCoverIV's Visibility as Gone");
+            ((AnimationDrawable) loadingCoverIV.getDrawable()).stop();
+            loadingCoverIV.setVisibility(View.GONE);
+        }
     }
 
     private void finishRefreshing() {

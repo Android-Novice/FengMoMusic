@@ -1,5 +1,8 @@
 package com.yuqf.fengmomusic.ui.entity;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.List;
 
 //'total':'13704','pn':'0','rn':'100','category':'1','new_album':'1','new_album_cnt':'44','
@@ -69,8 +72,7 @@ public class GsonSingerList {
         this.new_album_cnt = new_album_cnt;
     }
 
-    public class Singer
-    {
+    public class Singer implements Parcelable {
         private int id;
         private String name;
         private int music_num;
@@ -142,6 +144,44 @@ public class GsonSingerList {
 
         public void setPic(String pic) {
             this.pic = pic;
+        }
+
+        public final Parcelable.Creator<Singer> CREATOR = new Creator<Singer>() {
+            @Override
+            public Singer createFromParcel(Parcel source) {
+                Singer singer = new Singer();
+                singer.setId(source.readInt());
+                singer.setName(source.readString());
+                singer.setMusic_num(source.readInt());
+                singer.setListen(source.readLong());
+                singer.setLike(source.readString());
+                singer.setNew_album(source.readInt());
+                singer.setNew_album_cnt(source.readInt());
+                singer.setPic(source.readString());
+                return singer;
+            }
+
+            @Override
+            public Singer[] newArray(int size) {
+                return new Singer[size];
+            }
+        };
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeInt(id);
+            dest.writeString(name);
+            dest.writeInt(music_num);
+            dest.writeLong(listen);
+            dest.writeString(like);
+            dest.writeInt(new_album);
+            dest.writeInt(new_album_cnt);
+            dest.writeString(pic);
+        }
+
+        @Override
+        public int describeContents() {
+            return 0;
         }
     }
 }

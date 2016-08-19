@@ -5,18 +5,16 @@ import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 
-/**
- * Created by admin on 2016/8/12.
- */
 public class RetrofitServices {
     public interface SingerService {
         ///mb.slist?stype=artistlist&category=1&order=hot&pn=0&rn=100【热门歌手】
         @GET("mb.slist")
         Call<ResponseBody> getGsonSingerList(@Query("stype") String type,
-                                               @Query("category") String category,//singer kind
-                                               @Query("order") String order,
-                                               @Query("pn") String pIndex,    // the server can't provide all kinds, but only one page, this is page Index
-                                               @Query("rn") String pCount);   // music count per page, default 100
+                                             @Query("category") String category,//singer kind
+                                             @Query("order") String order,
+                                             @Query("pn") String pIndex,    // the server can't provide all kinds, but only one page, this is page Index
+                                             @Query("rn") String pCount);   // music count per page, default 100
+
         @GET("mb.slist")
         Call<ResponseBody> getGsonSingerList(@Query("stype") String type,
                                              @Query("category") String category,//singer kind
@@ -24,6 +22,19 @@ public class RetrofitServices {
                                              @Query("pn") String pIndex,    // the server can't provide all kinds, but only one page, this is page Index
                                              @Query("rn") String pCount,   // music count per page, default 100
                                              @Query("prefix") String prefix);
+    }
+
+    public interface RankingService {
+        //q.k?op=query&cont=tree&node=2&pn=1&rn=100&fmt=json&src=mbox&level=3
+        @GET("q.k")
+        Call<GsonRankingList> getGsonRankingList(@Query("op") String query,
+                                                 @Query("cont") String tree,
+                                                 @Query("node") String node,
+                                                 @Query("pn") String pIndex,
+                                                 @Query("rn") String pCount,
+                                                 @Query("fmt") String json,
+                                                 @Query("src") String mbox,
+                                                 @Query("level") String level);
     }
 
 //    public static class SingerConverterFactory extends Converter.Factory {
