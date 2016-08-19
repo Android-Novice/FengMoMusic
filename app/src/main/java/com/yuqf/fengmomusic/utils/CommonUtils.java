@@ -40,6 +40,9 @@ public class CommonUtils {
     //the item of RecyclerView click listener
     public interface OnRecyclerViewItemClickListener {
         void onItemClick(View view, int position);
+
+        //click the downloading on the imagebutton of music list item
+        void onItemDownloadClick(View view, int position);
     }
 
     public class UrlHelper {
@@ -47,5 +50,6 @@ public class CommonUtils {
         public final static String Singer_Head_Get_Base_Url = "http://img1.sycdn.kuwo.cn/star/starheads/";
 
         public final static String Ranking_Get_Base_Url = "http://qukudata.kuwo.cn/";
+        public final static String Music_From_Ranking_Base_Url = "http://kbangserver.kuwo.cn/";
     }
 }

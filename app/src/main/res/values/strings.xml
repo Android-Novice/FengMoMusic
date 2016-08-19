@@ -14,7 +14,7 @@
     <string name="play_count_suffix">次播放</string>
 
     <string name="loading_status">正在加载，请稍等...</string>
-    <string name="load_more_status">下拉加载更多</string>
+    <string name="load_more_status">下拉加载更多...</string>
     <string name="no_audio_data">无数据，下拉刷新重试~</string>
     <string name="net_error">网络出问题啦~</string>
 

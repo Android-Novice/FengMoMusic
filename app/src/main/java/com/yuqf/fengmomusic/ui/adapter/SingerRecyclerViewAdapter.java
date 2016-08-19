@@ -45,7 +45,7 @@ public class SingerRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                 return singerHolder;
             case FooterType:
                 View footerView = layoutInflater.inflate(R.layout.item_load_more_layout, parent, false);
-                FooterHolder footerHolder = new FooterHolder(footerView);
+                GridFooterHolder footerHolder = new GridFooterHolder(footerView);
                 return footerHolder;
         }
         return null;
@@ -64,13 +64,13 @@ public class SingerRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
             ((SingerHolder) holder).musicCountTV.setText(musicCount);
             final ImageView headIV = ((SingerHolder) holder).singerHeadIV;
             picasso.load(url).placeholder(R.drawable.head_default).error(R.drawable.head_default).into(headIV);
-        } else if (holder instanceof FooterHolder) {
+        } else if (holder instanceof GridFooterHolder) {
             if (loading) {
-                ((FooterHolder) holder).loadingView.setVisibility(View.VISIBLE);
-                ((FooterHolder) holder).loadMoreView.setVisibility(View.GONE);
+                ((GridFooterHolder) holder).loadingView.setVisibility(View.VISIBLE);
+                ((GridFooterHolder) holder).loadMoreView.setVisibility(View.GONE);
             } else {
-                ((FooterHolder) holder).loadingView.setVisibility(View.GONE);
-                ((FooterHolder) holder).loadMoreView.setVisibility(View.VISIBLE);
+                ((GridFooterHolder) holder).loadingView.setVisibility(View.GONE);
+                ((GridFooterHolder) holder).loadMoreView.setVisibility(View.VISIBLE);
             }
         }
     }
@@ -147,11 +147,11 @@ public class SingerRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
     }
 }
 
-class FooterHolder extends RecyclerView.ViewHolder {
+class GridFooterHolder extends RecyclerView.ViewHolder {
     public View loadingView;
     public View loadMoreView;
 
-    public FooterHolder(View itemView) {
+    public GridFooterHolder(View itemView) {
         super(itemView);
         loadingView = itemView.findViewById(R.id.loading_view);
         loadMoreView = itemView.findViewById(R.id.load_more_view);

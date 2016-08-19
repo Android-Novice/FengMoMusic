@@ -25,11 +25,17 @@
 
     </style>
 
-    <!--<style name="selectableItemBackground">-->
-        <!--<item name="android:background">?android:attr/selectableItemBackground</item>-->
-    <!--</style>-->
     <!--获取排行榜单：-->
+    <!--http://qukudata.kuwo.cn/q.k?op=query&cont=tree&node=2&pn=1&rn=100&fmt=json&src=mbox&level=3-->
+
     <!--http://kbangserver.kuwo.cn/ksong.s?from=pc&fmt=json&type=bang&data=content&id=2-->
+    <!--http://kbangserver.kuwo.cn/ksong.s?from=pc&fmt=json&type=bang&data=content&id=56&pn=0&rn=200-->
+    <!--http://kbangserver.kuwo.cn/ksong.s?from=pc&fmt=json&type=bang&data=content&id=16-->
+    <!--http://kbangserver.kuwo.cn/ksong.s?from=pc&fmt=json&type=bang&data=content&id=132-->
+    <!--http://kbangserver.kuwo.cn/ksong.s?from=pc&fmt=json&type=bang&data=content&id=126 129-->
+    <!--http://qukudata.kuwo.cn/q.k?op=query&cont=tree&node=2&pn=0&rn=100&fmt=json&src=mbox&level=2&callback=saveClassifyChannelData&_=1471434827690【获取所有的排行榜单】-->
+    <!--http://qukudata.kuwo.cn/q.k?op=query&cont=ninfo&node=257172&pn=0&rn=10&fmt=json&src=mbox&ttime=116717161&callback=jQuery18309340226496569812_1471436779806&_=1471436780032-->
+    <!--http://qukudata.kuwo.cn/q.k?op=query&cont=ninfo&node=257172&pn=0&rn=10&fmt=json&src=mbox&ttime=116717161&callback=jQuery18309340226496569812_1471436779806&_=1471436780032-->
 
     <!--获取歌曲封面，小图：-->
     <!--http://artistpicserver.kuwo.cn/pic.web?type=rid_pic&pictype=url&size=70&rid=5237384-->
@@ -81,5 +87,35 @@
 
 
     <!--http://search.kuwo.cn/r.s?client=kt&all=%D6%D0%B9%FA%C8%CB&pn=0&rn=1000&ft=music&plat=pc&cluster=0&result=json&strategy=2012&itemset=newkm&ver=mbox&show_copyright_off=1&vipver=MUSIC_8.4.0.0_W2-->
+
+
+
+
+
+    <!--获取歌手：-->
+    <!--http://artistlistinfo.kuwo.cn/mb.slist?stype=artistlist&category=1&order=hot&pn=0&rn=100-->
+    <!--http://artistlistinfo.kuwo.cn/mb.slist?stype=artistlist&category=1&order=hot&pn=0&rn=100&prefix=a-->
+    <!--category：-->
+    <!--0：全部歌手   排序：热门-->
+    <!--a-z-->
+    <!--#（%23）-->
+    <!--1：华语男歌手-->
+    <!--2：华语女歌手-->
+    <!--3：华语组合-->
+    <!--4：日韩男歌手-->
+    <!--5：日韩女歌手-->
+    <!--6：日韩组合-->
+    <!--7：欧美男歌手-->
+    <!--8：欧美女歌手-->
+    <!--9：欧美组合-->
+    <!--10：其他-->
+    <!--http://qukudata.kuwo.cn/q.k?op=query&cont=tree&node=4&pn=0&rn=20&fmt=json&src=mbox&level=2&callback=saveBangChannelData&_=1471434827691【获取上面这个列表】-->
+
+
+    <!--歌手信息：-->
+    <!--http://search.kuwo.cn/r.s?stype=artistinfo&artistid=947-->
+    <!--根据歌手对应的歌曲-->
+    <!--http://search.kuwo.cn/r.s?stype=artist2music&artistid=947&pn=0&rn=20-->
+
 
 </resources>

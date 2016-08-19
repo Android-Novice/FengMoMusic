@@ -37,6 +37,18 @@ public class RetrofitServices {
                                                  @Query("level") String level);
     }
 
+    public interface MusicService {
+        //ksong.s?from=pc&fmt=json&type=bang&data=content&id=56&pn=0&rn=200
+        @GET("ksong.s")
+        Call<GsonRMusicList> getGsonRMusicList(@Query("from") String pc,
+                                               @Query("fmt") String json,
+                                               @Query("type") String bang,
+                                               @Query("data") String content,
+                                               @Query("id") int id,
+                                               @Query("pn") int pIndex,
+                                               @Query("rn") int pCount);
+    }
+
 //    public static class SingerConverterFactory extends Converter.Factory {
 //
 //        private static SingerConverterFactory factory;
