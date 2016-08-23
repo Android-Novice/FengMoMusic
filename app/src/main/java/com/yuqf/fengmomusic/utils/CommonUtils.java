@@ -1,9 +1,13 @@
 package com.yuqf.fengmomusic.utils;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Rect;
 import android.util.DisplayMetrics;
+import android.util.Pair;
 import android.view.View;
+
+import java.util.List;
 
 public class CommonUtils {
 
@@ -37,6 +41,14 @@ public class CommonUtils {
         }
     }
 
+    public static void startActivity(Activity activity, Class<?> tClass, List<Pair<String, String>> pairList) {
+        Intent intent = new Intent(activity, tClass);
+        for (Pair<String, String> pair : pairList) {
+            intent.putExtra(pair.first, pair.second);
+        }
+        activity.startActivity(intent);
+    }
+
     //the item of RecyclerView click listener
     public interface OnRecyclerViewItemClickListener {
         void onItemClick(View view, int position);
@@ -51,5 +63,6 @@ public class CommonUtils {
 
         public final static String Ranking_Get_Base_Url = "http://qukudata.kuwo.cn/";
         public final static String Music_From_Ranking_Base_Url = "http://kbangserver.kuwo.cn/";
+        public final static String Music_From_Singer_Base_Url = "http://search.kuwo.cn/";
     }
 }

@@ -41,7 +41,14 @@ public class SingerRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                 View singerView = layoutInflater.inflate(R.layout.item_singer_layout, parent, false);
                 SingerHolder singerHolder = new SingerHolder(singerView);
                 singerView.setClickable(true);
-
+                singerView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (viewItemClickListener != null) {
+                            viewItemClickListener.onItemClick(v, (int) v.getTag());
+                        }
+                    }
+                });
                 return singerHolder;
             case FooterType:
                 View footerView = layoutInflater.inflate(R.layout.item_load_more_layout, parent, false);
@@ -64,6 +71,7 @@ public class SingerRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
             ((SingerHolder) holder).musicCountTV.setText(musicCount);
             final ImageView headIV = ((SingerHolder) holder).singerHeadIV;
             picasso.load(url).placeholder(R.drawable.head_default).error(R.drawable.head_default).into(headIV);
+            holder.itemView.setTag(position);
         } else if (holder instanceof GridFooterHolder) {
             if (loading) {
                 ((GridFooterHolder) holder).loadingView.setVisibility(View.VISIBLE);
@@ -97,6 +105,13 @@ public class SingerRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
             return FooterType;
         else
             return SingerType;
+    }
+
+    public GsonSingerList.Singer getSingerByPosition(int position) {
+        if (position > singerList.size() - 1)
+            return null;
+        else
+            return singerList.get(position);
     }
 
     public void notifyLoadStatus(boolean loading) {

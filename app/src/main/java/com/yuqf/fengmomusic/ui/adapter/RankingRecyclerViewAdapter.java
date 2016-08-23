@@ -12,6 +12,7 @@ import com.squareup.picasso.Picasso;
 import com.yuqf.fengmomusic.R;
 import com.yuqf.fengmomusic.base.MyApplication;
 import com.yuqf.fengmomusic.ui.entity.GsonRankingList;
+import com.yuqf.fengmomusic.utils.CommonUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +23,7 @@ public class RankingRecyclerViewAdapter extends RecyclerView.Adapter<RankingRecy
     private List<GsonRankingList.ChildRanking> childRankingList;
     private LayoutInflater layoutInflater;
     private List<String> sourceIdList;
-    //    private CommonUtils.OnRecyclerViewItemClickListener viewItemClickListener;
+    private CommonUtils.OnRecyclerViewItemClickListener viewItemClickListener;
     private Picasso picasso;
 
     public RankingRecyclerViewAdapter() {
@@ -37,6 +38,15 @@ public class RankingRecyclerViewAdapter extends RecyclerView.Adapter<RankingRecy
     public RankingRecyclerViewAdapter.RankingHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = layoutInflater.inflate(R.layout.item_ranking_layout, parent, false);
         RankingHolder holder = new RankingHolder(view);
+        view.setClickable(true);
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (viewItemClickListener != null) {
+                    viewItemClickListener.onItemClick(v, (int) v.getTag());
+                }
+            }
+        });
         return holder;
     }
 
@@ -54,11 +64,19 @@ public class RankingRecyclerViewAdapter extends RecyclerView.Adapter<RankingRecy
         if (!TextUtils.isEmpty(picPath)) {
             picasso.load(picPath).placeholder(R.drawable.ranking_default).error(R.drawable.ranking_default).into(holder.rankingIV);
         }
+        holder.itemView.setTag(position);
     }
 
     @Override
     public int getItemCount() {
         return childRankingList.size();
+    }
+
+    public GsonRankingList.ChildRanking GetChildByPosition(int position) {
+        if (position >= childRankingList.size())
+            return null;
+        else
+            return childRankingList.get(position);
     }
 
     public void addItem(GsonRankingList.ChildRanking ranking) {
@@ -138,6 +156,14 @@ public class RankingRecyclerViewAdapter extends RecyclerView.Adapter<RankingRecy
                 }
             }
         }
+    }
+
+    public CommonUtils.OnRecyclerViewItemClickListener getViewItemClickListener() {
+        return viewItemClickListener;
+    }
+
+    public void setViewItemClickListener(CommonUtils.OnRecyclerViewItemClickListener viewItemClickListener) {
+        this.viewItemClickListener = viewItemClickListener;
     }
 
     class RankingHolder extends RecyclerView.ViewHolder {

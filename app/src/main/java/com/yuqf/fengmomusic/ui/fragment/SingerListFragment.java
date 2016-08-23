@@ -5,6 +5,7 @@ import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Pair;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
@@ -21,13 +22,16 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.yuqf.fengmomusic.R;
+import com.yuqf.fengmomusic.ui.activity.MusicListActivity;
 import com.yuqf.fengmomusic.ui.adapter.GridSpacingItemDecoration;
 import com.yuqf.fengmomusic.ui.adapter.SingerRecyclerViewAdapter;
 import com.yuqf.fengmomusic.ui.entity.GsonSingerList;
 import com.yuqf.fengmomusic.ui.entity.RetrofitServices;
 import com.yuqf.fengmomusic.utils.CommonUtils;
+import com.yuqf.fengmomusic.utils.Global;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import okhttp3.ResponseBody;
@@ -86,6 +90,25 @@ public class SingerListFragment extends Fragment implements SwipeRefreshLayout.O
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         adapter = new SingerRecyclerViewAdapter(getContext());
+        adapter.setViewItemClickListener(new CommonUtils.OnRecyclerViewItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                GsonSingerList.Singer singer = adapter.getSingerByPosition(position);
+                String titleV = "《" + singer.getName() + "》的全部歌曲";
+
+                String contentV = String.valueOf(singer.getId());
+                List<Pair<String, String>> pairList = new ArrayList<Pair<String, String>>();
+                pairList.add(new Pair<String, String>(Global.INTENT_TITLE_KEY, titleV));
+                pairList.add(new Pair<String, String>(Global.INTENT_FROM_KEY, Global.INTENT_FROM_SINGER));
+                pairList.add(new Pair<String, String>(Global.INTENT_CONTENT_KEY, contentV));
+                CommonUtils.startActivity(getActivity(), MusicListActivity.class, pairList);
+            }
+
+            @Override
+            public void onItemDownloadClick(View view, int position) {
+
+            }
+        });
     }
 
     @Override
@@ -241,6 +264,7 @@ public class SingerListFragment extends Fragment implements SwipeRefreshLayout.O
                 }
                 isLoading = false;
                 updateShowingState(true);
+
             }
 
             @Override
@@ -266,6 +290,7 @@ public class SingerListFragment extends Fragment implements SwipeRefreshLayout.O
             else
                 noDataTV.setText(getResources().getString(R.string.net_error));
         }
+        adapter.notifyLoadStatus(false);
     }
 
     private void hideLoadingIV() {

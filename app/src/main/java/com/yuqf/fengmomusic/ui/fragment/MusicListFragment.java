@@ -1,6 +1,7 @@
 package com.yuqf.fengmomusic.ui.fragment;
 
 
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -8,16 +9,32 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.yuqf.fengmomusic.R;
-import com.yuqf.fengmomusic.ui.adapter.RMusicRecyclerViewAdapter;
+import com.yuqf.fengmomusic.ui.adapter.LinearLayoutItemDecoration;
+import com.yuqf.fengmomusic.ui.adapter.MusicRecyclerViewAdapter;
+import com.yuqf.fengmomusic.ui.entity.GsonRMusicList;
+import com.yuqf.fengmomusic.ui.entity.GsonSMusicList;
+import com.yuqf.fengmomusic.ui.entity.RetrofitServices;
 import com.yuqf.fengmomusic.utils.CommonUtils;
+import com.yuqf.fengmomusic.utils.Global;
 
+import java.io.IOException;
+import java.util.List;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -28,7 +45,7 @@ public class MusicListFragment extends Fragment {
     private SwipeRefreshLayout swipeRefreshLayout;
     private View refreshAreaView;
     private RecyclerView recyclerView;
-    private RMusicRecyclerViewAdapter adapter;
+    private MusicRecyclerViewAdapter adapter;
     private ImageView loadingCoverIV;
     private LinearLayout noAudioDataView;
 
@@ -36,7 +53,8 @@ public class MusicListFragment extends Fragment {
     private boolean allLoaded;
     private boolean isLoading;
     private int pIndex = -1;
-    private int contentId;
+    private String contentId;
+    private String from;
 
     public MusicListFragment() {
     }
@@ -44,7 +62,7 @@ public class MusicListFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        adapter = new RMusicRecyclerViewAdapter();
+        adapter = new MusicRecyclerViewAdapter();
     }
 
     @Override
@@ -56,6 +74,8 @@ public class MusicListFragment extends Fragment {
         loadingCoverIV = (ImageView) parentView.findViewById(R.id.loading_iv);
         loadingCoverIV.setImageResource(R.drawable.loading_list);
 
+        initSwipeRefreshLayout();
+        initRecyclerView();
         return parentView;
     }
 
@@ -63,6 +83,8 @@ public class MusicListFragment extends Fragment {
         recyclerView = (RecyclerView) parentView.findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
 
+
+        recyclerView.addItemDecoration(new LinearLayoutItemDecoration());
         final LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setAdapter(adapter);
@@ -72,7 +94,8 @@ public class MusicListFragment extends Fragment {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 if (newState == RecyclerView.SCROLL_STATE_IDLE && lastVisibleItemIndex == adapter.getItemCount() - 1) {
-
+                    adapter.notifyLoadStatus(true);
+                    loadMusic();
                 }
                 super.onScrollStateChanged(recyclerView, newState);
             }
@@ -97,26 +120,160 @@ public class MusicListFragment extends Fragment {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-
+                swipeRefreshLayout.setRefreshing(true);
+                Log.d(logTag, "refreshing....1");
+                refreshAreaView.setVisibility(View.VISIBLE);
+                pIndex = -1;
+                loadMusic();
+                Log.d(logTag, "refreshing....3");
             }
         });
     }
 
-    public void loadMusic(int contentId) {
-        if (this.contentId < 0) {
+    public void loadMusic(String from, String contentId) {
+        if (TextUtils.isEmpty(contentId)) return;
+        if (TextUtils.isEmpty(this.contentId)) {
             this.contentId = contentId;
-            loadMusic();
+            this.from = from;
         }
+        loadMusic();
     }
 
     private void loadMusic() {
+        switch (from) {
+            case Global.INTENT_FROM_RANKING:
+                loadRMusic();
+                break;
+            case Global.INTENT_FROM_SINGER:
+                loadSMusic();
+                break;
+        }
+    }
+
+    private void loadRMusic() {
         if (isLoading || allLoaded) return;
         this.pIndex++;
+        isLoading = true;
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(CommonUtils.UrlHelper.Music_From_Ranking_Base_Url)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
+        RetrofitServices.MusicService service = retrofit.create(RetrofitServices.MusicService.class);
+        Call<GsonRMusicList> call = service.getGsonRMusicList("pc", "json", "bang", "content", contentId, pIndex, 100);
+        call.enqueue(new Callback<GsonRMusicList>() {
+            @Override
+            public void onResponse(Call<GsonRMusicList> call, Response<GsonRMusicList> response) {
 
+                hideLoadingIV();
+                if (response.isSuccessful()) {
+                    GsonRMusicList gsonMusics = response.body();
+                    List<GsonRMusicList.RMusic> musicList = gsonMusics.getMusiclist();
+                    if (musicList == null || musicList.size() == 0)
+                        allLoaded = true;
+                    else {
+                        if (!swipeRefreshLayout.isRefreshing()) {
+                            adapter.addRMusics(musicList);
+                        } else {
+                            adapter.reloadRMusics(musicList);
+                        }
+                    }
+                }
+                isLoading = false;
+                updateShowingState(true);
+                finishRefreshing();
+            }
+
+            @Override
+            public void onFailure(Call<GsonRMusicList> call, Throwable t) {
+                t.printStackTrace();
+                isLoading = false;
+                finishRefreshing();
+                hideLoadingIV();
+                updateShowingState(false);
+            }
+        });
+    }
+
+    private void loadSMusic() {
+        if (isLoading || allLoaded) return;
+        this.pIndex++;
+        isLoading = true;
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(CommonUtils.UrlHelper.Music_From_Singer_Base_Url)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        RetrofitServices.MusicService service = retrofit.create(RetrofitServices.MusicService.class);
+        Call<ResponseBody> call = service.getGsonSMusicList("artist2music", contentId, pIndex, 100);
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+
+                hideLoadingIV();
+                if (response.isSuccessful()) {
+                    try {
+                        String json = response.body().string();
+                        json = json.replace("'new'", "'_new'");
+                        json = json.replace("'", "\"");
+                        json = json.replace("&nbsp;", " ");
+
+                        Gson gson = new Gson();
+                        GsonSMusicList gsonSMusicList = gson.fromJson(json, GsonSMusicList.class);
+                        List<GsonSMusicList.SMusic> musicList = gsonSMusicList.getMusiclist();
+                        if (musicList == null || musicList.size() == 0)
+                            allLoaded = true;
+                        else {
+                            if (!swipeRefreshLayout.isRefreshing()) {
+                                adapter.addSMusics(musicList);
+                            } else {
+                                adapter.reloadSMusics(musicList);
+                            }
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                isLoading = false;
+                updateShowingState(true);
+                finishRefreshing();
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                t.printStackTrace();
+                isLoading = false;
+                finishRefreshing();
+                hideLoadingIV();
+                updateShowingState(false);
+            }
+        });
+    }
+
+    private void updateShowingState(boolean success) {
+        if (adapter.getItemCount() > 0) {
+            noAudioDataView.setVisibility(View.GONE);
+        } else {
+            noAudioDataView.setVisibility(View.VISIBLE);
+            TextView noDataTV = (TextView) parentView.findViewById(R.id.no_data_tv);
+            if (success)
+                noDataTV.setText(getResources().getString(R.string.no_audio_data));
+            else
+                noDataTV.setText(getResources().getString(R.string.net_error));
+        }
+        adapter.notifyLoadStatus(false);
+    }
+
+    private void hideLoadingIV() {
+        Log.d(logTag, "=============First load singer infomation success, set loadingCoverIV's Visibility as Gone");
+        ((AnimationDrawable) loadingCoverIV.getDrawable()).stop();
+        loadingCoverIV.setVisibility(View.GONE);
+    }
+
+    private void finishRefreshing() {
+        refreshAreaView.setVisibility(View.GONE);
+        if (swipeRefreshLayout.isRefreshing()) {
+            swipeRefreshLayout.setRefreshing(false);
+        }
     }
 }

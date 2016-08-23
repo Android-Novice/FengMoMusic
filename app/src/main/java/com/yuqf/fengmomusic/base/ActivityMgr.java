@@ -27,7 +27,9 @@ public class ActivityMgr {
     public boolean addActivity(Activity activity) {
         if (activity == null)
             return false;
-        return activityList.add(activity);
+        if (!activityList.contains(activity))
+            return activityList.add(activity);
+        return false;
     }
 
     public boolean removeActivity(Activity activity) {

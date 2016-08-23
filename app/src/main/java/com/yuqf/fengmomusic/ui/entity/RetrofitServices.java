@@ -44,9 +44,16 @@ public class RetrofitServices {
                                                @Query("fmt") String json,
                                                @Query("type") String bang,
                                                @Query("data") String content,
-                                               @Query("id") int id,
+                                               @Query("id") String id,
                                                @Query("pn") int pIndex,
                                                @Query("rn") int pCount);
+
+        //r.s?stype=artist2music&artistid=947&pn=0&rn=20
+        @GET("r.s")
+        Call<ResponseBody> getGsonSMusicList(@Query("stype") String artist2music,
+                                         @Query("artistid") String artistId,
+                                         @Query("pn") int pIndex,
+                                         @Query("rn") int pCount);
     }
 
 //    public static class SingerConverterFactory extends Converter.Factory {

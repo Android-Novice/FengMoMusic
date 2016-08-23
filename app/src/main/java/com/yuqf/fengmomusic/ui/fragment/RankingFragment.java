@@ -10,6 +10,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,11 +19,16 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.yuqf.fengmomusic.R;
+import com.yuqf.fengmomusic.ui.activity.MusicListActivity;
 import com.yuqf.fengmomusic.ui.adapter.GridSpacingItemDecoration;
 import com.yuqf.fengmomusic.ui.adapter.RankingRecyclerViewAdapter;
 import com.yuqf.fengmomusic.ui.entity.GsonRankingList;
 import com.yuqf.fengmomusic.ui.entity.RetrofitServices;
 import com.yuqf.fengmomusic.utils.CommonUtils;
+import com.yuqf.fengmomusic.utils.Global;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -54,6 +60,28 @@ public class RankingFragment extends Fragment implements SwipeRefreshLayout.OnRe
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         adapter = new RankingRecyclerViewAdapter();
+        adapter.setViewItemClickListener(new CommonUtils.OnRecyclerViewItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                GsonRankingList.ChildRanking curItem = adapter.GetChildByPosition(position);
+
+                String second = curItem.getSourceid();
+
+                String second1 = curItem.getName();
+                List<Pair<String, String>> pairs = new ArrayList<Pair<String, String>>();
+                Pair<String, String> pair = new Pair<String, String>(Global.INTENT_CONTENT_KEY, second);
+                Pair<String, String> pair1 = new Pair<String, String>(Global.INTENT_TITLE_KEY, second1);
+                pairs.add(pair);
+                pairs.add(pair1);
+                pairs.add(new Pair<String, String>(Global.INTENT_FROM_KEY, Global.INTENT_FROM_RANKING));
+                CommonUtils.startActivity(getActivity(), MusicListActivity.class, pairs);
+            }
+
+            @Override
+            public void onItemDownloadClick(View view, int position) {
+
+            }
+        });
     }
 
     @Override

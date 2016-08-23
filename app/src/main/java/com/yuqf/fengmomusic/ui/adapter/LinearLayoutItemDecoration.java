@@ -1,0 +1,48 @@
+package com.yuqf.fengmomusic.ui.adapter;
+
+import android.graphics.Canvas;
+import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
+import android.support.v7.widget.RecyclerView;
+import android.view.View;
+
+import com.yuqf.fengmomusic.R;
+import com.yuqf.fengmomusic.base.MyApplication;
+
+public class LinearLayoutItemDecoration extends RecyclerView.ItemDecoration {
+
+    private Drawable drawable;
+
+    public LinearLayoutItemDecoration() {
+        super();
+//        TypedArray typedArray = MyApplication.getContext().obtainStyledAttributes(new int[]{R.attr});
+//        drawable = typedArray.getDrawable(0);
+        drawable = MyApplication.getContext().getResources().getDrawable(R.drawable.music_list_divider_line);
+    }
+
+    @Override
+    public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
+        int left = parent.getPaddingLeft();
+        int right = parent.getWidth() - parent.getPaddingRight();
+        int childCount = parent.getChildCount();
+        for (int i = 0; i < childCount - 1; i++) {
+            View view = parent.getChildAt(i);
+            int top = view.getBottom();
+            int bottom = top + drawable.getIntrinsicHeight();
+//            Log.d("LinearDecoration", "Left: " + left + "\nTop: " + top + "\nRight: " + right + "\nBottom: " + bottom);
+            drawable.setBounds(left, top, right, bottom);
+            drawable.draw(c);
+        }
+
+    }
+
+    @Override
+    public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+        int totalCount = parent.getAdapter().getItemCount();
+        int index = parent.getChildAdapterPosition(view);
+        if (index == totalCount - 1)
+            outRect.set(0, 0, 0, 0);
+        else
+            outRect.set(0, 0, 0, 1);
+    }
+}
