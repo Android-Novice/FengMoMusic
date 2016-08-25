@@ -16,6 +16,7 @@ import com.yuqf.fengmomusic.R;
 import com.yuqf.fengmomusic.media.Music;
 import com.yuqf.fengmomusic.media.MusicPlayer;
 import com.yuqf.fengmomusic.media.MusicPlayerListener;
+import com.yuqf.fengmomusic.utils.CommonUtils;
 
 import java.util.Locale;
 
@@ -61,6 +62,7 @@ public class MiniMusicPlayerView extends FrameLayout implements ImageButton.OnCl
         musicNameTV = (TextView) findViewById(R.id.music_name_tv);
         singerTV = (TextView) findViewById(R.id.singer_name_tv);
         musicNameTV.setOnClickListener(this);
+
         singerTV.setOnClickListener(this);
 
         loadingIV = (ImageView) findViewById(R.id.loading_iv);
@@ -128,8 +130,17 @@ public class MiniMusicPlayerView extends FrameLayout implements ImageButton.OnCl
         progressBar.setProgress(0);
         progressBar.setSecondaryProgress(0);
         musicCoverIV.setImageResource(R.drawable.music_white);
+
         musicNameTV.setText(music.getName());
+        CommonUtils.setTextMarquee(musicNameTV);
+//        musicNameTV.setEllipsize(TextUtils.TruncateAt.MARQUEE);
+//        musicNameTV.setSingleLine(true);
+//        musicNameTV.setSelected(true);
+//        musicNameTV.setFocusable(true);
+//        musicNameTV.setFocusableInTouchMode(true);
+
         singerTV.setText(music.getArtist());
+        CommonUtils.setTextMarquee(singerTV);
         playBtn.setImageResource(R.drawable.pause_white);
         if (music.isLocal()) {
             onPrepared(music);

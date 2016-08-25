@@ -84,16 +84,18 @@ public class MusicRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof MusicHolder) {
             Music music = musicList.get(position);
-            ((MusicHolder) holder).musicNameTV.setText(music.getName());
+            TextView musicNameTV = ((MusicHolder) holder).musicNameTV;
+            musicNameTV.setText(music.getName());
             ((MusicHolder) holder).singerNameTV.setText(music.getArtist());
             float rating = ((float) music.getRating()) / 20;
             Log.d("MusicRecyclerAdapter", String.valueOf(music.getRating()) + "\n rating: " + String.valueOf(rating));
             ((MusicHolder) holder).ratingBar.setRating(rating);
             holder.itemView.setTag(position);
             ImageView imageView = ((MusicHolder) holder).playingStatusIV;
-            if (playingMusic == music && playingIndex == position)
+            if (playingMusic == music && playingIndex == position) {
+                CommonUtils.setTextMarquee(musicNameTV);
                 imageView.setVisibility(View.VISIBLE);
-            else
+            } else
                 imageView.setVisibility(View.INVISIBLE);
         } else if (holder instanceof FooterHolder) {
             ((FooterHolder) holder).loadMoreView.setVisibility(isLoading ? View.GONE : View.VISIBLE);

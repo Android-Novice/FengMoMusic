@@ -3,9 +3,11 @@ package com.yuqf.fengmomusic.utils;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Rect;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Pair;
 import android.view.View;
+import android.widget.TextView;
 
 import java.util.List;
 
@@ -55,6 +57,16 @@ public class CommonUtils {
 
         //click the downloading on the imagebutton of music list item
         void onItemDownloadClick(View view, int position);
+    }
+
+    public static void setTextMarquee(TextView textView) {
+        if (textView != null) {
+            textView.setEllipsize(TextUtils.TruncateAt.MARQUEE);
+            textView.setSingleLine(true);
+            textView.setSelected(true);
+            textView.setFocusable(true);
+            textView.setFocusableInTouchMode(true);
+        }
     }
 
     public class UrlHelper {

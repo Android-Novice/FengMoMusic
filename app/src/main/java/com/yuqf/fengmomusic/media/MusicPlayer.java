@@ -1,14 +1,17 @@
 package com.yuqf.fengmomusic.media;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
+import com.yuqf.fengmomusic.R;
 import com.yuqf.fengmomusic.base.MyApplication;
 import com.yuqf.fengmomusic.ui.entity.RetrofitServices;
 import com.yuqf.fengmomusic.utils.CommonUtils;
@@ -36,21 +39,30 @@ public class MusicPlayer {
     private int playIndex;
     private final String logTag = "MediaPlayer";
     private Music curMusic;
+    private boolean isBuffering;
+
+    private AudioManager audioManager;
+    private int audioResult = -1;
 
     public static MusicPlayer getInstance() {
-            if (musicPlayer == null) {
-                musicPlayer = new MusicPlayer();
-            }
+        if (musicPlayer == null) {
+            musicPlayer = new MusicPlayer();
+        }
         return musicPlayer;
     }
 
     private MusicPlayer() {
         listenerList = new ArrayList<>();
         playingMusics = new ArrayList<>();
+        audioManager = (AudioManager) MyApplication.getContext().getSystemService(Context.AUDIO_SERVICE);
     }
 
     public Music getCurMusic() {
         return curMusic;
+    }
+
+    public boolean isBuffering() {
+        return isBuffering;
     }
 
     public boolean isPlaying() {
@@ -67,6 +79,7 @@ public class MusicPlayer {
     }
 
     public void setPlayingMusics(List<Music> playingMusics) {
+        if (showBufferingToast()) return;
         playIndex = -1;
         this.playingMusics = playingMusics;
     }
@@ -94,19 +107,28 @@ public class MusicPlayer {
     }
 
     public void play(int position) {
-        initMediaPlayer();
+        if (audioResult == -1) {
+            audioResult = audioManager.requestAudioFocus(new AudioFocusChangedListener(), AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
+        }
+        if (audioResult != AudioManager.AUDIOFOCUS_REQUEST_GRANTED) return;
+//        Intent freshIntent = new Intent();
+//        freshIntent.setAction("com.android.music.musicservicecommand.pause");
+//        freshIntent.putExtra("command", "pause");
+//        MyApplication.getContext().sendBroadcast(freshIntent);
+        if (showBufferingToast()) return;
         if (playIndex != position) {
             if (position < 0 || (position > playingMusics.size() - 1))
                 position = 0;
             oldIndex = playIndex;
             playIndex = position;
-            mediaPlayer.reset();
+//            mediaPlayer.reset();
 //            playedDuration = 0;
 //            duration = 0;
 //            musicCover = null;
 //            bufferPercent = 0;
             curMusic = playingMusics.get(playIndex);
             if (!curMusic.isLocal()) {
+                isBuffering = true;
                 if (changedListener != null)
                     changedListener.onPlayingIndexChange(curMusic, playIndex, oldIndex);
                 notifyListeners(PlayState.Preparing);
@@ -119,8 +141,50 @@ public class MusicPlayer {
         }
     }
 
-    private void initMediaPlayer() {
-        if (mediaPlayer != null) return;
+    class AudioFocusChangedListener implements AudioManager.OnAudioFocusChangeListener {
+        @Override
+        public void onAudioFocusChange(int focusChange) {
+            switch (focusChange) {
+                case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
+                    Log.d(logTag, "onAudioFocusChange: AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK\n");
+                    if (mediaPlayer != null) {
+                        mediaPlayer.setVolume(0.1f, .1f);
+                    }
+                    break;
+                case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
+                case AudioManager.AUDIOFOCUS_LOSS:
+                    Log.d(logTag, "onAudioFocusChange: AUDIOFOCUS_LOSS_TRANSIENT\n");
+                    pause();
+                    break;
+                case AudioManager.AUDIOFOCUS_GAIN:
+                    Log.d(logTag, "onAudioFocusChange: AUDIOFOCUS_GAIN\n");
+                    if (mediaPlayer != null) {
+                        mediaPlayer.setVolume(1f, 1f);
+                    }
+                    replay();
+                    break;
+                default:
+                    Log.d(logTag, "onAudioFocusChange: \n" + String.valueOf(focusChange));
+                    break;
+            }
+        }
+    }
+
+    private boolean showBufferingToast() {
+        if (isBuffering) {
+            Toast.makeText(MyApplication.getContext(), R.string.no_switching_when_buffering, Toast.LENGTH_LONG).show();
+            return true;
+        }
+        return false;
+    }
+
+    private void initMediaPlayer(String url) {
+        if (mediaPlayer != null) {
+            mediaPlayer.stop();
+            mediaPlayer.reset();
+            mediaPlayer.release();
+            mediaPlayer = null;
+        }
         mediaPlayer = new MediaPlayer();
         mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         mediaPlayer.setOnBufferingUpdateListener(new MediaPlayer.OnBufferingUpdateListener() {
@@ -187,6 +251,12 @@ public class MusicPlayer {
                 Log.d(logTag, "onSeekComplete.... \n");
             }
         });
+        try {
+            mediaPlayer.setDataSource(url);
+            mediaPlayer.prepareAsync();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void playWebMusic(int id) {
@@ -203,8 +273,9 @@ public class MusicPlayer {
                     try {
                         String url = response.body().string();
                         if (!TextUtils.isEmpty(url)) {
-                            mediaPlayer.setDataSource(url);
-                            mediaPlayer.prepareAsync();
+                            initMediaPlayer(url);
+//                            mediaPlayer.setDataSource(url);
+//                            mediaPlayer.prepareAsync();
                             return;
                         }
                     } catch (IOException e) {
@@ -274,24 +345,29 @@ public class MusicPlayer {
                         listener.onBufferingUpdate(curMusic);
                         break;
                     case Completion:
+                        isBuffering = false;
                         listener.onCompletion(curMusic);
                         break;
                     case EndBuffering:
+                        isBuffering = false;
                         listener.onEndBuffering();
                         break;
                     case StartBuffering:
+                        isBuffering = true;
                         listener.onStartBuffering();
                         break;
                     case CoverLoaded:
                         listener.onMusicCoverLoaded(curMusic);
                         break;
                     case Error:
+                        isBuffering = false;
                         listener.onError();
                         break;
                     case PlayedDuration:
                         listener.onPlayedDurationChanged(curMusic);
                         break;
                     case Prepared:
+                        isBuffering = false;
                         listener.onPrepared(curMusic);
                         break;
                     case Preparing:
