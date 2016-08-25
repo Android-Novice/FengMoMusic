@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.yuqf.fengmomusic.R;
 import com.yuqf.fengmomusic.base.MyApplication;
+import com.yuqf.fengmomusic.media.Music;
 import com.yuqf.fengmomusic.ui.entity.GsonRMusicList;
 import com.yuqf.fengmomusic.ui.entity.GsonSMusicList;
 import com.yuqf.fengmomusic.utils.CommonUtils;
@@ -30,6 +31,9 @@ public class MusicRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
     private final int Type_Footer = 2;
     private final int Type_Music = 1;
     private boolean isLoading;
+
+    private int playingIndex = -1;
+    private Music playingMusic;
 
     public MusicRecyclerViewAdapter() {
         super();
@@ -82,18 +86,30 @@ public class MusicRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
             Music music = musicList.get(position);
             ((MusicHolder) holder).musicNameTV.setText(music.getName());
             ((MusicHolder) holder).singerNameTV.setText(music.getArtist());
-            float rating = ((float) music.getScore100()) / 20;
-            Log.d("MusicRecyclerAdapter", String.valueOf(music.getScore100()) + "\n rating: " + String.valueOf(rating));
-//            ((MusicHolder) holder).ratingBar.setRating(rating);
-            ((MusicHolder) holder).ratingBar.setProgress(music.getScore100());
-//            RatingBar ratingBar = ((MusicHolder) holder).ratingBar;
-//            ratingBar.setStepSize(0.1f);
-//            ratingBar.setRating(2f);
+            float rating = ((float) music.getRating()) / 20;
+            Log.d("MusicRecyclerAdapter", String.valueOf(music.getRating()) + "\n rating: " + String.valueOf(rating));
+            ((MusicHolder) holder).ratingBar.setRating(rating);
             holder.itemView.setTag(position);
+            ImageView imageView = ((MusicHolder) holder).playingStatusIV;
+            if (playingMusic == music && playingIndex == position)
+                imageView.setVisibility(View.VISIBLE);
+            else
+                imageView.setVisibility(View.INVISIBLE);
         } else if (holder instanceof FooterHolder) {
             ((FooterHolder) holder).loadMoreView.setVisibility(isLoading ? View.GONE : View.VISIBLE);
             ((FooterHolder) holder).loadingView.setVisibility(isLoading ? View.VISIBLE : View.GONE);
         }
+    }
+
+    public Music getMusicByPosition(int position) {
+        if (position > musicList.size() - 1)
+            return null;
+        else
+            return musicList.get(position);
+    }
+
+    public List<Music> getMusicList() {
+        return musicList;
     }
 
     @Override
@@ -110,8 +126,10 @@ public class MusicRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
             notifyDataSetChanged();
     }
 
-    public CommonUtils.OnRecyclerViewItemClickListener getOnRecyclerViewItemClickListener() {
-        return onRecyclerViewItemClickListener;
+    public void updateItemState(Music curMusic, int newIndex, int oldIndex) {
+        this.playingIndex = newIndex;
+        this.playingMusic = curMusic;
+        notifyDataSetChanged();
     }
 
     public void setOnRecyclerViewItemClickListener(CommonUtils.OnRecyclerViewItemClickListener onRecyclerViewItemClickListener) {
@@ -215,11 +233,12 @@ public class MusicRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
         Music newMusic = new Music();
         newMusic.setId(music.getMusicrid());
         newMusic.setArtist(music.getArtist());
-        newMusic.setArtistid(music.getArtistid());
+        newMusic.setArtistId(music.getArtistid());
         newMusic.setAlbum(music.getAlbum());
-        newMusic.setAlbumid(music.getAlbumid());
-        newMusic.setScore100(music.getScore100());
+        newMusic.setAlbumId(music.getAlbumid());
+        newMusic.setRating(music.getScore100());
         newMusic.setName(music.getName());
+        newMusic.setLocal(false);
         return newMusic;
     }
 
@@ -227,80 +246,80 @@ public class MusicRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
         Music newMusic = new Music();
         newMusic.setId(music.getId());
         newMusic.setArtist(music.getArtist());
-        newMusic.setArtistid(music.getArtistid());
+        newMusic.setArtistId(music.getArtistid());
         newMusic.setAlbum(music.getAlbum());
-        newMusic.setAlbumid(music.getAlbumid());
-        newMusic.setScore100(music.getScore100());
+        newMusic.setAlbumId(music.getAlbumid());
+        newMusic.setRating(music.getScore100());
         newMusic.setName(music.getName());
+        newMusic.setLocal(false);
         return newMusic;
     }
 
-    class Music {
-        private int id;
-        private String name;
-        private String artist;
-        private String artistid;
-        private String album;
-        private int albumid;
-        private int score100;
-
-        public int getId() {
-            return id;
-        }
-
-        public void setId(int id) {
-            this.id = id;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public String getArtist() {
-            return artist;
-        }
-
-        public void setArtist(String artist) {
-            this.artist = artist;
-        }
-
-        public String getArtistid() {
-            return artistid;
-        }
-
-        public void setArtistid(String artistid) {
-            this.artistid = artistid;
-        }
-
-        public String getAlbum() {
-            return album;
-        }
-
-        public void setAlbum(String album) {
-            this.album = album;
-        }
-
-        public int getAlbumid() {
-            return albumid;
-        }
-
-        public void setAlbumid(int albumid) {
-            this.albumid = albumid;
-        }
-
-        public int getScore100() {
-            return score100;
-        }
-
-        public void setScore100(int score100) {
-            this.score100 = score100;
-        }
-    }
-
+//    class Music {
+//        private int id;
+//        private String name;
+//        private String artist;
+//        private String artistid;
+//        private String album;
+//        private int albumid;
+//        private int score100;
+//
+//        public int getId() {
+//            return id;
+//        }
+//
+//        public void setId(int id) {
+//            this.id = id;
+//        }
+//
+//        public String getName() {
+//            return name;
+//        }
+//
+//        public void setName(String name) {
+//            this.name = name;
+//        }
+//
+//        public String getArtist() {
+//            return artist;
+//        }
+//
+//        public void setArtist(String artist) {
+//            this.artist = artist;
+//        }
+//
+//        public String getArtistid() {
+//            return artistid;
+//        }
+//
+//        public void setArtistid(String artistid) {
+//            this.artistid = artistid;
+//        }
+//
+//        public String getAlbum() {
+//            return album;
+//        }
+//
+//        public void setAlbum(String album) {
+//            this.album = album;
+//        }
+//
+//        public int getAlbumid() {
+//            return albumid;
+//        }
+//
+//        public void setAlbumid(int albumid) {
+//            this.albumid = albumid;
+//        }
+//
+//        public int getScore100() {
+//            return score100;
+//        }
+//
+//        public void setScore100(int score100) {
+//            this.score100 = score100;
+//        }
+//    }
 
     class MusicHolder extends RecyclerView.ViewHolder {
         public ImageView playingStatusIV;

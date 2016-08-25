@@ -11,3 +11,6 @@
 
 3. Viewpager和Fragment结合使用的时候，Fragment的状态保存问题；
 
+4. RatingBar设置Style的时候，用【attr】后动态rating赋值有效，但是用【@style/样式】后动态rating赋值无效果。
+
+

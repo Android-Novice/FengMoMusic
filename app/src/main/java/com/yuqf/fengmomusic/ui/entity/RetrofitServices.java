@@ -51,9 +51,23 @@ public class RetrofitServices {
         //r.s?stype=artist2music&artistid=947&pn=0&rn=20
         @GET("r.s")
         Call<ResponseBody> getGsonSMusicList(@Query("stype") String artist2music,
-                                         @Query("artistid") String artistId,
-                                         @Query("pn") int pIndex,
-                                         @Query("rn") int pCount);
+                                             @Query("artistid") String artistId,
+                                             @Query("pn") int pIndex,
+                                             @Query("rn") int pCount);
+
+        //anti.s?rid=MUSIC_%d&response=url&type=convert_url&format=mp3|aac
+        @GET("anti.s")
+        Call<ResponseBody> getMusicUrl(@Query("rid") String id,
+                                       @Query("response") String url,
+                                       @Query("type") String convert_url,
+                                       @Query("format") String mp3aac);
+
+        //pic.web?type=rid_pic&pictype=url&size=70&rid=%d
+        @GET("pic.web")
+        Call<ResponseBody> getCoverUrl(@Query("type") String rid_pic,
+                                       @Query("pictype") String url,
+                                       @Query("size") int size,
+                                       @Query("rid") int id);
     }
 
 //    public static class SingerConverterFactory extends Converter.Factory {

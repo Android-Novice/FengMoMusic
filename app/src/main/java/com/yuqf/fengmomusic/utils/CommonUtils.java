@@ -64,5 +64,8 @@ public class CommonUtils {
         public final static String Ranking_Get_Base_Url = "http://qukudata.kuwo.cn/";
         public final static String Music_From_Ranking_Base_Url = "http://kbangserver.kuwo.cn/";
         public final static String Music_From_Singer_Base_Url = "http://search.kuwo.cn/";
+
+        public final static String Music_Cover_Base_Url = "http://artistpicserver.kuwo.cn/";
+        public final static String Music_File_Base_Url = "http://antiserver.kuwo.cn/";
     }
 }

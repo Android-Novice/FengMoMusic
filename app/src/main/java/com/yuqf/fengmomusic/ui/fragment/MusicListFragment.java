@@ -20,6 +20,9 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.yuqf.fengmomusic.R;
+import com.yuqf.fengmomusic.media.Music;
+import com.yuqf.fengmomusic.media.MusicPlayer;
+import com.yuqf.fengmomusic.media.PlayIndexChangedListener;
 import com.yuqf.fengmomusic.ui.adapter.LinearLayoutItemDecoration;
 import com.yuqf.fengmomusic.ui.adapter.MusicRecyclerViewAdapter;
 import com.yuqf.fengmomusic.ui.entity.GsonRMusicList;
@@ -38,7 +41,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class MusicListFragment extends Fragment {
+public class MusicListFragment extends Fragment implements PlayIndexChangedListener {
 
     private final String logTag = "MusicListFragment";
     private View parentView;
@@ -62,7 +65,27 @@ public class MusicListFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        MusicPlayer.getInstance().setChangedListener(this);
         adapter = new MusicRecyclerViewAdapter();
+        adapter.setOnRecyclerViewItemClickListener(new CommonUtils.OnRecyclerViewItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                MusicPlayer.getInstance().setPlayingMusics(adapter.getMusicList());
+                MusicPlayer.getInstance().play(position);
+//                Music music = adapter.getMusicByPosition(position);
+//                musicPlayerView.play(music);
+            }
+
+            @Override
+            public void onItemDownloadClick(View view, int position) {
+
+            }
+        });
+    }
+
+    @Override
+    public void onPlayingIndexChange(Music music, int curPosition, int oldPosition) {
+        adapter.updateItemState(music, curPosition, oldPosition);
     }
 
     @Override
@@ -275,5 +298,15 @@ public class MusicListFragment extends Fragment {
         if (swipeRefreshLayout.isRefreshing()) {
             swipeRefreshLayout.setRefreshing(false);
         }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
     }
 }

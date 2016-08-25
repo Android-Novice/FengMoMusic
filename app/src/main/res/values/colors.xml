@@ -7,6 +7,7 @@
     <color name="black_overlay">#66000000</color>
     <color name="top_divider_line">#3B3B3B</color>
 
-    <color name="progressbar_second">#878787</color>
-    <color name="progressbar_default">#787878</color>
+    <color name="progressbar_second">#919191</color>
+    <color name="progressbar_default">#878787</color>
+    <color name="progressbar_buffer">#787878</color>
 </resources>

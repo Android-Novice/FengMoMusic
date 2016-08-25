@@ -17,6 +17,9 @@
             <include layout="@layout/fragment_singer_list" />
         </LinearLayout>
 
-        <include layout="@layout/bottom_media_player" />
+        <com.yuqf.fengmomusic.ui.widget.MiniMusicPlayerView
+            android:id="@+id/music_player"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
     </LinearLayout>
 </FrameLayout>

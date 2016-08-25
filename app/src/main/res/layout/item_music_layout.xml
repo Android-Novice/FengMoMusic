@@ -49,15 +49,12 @@
 
     <RatingBar
         android:id="@+id/music_rating_bar"
-        style="@style/Widget.AppCompat.RatingBar.Small"
+        style="?android:attr/ratingBarStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
         android:layout_marginRight="5dp"
-        android:max="100"
         android:numStars="5"
-        android:progress="50"
-        android:stepSize="0.1" />
+        android:rating="2.2" />
 
     <ImageButton
         android:id="@+id/music_download_button"

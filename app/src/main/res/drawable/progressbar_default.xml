@@ -10,7 +10,7 @@
         <clip>
             <shape>
                 <corners android:radius="2dp" />
-                <solid android:color="@android:color/transparent" />
+                <solid android:color="@color/progressbar_buffer" />
             </shape>
         </clip>
     </item>
