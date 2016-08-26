@@ -34,7 +34,7 @@
             <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
             <!-- </intent-filter> -->
         </activity>
-        <activity android:name=".ui.activity.MusicListActivity"></activity>
+        <activity android:name=".ui.activity.MusicListActivity" />
 
         <receiver
             android:name=".media.MusicPlayerBroadcastReceiver"
@@ -43,5 +43,8 @@
                 <action android:name="com.yuqf.fengmo.musicplayer.receiver" />
             </intent-filter>
         </receiver>
+
+        <activity android:name=".ui.activity.SingleMusicActivity"></activity>
     </application>
+
 </manifest>
