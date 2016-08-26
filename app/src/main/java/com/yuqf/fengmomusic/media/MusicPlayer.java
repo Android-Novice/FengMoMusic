@@ -1,12 +1,18 @@
 package com.yuqf.fengmomusic.media;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.support.v7.app.NotificationCompat;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.RemoteViews;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
@@ -15,6 +21,7 @@ import com.yuqf.fengmomusic.R;
 import com.yuqf.fengmomusic.base.MyApplication;
 import com.yuqf.fengmomusic.ui.entity.RetrofitServices;
 import com.yuqf.fengmomusic.utils.CommonUtils;
+import com.yuqf.fengmomusic.utils.Global;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -42,6 +49,7 @@ public class MusicPlayer {
     private boolean isBuffering;
 
     private AudioManager audioManager;
+    private NotificationManager manager;
     private int audioResult = -1;
 
     public static MusicPlayer getInstance() {
@@ -55,6 +63,7 @@ public class MusicPlayer {
         listenerList = new ArrayList<>();
         playingMusics = new ArrayList<>();
         audioManager = (AudioManager) MyApplication.getContext().getSystemService(Context.AUDIO_SERVICE);
+        manager = (NotificationManager) MyApplication.getContext().getSystemService(Context.NOTIFICATION_SERVICE);
     }
 
     public Music getCurMusic() {
@@ -88,6 +97,7 @@ public class MusicPlayer {
         if (mediaPlayer != null) {
             if (mediaPlayer.isPlaying())
                 mediaPlayer.pause();
+            showNotification(curMusic);
         }
     }
 
@@ -97,6 +107,18 @@ public class MusicPlayer {
 
     public void next() {
         play(playIndex + 1);
+    }
+
+    public void setMusicPlayerState() {
+        if (mediaPlayer != null) {
+            if (mediaPlayer.isPlaying()) {
+                mediaPlayer.pause();
+            } else {
+                mediaPlayer.start();
+            }
+            showNotification(curMusic);
+            notifyListeners(PlayState.PlayState);
+        }
     }
 
     public void previous() {
@@ -139,6 +161,7 @@ public class MusicPlayer {
             if (!mediaPlayer.isPlaying())
                 mediaPlayer.start();
         }
+        showNotification(curMusic);
     }
 
     class AudioFocusChangedListener implements AudioManager.OnAudioFocusChangeListener {
@@ -358,6 +381,7 @@ public class MusicPlayer {
                         break;
                     case CoverLoaded:
                         listener.onMusicCoverLoaded(curMusic);
+                        showNotification(curMusic);
                         break;
                     case Error:
                         isBuffering = false;
@@ -373,15 +397,64 @@ public class MusicPlayer {
                     case Preparing:
                         listener.onPreparing(curMusic);
                         break;
+                    case PlayState:
+                        listener.onPlayStateChanged();
+                        break;
                 }
             }
         }
+    }
+
+    private void showNotification(Music music) {
+        Log.d(logTag, "showNotification\n");
+        String packageName = MyApplication.getContext().getPackageName();
+        RemoteViews remoteViews = new RemoteViews(packageName, R.layout.custom_notification_layout);
+        remoteViews.setTextViewText(R.id.music_name_tv, music.getName());
+        remoteViews.setTextViewText(R.id.singer_name_tv, music.getArtist());
+
+        if (music.getCover() != null) {
+            Log.d(logTag, "showNotification\n have cover");
+            remoteViews.setImageViewBitmap(R.id.music_cover_iv, music.getCover());
+        } else {
+            remoteViews.setImageViewResource(R.id.music_cover_iv, R.drawable.music_white);
+        }
+
+        if (mediaPlayer == null || mediaPlayer.isPlaying() || isBuffering)
+            remoteViews.setImageViewResource(R.id.btn_play_pause, R.drawable.pause_white);
+        else
+            remoteViews.setImageViewResource(R.id.btn_play_pause, R.drawable.play_arrow_white);
+
+        Intent buttonIntent = new Intent(Global.RECEIVER_ACTION);
+
+        buttonIntent.putExtra(Global.ACTION_KEY, Global.ACTION_PLAY);
+        PendingIntent ppPendingIntent = PendingIntent.getBroadcast(MyApplication.getContext(), 0, buttonIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        remoteViews.setOnClickPendingIntent(R.id.btn_play_pause, ppPendingIntent);
+
+        buttonIntent.putExtra(Global.ACTION_KEY, Global.ACTION_NEXT);
+        PendingIntent nextPendingIntent = PendingIntent.getBroadcast(MyApplication.getContext(), 1, buttonIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        remoteViews.setOnClickPendingIntent(R.id.btn_next, nextPendingIntent);
+
+        buttonIntent.putExtra(Global.ACTION_KEY, Global.ACTION_CLOSE);
+        PendingIntent closePendingIntent = PendingIntent.getBroadcast(MyApplication.getContext(), 2, buttonIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        remoteViews.setOnClickPendingIntent(R.id.btn_play_close, closePendingIntent);
+
+        Notification notification = new NotificationCompat.Builder(MyApplication.getContext())
+                .setContent(remoteViews)
+                .setAutoCancel(false)
+                .setTicker(music.getName())
+                .setSmallIcon(R.drawable.ic_launcher_36)
+                .setOngoing(true)
+                .build();
+        notification.priority = Notification.PRIORITY_HIGH;
+        notification.flags = Notification.FLAG_NO_CLEAR | Notification.FLAG_ONGOING_EVENT;
+        manager.notify(Global.NOTIFICATION_ID, notification);
     }
 
     enum PlayState {
         Preparing,
         StartBuffering,
         Buffering,
+        PlayState,
         EndBuffering,
         Prepared,
         CoverLoaded,
@@ -389,5 +462,4 @@ public class MusicPlayer {
         Completion,
         Error,
     }
-
 }

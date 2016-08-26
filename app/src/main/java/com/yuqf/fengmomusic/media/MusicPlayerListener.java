@@ -27,6 +27,8 @@ public interface MusicPlayerListener {
      **/
     void onPrepared(Music music);
 
+    void onPlayStateChanged();
+
     /**
      * 加载音乐封面完成---播放在线音乐时调用
      **/

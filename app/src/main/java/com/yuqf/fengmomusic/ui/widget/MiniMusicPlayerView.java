@@ -204,4 +204,13 @@ public class MiniMusicPlayerView extends FrameLayout implements ImageButton.OnCl
     public void onStartBuffering() {
         loadingIV.setVisibility(VISIBLE);
     }
+
+    @Override
+    public void onPlayStateChanged() {
+        if (!MusicPlayer.getInstance().isPlaying()) {
+            playBtn.setImageResource(R.drawable.play_arrow_white);
+        } else {
+            playBtn.setImageResource(R.drawable.pause_white);
+        }
+    }
 }

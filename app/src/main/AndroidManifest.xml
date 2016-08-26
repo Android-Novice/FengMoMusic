@@ -35,6 +35,13 @@
             <!-- </intent-filter> -->
         </activity>
         <activity android:name=".ui.activity.MusicListActivity"></activity>
-    </application>
 
+        <receiver
+            android:name=".media.MusicPlayerBroadcastReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.yuqf.fengmo.musicplayer.receiver" />
+            </intent-filter>
+        </receiver>
+    </application>
 </manifest>
