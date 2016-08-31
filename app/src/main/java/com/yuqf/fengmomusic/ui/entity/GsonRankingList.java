@@ -1,5 +1,7 @@
 package com.yuqf.fengmomusic.ui.entity;
 
+import android.text.TextUtils;
+
 import java.util.List;
 
 //"id":"2","name":"排行榜","disname":"排行榜","info":"0个列表","source":"5","sourceid":"",
@@ -333,6 +335,15 @@ public class GsonRankingList {
 
         public void setChild(List<ChildRanking> child) {
             this.child = child;
+        }
+
+        public String getPicPath() {
+            String picPath = getPic2();
+            if (TextUtils.isEmpty(picPath))
+                picPath = getPic5();
+            if (TextUtils.isEmpty(picPath))
+                picPath = getPic();
+            return picPath;
         }
 //
 //        public class GrandSonRanking {

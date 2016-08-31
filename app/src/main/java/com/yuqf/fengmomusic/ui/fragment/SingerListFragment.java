@@ -94,13 +94,14 @@ public class SingerListFragment extends Fragment implements SwipeRefreshLayout.O
             @Override
             public void onItemClick(View view, int position) {
                 GsonSingerList.Singer singer = adapter.getSingerByPosition(position);
-                String titleV = "《" + singer.getName() + "》的全部歌曲";
+                String titleV = singer.getName();
 
                 String contentV = String.valueOf(singer.getId());
                 List<Pair<String, String>> pairList = new ArrayList<Pair<String, String>>();
-                pairList.add(new Pair<String, String>(Global.INTENT_TITLE_KEY, titleV));
-                pairList.add(new Pair<String, String>(Global.INTENT_FROM_KEY, Global.INTENT_FROM_SINGER));
-                pairList.add(new Pair<String, String>(Global.INTENT_CONTENT_KEY, contentV));
+                pairList.add(new Pair<>(Global.INTENT_TITLE_KEY, titleV));
+                pairList.add(new Pair<>(Global.INTENT_FROM_KEY, Global.INTENT_FROM_SINGER));
+                pairList.add(new Pair<>(Global.INTENT_CONTENT_KEY, contentV));
+                pairList.add(new Pair<>(Global.INTENT_COVER_KEY, singer.getPic()));
                 CommonUtils.startActivity(getActivity(), MusicListActivity.class, pairList);
             }
 

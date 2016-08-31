@@ -1,5 +1,7 @@
 package com.yuqf.fengmomusic.ui.adapter;
 
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -8,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.yuqf.fengmomusic.R;
 import com.yuqf.fengmomusic.base.MyApplication;
@@ -51,18 +54,36 @@ public class RankingRecyclerViewAdapter extends RecyclerView.Adapter<RankingRecy
     }
 
     @Override
-    public void onBindViewHolder(RankingRecyclerViewAdapter.RankingHolder holder, int position) {
-        GsonRankingList.ChildRanking childRanking = childRankingList.get(position);
+    public void onBindViewHolder(final RankingRecyclerViewAdapter.RankingHolder holder, int position) {
+        final GsonRankingList.ChildRanking childRanking = childRankingList.get(position);
         holder.rankingNameTV.setText(childRanking.getName());
         holder.rankingDateTV.setText(childRanking.getInfo());
         holder.rankingInfoTV.setText(childRanking.getIntro());
-        String picPath = childRanking.getPic2();
-        if (TextUtils.isEmpty(picPath))
-            picPath = childRanking.getPic5();
-        if (TextUtils.isEmpty(picPath))
-            picPath = childRanking.getPic();
-        if (!TextUtils.isEmpty(picPath)) {
-            picasso.load(picPath).placeholder(R.drawable.ranking_default).error(R.drawable.ranking_default).into(holder.rankingIV);
+//        String picPath = childRanking.getPic2();
+//        if (TextUtils.isEmpty(picPath))
+//            picPath = childRanking.getPic5();
+//        if (TextUtils.isEmpty(picPath))
+//            picPath = childRanking.getPic();
+        String picPath = childRanking.getPicPath();
+        Bitmap bitmap = CommonUtils.getRankingCover(childRanking.getName(), picPath);
+        if (bitmap != null) {
+            holder.rankingIV.setImageBitmap(bitmap);
+        } else {
+            if (!TextUtils.isEmpty(picPath)) {
+                final String coverPath = picPath;
+                picasso.load(picPath).placeholder(R.drawable.ranking_default).error(R.drawable.ranking_default).into(holder.rankingIV, new Callback() {
+                    @Override
+                    public void onSuccess() {
+                        Bitmap bitmap = ((BitmapDrawable) holder.rankingIV.getDrawable()).getBitmap();
+                        CommonUtils.saveRankingCover(bitmap, childRanking.getName(), coverPath);
+                    }
+
+                    @Override
+                    public void onError() {
+
+                    }
+                });
+            }
         }
         holder.itemView.setTag(position);
     }

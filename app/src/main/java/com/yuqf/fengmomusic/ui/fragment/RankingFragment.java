@@ -69,11 +69,12 @@ public class RankingFragment extends Fragment implements SwipeRefreshLayout.OnRe
 
                 String second1 = curItem.getName();
                 List<Pair<String, String>> pairs = new ArrayList<Pair<String, String>>();
-                Pair<String, String> pair = new Pair<String, String>(Global.INTENT_CONTENT_KEY, second);
-                Pair<String, String> pair1 = new Pair<String, String>(Global.INTENT_TITLE_KEY, second1);
+                Pair<String, String> pair = new Pair<>(Global.INTENT_CONTENT_KEY, second);
+                Pair<String, String> pair1 = new Pair<>(Global.INTENT_TITLE_KEY, second1);
                 pairs.add(pair);
                 pairs.add(pair1);
-                pairs.add(new Pair<String, String>(Global.INTENT_FROM_KEY, Global.INTENT_FROM_RANKING));
+                pairs.add(new Pair<>(Global.INTENT_FROM_KEY, Global.INTENT_FROM_RANKING));
+                pairs.add(new Pair<>(Global.INTENT_COVER_KEY, curItem.getPicPath()));
                 CommonUtils.startActivity(getActivity(), MusicListActivity.class, pairs);
             }
 

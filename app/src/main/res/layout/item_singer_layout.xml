@@ -12,7 +12,7 @@
         android:adjustViewBounds="true"
         android:maxHeight="@dimen/singer_head_height"
         android:maxWidth="@dimen/singer_head_width"
-        android:src="@drawable/head_default" />
+        android:src="@drawable/singer_default" />
 
     <TextView
         android:id="@+id/singer_name_tv"

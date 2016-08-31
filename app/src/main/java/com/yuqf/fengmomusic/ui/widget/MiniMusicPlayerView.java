@@ -85,12 +85,14 @@ public class MiniMusicPlayerView extends FrameLayout implements ImageButton.OnCl
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
 
-        MusicPlayer.getInstance().addPlayerListener(this);
-        Music music = MusicPlayer.getInstance().getCurMusic();
-        if (music != null) {
-            onPlayedDurationChanged(music);
-        } else {
-            setVisibility(GONE);
+        if (!isInEditMode()) {
+            MusicPlayer.getInstance().addPlayerListener(this);
+            Music music = MusicPlayer.getInstance().getCurMusic();
+            if (music != null) {
+                onPlayedDurationChanged(music);
+            } else {
+                setVisibility(GONE);
+            }
         }
     }
 

@@ -106,7 +106,6 @@ public class MusicListFragment extends Fragment implements PlayIndexChangedListe
         recyclerView = (RecyclerView) parentView.findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
 
-
         recyclerView.addItemDecoration(new LinearLayoutItemDecoration());
         final LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -130,6 +129,21 @@ public class MusicListFragment extends Fragment implements PlayIndexChangedListe
                 swipeRefreshLayout.setEnabled(firstVisibleItemIndex == 0);
 
                 lastVisibleItemIndex = layoutManager.findLastCompletelyVisibleItemPosition();
+
+                RecyclerView.ViewHolder viewHolder = recyclerView.findViewHolderForLayoutPosition(0);
+                View view = recyclerView.getChildAt(0);
+                int top = view.getTop();
+                if (viewHolder != null) {
+                    float alpha = -top / (float) Global.HEADER_HEIGHT;
+                    if (alpha > 1)
+                        alpha = 1;
+                    if (scrolledListener != null)
+                        scrolledListener.onNotifyScrolled(alpha, -top);
+                } else {
+                    if (scrolledListener != null)
+                        scrolledListener.onNotifyScrolled(1, Global.HEADER_HEIGHT);
+                }
+                Log.d(logTag, String.format("dx: %d\n dy: %dy \n top: %d\n", dx, dy, top));
             }
         });
     }
@@ -308,5 +322,15 @@ public class MusicListFragment extends Fragment implements PlayIndexChangedListe
     @Override
     public void onDestroy() {
         super.onDestroy();
+    }
+
+    private OnFragmentScrolledListener scrolledListener;
+
+    public void setScrolledListener(OnFragmentScrolledListener scrolledListener) {
+        this.scrolledListener = scrolledListener;
+    }
+
+    public interface OnFragmentScrolledListener {
+        void onNotifyScrolled(float alpha, int scrollY);
     }
 }

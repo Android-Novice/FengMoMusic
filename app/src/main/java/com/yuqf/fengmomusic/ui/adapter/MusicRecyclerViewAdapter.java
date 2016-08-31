@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RatingBar;
@@ -16,6 +17,7 @@ import com.yuqf.fengmomusic.media.Music;
 import com.yuqf.fengmomusic.ui.entity.GsonRMusicList;
 import com.yuqf.fengmomusic.ui.entity.GsonSMusicList;
 import com.yuqf.fengmomusic.utils.CommonUtils;
+import com.yuqf.fengmomusic.utils.Global;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +32,7 @@ public class MusicRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
     private CommonUtils.OnRecyclerViewItemClickListener onRecyclerViewItemClickListener;
     private final int Type_Footer = 2;
     private final int Type_Music = 1;
+    private final int HeaderType = 3;
     private boolean isLoading;
 
     private int playingIndex = -1;
@@ -45,8 +48,10 @@ public class MusicRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
 
     @Override
     public int getItemViewType(int position) {
-        if (position == musicList.size())
+        if (position == musicList.size() + 1)
             return Type_Footer;
+        else if (position == 0)
+            return HeaderType;
         else
             return Type_Music;
     }
@@ -66,6 +71,11 @@ public class MusicRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
                 musicHolder.downloadButton.setOnClickListener(this);
                 view2.setOnClickListener(this);
                 return musicHolder;
+            case HeaderType:
+                View header = inflater.inflate(R.layout.item_header_layout, parent, false);
+                HeaderHolder headerHolder = new HeaderHolder(header);
+                header.setClickable(false);
+                return headerHolder;
         }
         return null;
     }
@@ -83,7 +93,7 @@ public class MusicRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof MusicHolder) {
-            Music music = musicList.get(position);
+            Music music = musicList.get(position - 1);
             TextView musicNameTV = ((MusicHolder) holder).musicNameTV;
             musicNameTV.setText(music.getName());
             ((MusicHolder) holder).singerNameTV.setText(music.getArtist());
@@ -92,7 +102,7 @@ public class MusicRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
             ((MusicHolder) holder).ratingBar.setRating(rating);
             holder.itemView.setTag(position);
             ImageView imageView = ((MusicHolder) holder).playingStatusIV;
-            if (playingMusic == music && playingIndex == position) {
+            if (playingMusic == music && playingIndex == position - 1) {
                 CommonUtils.setTextMarquee(musicNameTV);
                 imageView.setVisibility(View.VISIBLE);
             } else
@@ -104,10 +114,10 @@ public class MusicRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
     }
 
     public Music getMusicByPosition(int position) {
-        if (position > musicList.size() - 1)
+        if (position > musicList.size() || position == 0)
             return null;
         else
-            return musicList.get(position);
+            return musicList.get(position - 1);
     }
 
     public List<Music> getMusicList() {
@@ -119,7 +129,7 @@ public class MusicRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
         if (musicList.size() == 0)
             return 0;
         else
-            return musicList.size() + 1;
+            return musicList.size() + 2;
     }
 
     public void notifyLoadStatus(boolean isLoading) {
@@ -228,6 +238,16 @@ public class MusicRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
             super(itemView);
             loadingView = itemView.findViewById(R.id.loading_view);
             loadMoreView = itemView.findViewById(R.id.load_more_view);
+        }
+    }
+
+    public class HeaderHolder extends RecyclerView.ViewHolder {
+        private View headerView;
+
+        public HeaderHolder(View itemView) {
+            super(itemView);
+            headerView = itemView.findViewById(R.id.header_view);
+            headerView.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Global.HEADER_HEIGHT));
         }
     }
 

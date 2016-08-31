@@ -1,6 +1,8 @@
 package com.yuqf.fengmomusic.ui.adapter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.yuqf.fengmomusic.R;
 import com.yuqf.fengmomusic.base.MyApplication;
@@ -61,7 +64,7 @@ public class SingerRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof SingerHolder) {
-            GsonSingerList.Singer singer = singerList.get(position);
+            final GsonSingerList.Singer singer = singerList.get(position);
             String name = singer.getName();
             String url = CommonUtils.UrlHelper.Singer_Head_Get_Base_Url + singer.getPic();
             String playCount = String.valueOf(singer.getListen()) + MyApplication.getContext().getResources().getString(R.string.play_count_suffix);
@@ -70,7 +73,23 @@ public class SingerRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
             ((SingerHolder) holder).playCountTV.setText(playCount);
             ((SingerHolder) holder).musicCountTV.setText(musicCount);
             final ImageView headIV = ((SingerHolder) holder).singerHeadIV;
-            picasso.load(url).placeholder(R.drawable.head_default).error(R.drawable.head_default).into(headIV);
+            Bitmap bitmap = CommonUtils.getSingerHead(singer.getPic());
+            if (bitmap != null) {
+                headIV.setImageBitmap(bitmap);
+            } else {
+                picasso.load(url).placeholder(R.drawable.singer_default).error(R.drawable.singer_default).into(headIV, new Callback() {
+                    @Override
+                    public void onSuccess() {
+                        Bitmap bitmap = ((BitmapDrawable) headIV.getDrawable()).getBitmap();
+                        CommonUtils.saveSingerHead(bitmap, singer.getPic());
+                    }
+
+                    @Override
+                    public void onError() {
+
+                    }
+                });
+            }
             holder.itemView.setTag(position);
         } else if (holder instanceof GridFooterHolder) {
             if (loading) {

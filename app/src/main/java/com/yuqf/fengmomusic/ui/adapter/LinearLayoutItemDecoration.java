@@ -25,11 +25,10 @@ public class LinearLayoutItemDecoration extends RecyclerView.ItemDecoration {
         int left = parent.getPaddingLeft();
         int right = parent.getWidth() - parent.getPaddingRight();
         int childCount = parent.getChildCount();
-        for (int i = 0; i < childCount - 1; i++) {
+        for (int i = 1; i < childCount - 1; i++) {
             View view = parent.getChildAt(i);
             int top = view.getBottom();
             int bottom = top + drawable.getIntrinsicHeight();
-//            Log.d("LinearDecoration", "Left: " + left + "\nTop: " + top + "\nRight: " + right + "\nBottom: " + bottom);
             drawable.setBounds(left, top, right, bottom);
             drawable.draw(c);
         }
@@ -40,7 +39,7 @@ public class LinearLayoutItemDecoration extends RecyclerView.ItemDecoration {
     public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
         int totalCount = parent.getAdapter().getItemCount();
         int index = parent.getChildAdapterPosition(view);
-        if (index == totalCount - 1)
+        if (index == totalCount - 1 || index == 0)
             outRect.set(0, 0, 0, 0);
         else
             outRect.set(0, 0, 0, 1);
