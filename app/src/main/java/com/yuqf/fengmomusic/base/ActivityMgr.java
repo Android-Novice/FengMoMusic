@@ -24,6 +24,11 @@ public class ActivityMgr {
             activityList = new ArrayList<>();
     }
 
+    public Activity getLastActivity() {
+        Activity activity = activityList.get(activityList.size() - 1);
+        return activity;
+    }
+
     public boolean addActivity(Activity activity) {
         if (activity == null)
             return false;

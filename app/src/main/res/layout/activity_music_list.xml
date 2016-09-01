@@ -8,7 +8,14 @@
     tools:context=".ui.activity.MusicListActivity">
 
     <ImageView
-        android:id="@+id/music_list_background"
+        android:id="@+id/music_list_background_blurred"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitXY"
+        android:src="@drawable/music_list_background" />
+
+    <ImageView
+        android:id="@+id/music_list_background_normal"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="fitXY"

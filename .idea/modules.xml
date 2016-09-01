@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/FengMoMusic.iml" filepath="$PROJECT_DIR$/FengMoMusic.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/roundimageview/roundimageview.iml" filepath="$PROJECT_DIR$/roundimageview/roundimageview.iml" />
     </modules>
   </component>
 </project>

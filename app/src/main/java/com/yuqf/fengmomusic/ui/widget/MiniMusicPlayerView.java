@@ -13,9 +13,11 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.yuqf.fengmomusic.R;
+import com.yuqf.fengmomusic.base.MyApplication;
 import com.yuqf.fengmomusic.media.Music;
 import com.yuqf.fengmomusic.media.MusicPlayer;
 import com.yuqf.fengmomusic.media.MusicPlayerListener;
+import com.yuqf.fengmomusic.ui.activity.SingleMusicActivity;
 import com.yuqf.fengmomusic.utils.CommonUtils;
 
 import java.util.Locale;
@@ -117,6 +119,7 @@ public class MiniMusicPlayerView extends FrameLayout implements ImageButton.OnCl
             case R.id.music_cover_iv:
             case R.id.music_name_tv:
             case R.id.singer_name_tv:
+                CommonUtils.startActivity(MyApplication.getContext(), SingleMusicActivity.class, null);
                 break;
         }
     }
@@ -195,6 +198,7 @@ public class MiniMusicPlayerView extends FrameLayout implements ImageButton.OnCl
     @Override
     public void onError() {
         loadingIV.setVisibility(GONE);
+        playBtn.setImageResource(R.drawable.play_arrow_white);
     }
 
     @Override

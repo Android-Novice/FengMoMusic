@@ -30,7 +30,8 @@ public class MusicListActivity extends BaseActivity {
     private ImageView blurredIV;
     private View toolBar;
     private FrameLayout photoContentView;
-    private ImageView backgroundIV;
+    private ImageView backgroundBlurredIV;
+    private ImageView backgroundNormalIV;
     private Bitmap blurredBmp;
     private float scrolledTopRate = .5f;
 
@@ -48,7 +49,8 @@ public class MusicListActivity extends BaseActivity {
 
         normalIV = (ImageView) findViewById(R.id.normal_iv);
         blurredIV = (ImageView) findViewById(R.id.blurred_iv);
-        backgroundIV = (ImageView) findViewById(R.id.music_list_background);
+        backgroundBlurredIV = (ImageView) findViewById(R.id.music_list_background_blurred);
+        backgroundNormalIV = (ImageView) findViewById(R.id.music_list_background_normal);
         toolBar = findViewById(R.id.toolbar);
         photoContentView = (FrameLayout) findViewById(R.id.photo_content);
 
@@ -61,6 +63,7 @@ public class MusicListActivity extends BaseActivity {
                 else
                     toolBar.setVisibility(View.VISIBLE);
                 toolBar.setAlpha(alpha);
+                backgroundNormalIV.setAlpha(1 - alpha);
                 normalIV.setTop((int) (-scrollY * scrolledTopRate));
                 normalIV.setAlpha(1 - alpha);
                 blurredIV.setTop((int) (-scrollY * scrolledTopRate));
@@ -121,6 +124,12 @@ public class MusicListActivity extends BaseActivity {
         Bitmap blurringBmp = Bitmap.createBitmap(normalBmp);
 //        normalBmp = CommonUtils.scaleBitmap(normalBmp, screenWidth, Global.HEADER_HEIGHT);
         normalIV.setImageBitmap(normalBmp);
+
+        int height = (int) (normalBmp.getHeight() * Global.HEADER_HEIGHT * scrolledTopRate / screenWidth);
+
+        Bitmap bottomNormalBkg = Bitmap.createBitmap(normalBmp, 0, normalBmp.getHeight() - height, normalBmp.getWidth(), height);
+        backgroundNormalIV.setImageBitmap(bottomNormalBkg);
+
         Log.d(logTag, "6....\n");
         blurredBmp = null;
         if (from.equals(Global.INTENT_FROM_RANKING)) {
@@ -163,7 +172,7 @@ public class MusicListActivity extends BaseActivity {
         Log.d(logTag, "15....\n");
         blurredIV.setImageBitmap(blurredBmp);
 
-        Bitmap bottomBkg = Bitmap.createBitmap(blurredBmp, 0, blurredBmp.getHeight() - 10, blurredBmp.getWidth(), 10);
-        backgroundIV.setImageBitmap(bottomBkg);
+        Bitmap bottomBkg = Bitmap.createBitmap(blurredBmp, 0, blurredBmp.getHeight() - 5, blurredBmp.getWidth(), 5);
+        backgroundBlurredIV.setImageBitmap(bottomBkg);
     }
 }

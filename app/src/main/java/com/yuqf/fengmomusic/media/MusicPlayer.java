@@ -18,6 +18,7 @@ import android.widget.Toast;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 import com.yuqf.fengmomusic.R;
+import com.yuqf.fengmomusic.base.ActivityMgr;
 import com.yuqf.fengmomusic.base.MyApplication;
 import com.yuqf.fengmomusic.ui.entity.RetrofitServices;
 import com.yuqf.fengmomusic.utils.CommonUtils;
@@ -51,6 +52,7 @@ public class MusicPlayer {
     private AudioManager audioManager;
     private NotificationManager manager;
     private int audioResult = -1;
+    private PlayingStatus playingStatus = PlayingStatus.None;
 
     public static MusicPlayer getInstance() {
         if (musicPlayer == null) {
@@ -64,6 +66,18 @@ public class MusicPlayer {
         playingMusics = new ArrayList<>();
         audioManager = (AudioManager) MyApplication.getContext().getSystemService(Context.AUDIO_SERVICE);
         manager = (NotificationManager) MyApplication.getContext().getSystemService(Context.NOTIFICATION_SERVICE);
+    }
+
+    public void releasePlayer() {
+        if (mediaPlayer != null) {
+            if (mediaPlayer != null) {
+                mediaPlayer.stop();
+                mediaPlayer.reset();
+                mediaPlayer.release();
+                mediaPlayer = null;
+            }
+        }
+        MyApplication.getNotificationManager().cancel(Global.NOTIFICATION_ID);
     }
 
     public Music getCurMusic() {
@@ -95,14 +109,18 @@ public class MusicPlayer {
 
     public void pause() {
         if (mediaPlayer != null) {
-            if (mediaPlayer.isPlaying())
+            if (mediaPlayer.isPlaying()) {
                 mediaPlayer.pause();
+                playingStatus = PlayingStatus.Pause;
+            }
             showNotification(curMusic);
         }
     }
 
     public void replay() {
-        play(playIndex);
+        if (playingStatus == PlayingStatus.Pause || playingStatus == PlayingStatus.Error) {
+            play(playIndex);
+        }
     }
 
     public void next() {
@@ -117,7 +135,7 @@ public class MusicPlayer {
                 mediaPlayer.start();
             }
             showNotification(curMusic);
-            notifyListeners(PlayState.PlayState);
+            notifyListeners(MusicState.PlayState);
         }
     }
 
@@ -133,31 +151,26 @@ public class MusicPlayer {
             audioResult = audioManager.requestAudioFocus(new AudioFocusChangedListener(), AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
         }
         if (audioResult != AudioManager.AUDIOFOCUS_REQUEST_GRANTED) return;
-//        Intent freshIntent = new Intent();
-//        freshIntent.setAction("com.android.music.musicservicecommand.pause");
-//        freshIntent.putExtra("command", "pause");
-//        MyApplication.getContext().sendBroadcast(freshIntent);
         if (showBufferingToast()) return;
-        if (playIndex != position) {
+
+        if (playIndex != position || playingStatus == PlayingStatus.Error) {
+            playingStatus = PlayingStatus.Playing;
             if (position < 0 || (position > playingMusics.size() - 1))
                 position = 0;
             oldIndex = playIndex;
             playIndex = position;
-//            mediaPlayer.reset();
-//            playedDuration = 0;
-//            duration = 0;
-//            musicCover = null;
-//            bufferPercent = 0;
+
             curMusic = playingMusics.get(playIndex);
             if (!curMusic.isLocal()) {
                 isBuffering = true;
                 if (changedListener != null)
                     changedListener.onPlayingIndexChange(curMusic, playIndex, oldIndex);
-                notifyListeners(PlayState.Preparing);
-                notifyListeners(PlayState.StartBuffering);
+                notifyListeners(MusicState.Preparing);
+                notifyListeners(MusicState.StartBuffering);
                 playWebMusic(curMusic.getId());
             }
         } else {
+            playingStatus = PlayingStatus.Playing;
             if (!mediaPlayer.isPlaying())
                 mediaPlayer.start();
         }
@@ -184,7 +197,8 @@ public class MusicPlayer {
                     if (mediaPlayer != null) {
                         mediaPlayer.setVolume(1f, 1f);
                     }
-                    replay();
+                    if (playingStatus != PlayingStatus.Pause)
+                        replay();
                     break;
                 default:
                     Log.d(logTag, "onAudioFocusChange: \n" + String.valueOf(focusChange));
@@ -214,10 +228,10 @@ public class MusicPlayer {
             @Override
             public void onBufferingUpdate(MediaPlayer mp, int percent) {
                 curMusic.setBufferingProgress(percent);
-                notifyListeners(PlayState.Buffering);
+                notifyListeners(MusicState.Buffering);
                 if (mp.isPlaying()) {
                     curMusic.setPlayedPosition(mp.getCurrentPosition() / 1000);
-                    notifyListeners(PlayState.PlayedDuration);
+                    notifyListeners(MusicState.PlayedDuration);
                 }
 
                 Log.d(logTag, "onBufferingUpdate: " + String.valueOf(percent) + "\nplayed duration: " + curMusic.getPlayedPosition());
@@ -227,8 +241,10 @@ public class MusicPlayer {
             @Override
             public void onCompletion(MediaPlayer mp) {
                 Log.d(logTag, "onCompletion.... \n");
-                notifyListeners(PlayState.Completion);
-                next();
+                if (playingStatus != PlayingStatus.Error) {
+                    notifyListeners(MusicState.Completion);
+                    next();
+                }
             }
         });
 
@@ -236,7 +252,8 @@ public class MusicPlayer {
             @Override
             public boolean onError(MediaPlayer mp, int what, int extra) {
                 Log.d(logTag, "onError: what:" + String.valueOf(what) + "\nExtra:" + String.valueOf(extra));
-                notifyListeners(PlayState.Error);
+                notifyListeners(MusicState.Error);
+                playingStatus = PlayingStatus.Error;
                 return false;
             }
         });
@@ -247,10 +264,10 @@ public class MusicPlayer {
                 Log.d(logTag, "onInfo: what:" + String.valueOf(what) + "\nExtra:" + String.valueOf(extra));
                 switch (what) {
                     case 703:
-                        notifyListeners(PlayState.StartBuffering);
+                        notifyListeners(MusicState.StartBuffering);
                         break;
                     case 702:
-                        notifyListeners(PlayState.EndBuffering);
+                        notifyListeners(MusicState.EndBuffering);
                         break;
                 }
                 return false;
@@ -262,8 +279,8 @@ public class MusicPlayer {
             public void onPrepared(MediaPlayer mp) {
                 curMusic.setDuration(mp.getDuration() / 1000);
                 Log.d(logTag, "onPrepared: Duration:" + String.valueOf(curMusic.getDuration()) + " \n");
-                notifyListeners(PlayState.EndBuffering);
-                notifyListeners(PlayState.Prepared);
+                notifyListeners(MusicState.EndBuffering);
+                notifyListeners(MusicState.Prepared);
                 mp.start();
             }
         });
@@ -309,7 +326,7 @@ public class MusicPlayer {
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                notifyListeners(PlayState.Error);
+                notifyListeners(MusicState.Error);
             }
         });
 
@@ -332,7 +349,7 @@ public class MusicPlayer {
                                     Log.d(logTag, "onBitmapLoaded.... \n");
                                     if (bitmap != null) {
                                         curMusic.setCover(bitmap);
-                                        notifyListeners(PlayState.CoverLoaded);
+                                        notifyListeners(MusicState.CoverLoaded);
                                     }
                                 }
 
@@ -360,10 +377,10 @@ public class MusicPlayer {
         });
     }
 
-    private void notifyListeners(PlayState playState) {
+    private void notifyListeners(MusicState musicState) {
         for (MusicPlayerListener listener : listenerList) {
             if (listener != null) {
-                switch (playState) {
+                switch (musicState) {
                     case Buffering:
                         listener.onBufferingUpdate(curMusic);
                         break;
@@ -386,6 +403,7 @@ public class MusicPlayer {
                     case Error:
                         isBuffering = false;
                         listener.onError();
+                        showNotification(curMusic);
                         break;
                     case PlayedDuration:
                         listener.onPlayedDurationChanged(curMusic);
@@ -438,6 +456,11 @@ public class MusicPlayer {
         PendingIntent closePendingIntent = PendingIntent.getBroadcast(MyApplication.getContext(), 2, buttonIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         remoteViews.setOnClickPendingIntent(R.id.btn_play_close, closePendingIntent);
 
+        Intent viewIntent = new Intent(MyApplication.getContext(), ActivityMgr.getActivityMgr().getLastActivity().getClass());
+        viewIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        PendingIntent startPendingIntent = PendingIntent.getActivity(MyApplication.getContext(), 0, viewIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        remoteViews.setOnClickPendingIntent(R.id.music_cover_iv, startPendingIntent);
+
         Notification notification = new NotificationCompat.Builder(MyApplication.getContext())
                 .setContent(remoteViews)
                 .setAutoCancel(false)
@@ -450,7 +473,7 @@ public class MusicPlayer {
         manager.notify(Global.NOTIFICATION_ID, notification);
     }
 
-    enum PlayState {
+    enum MusicState {
         Preparing,
         StartBuffering,
         Buffering,
@@ -460,6 +483,13 @@ public class MusicPlayer {
         CoverLoaded,
         PlayedDuration,
         Completion,
+        Error,
+    }
+
+    enum PlayingStatus {
+        None,
+        Playing,
+        Pause,
         Error,
     }
 }

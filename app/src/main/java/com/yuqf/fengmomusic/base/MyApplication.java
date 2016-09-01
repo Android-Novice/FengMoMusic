@@ -31,4 +31,5 @@ public class MyApplication extends Application {
     public static NotificationManager getNotificationManager() {
         return notificationManager;
     }
+
 }

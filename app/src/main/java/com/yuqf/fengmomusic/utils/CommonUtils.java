@@ -1,6 +1,7 @@
 package com.yuqf.fengmomusic.utils;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -52,13 +53,16 @@ public class CommonUtils {
         }
     }
 
-    public static void startActivity(Activity activity, Class<?> tClass, List<Pair<String, String>> pairList) {
-        Intent intent = new Intent(activity, tClass);
-        for (Pair<String, String> pair : pairList) {
-            intent.putExtra(pair.first, pair.second);
-        }
-        activity.startActivity(intent);
+    public static void startActivity(Context context, Class<?> tClass, List<Pair<String, String>> pairList) {
+        Intent intent = new Intent(context, tClass);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        if (pairList != null)
+            for (Pair<String, String> pair : pairList) {
+                intent.putExtra(pair.first, pair.second);
+            }
+        context.startActivity(intent);
     }
+
 
     //the item of RecyclerView click listener
     public interface OnRecyclerViewItemClickListener {
@@ -174,7 +178,7 @@ public class CommonUtils {
         return decodeBitmap(filePath);
     }
 
-    private static Bitmap decodeBitmap(String filePath){
+    private static Bitmap decodeBitmap(String filePath) {
         File file = new File(filePath);
         if (file.exists()) {
             return BitmapFactory.decodeFile(filePath);

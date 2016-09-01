@@ -3,12 +3,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
+    android:orientation="vertical"
     tools:context=".ui.activity.SingleMusicActivity">
 
-    <ImageView
-        android:alpha="0.2"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scaleType="center"
+
+    <com.yuqf.roundimageview.RoundImageView
+        android:layout_width="300dp"
+        android:layout_height="200dp"
+        android:layout_margin="30dp"
         android:src="@drawable/single_music_bkg" />
+
+    <com.yuqf.roundimageview.RoundImageView3
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_margin="10dp"
+        android:src="@drawable/single_music_bkg" />
+
 </LinearLayout>
