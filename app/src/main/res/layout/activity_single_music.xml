@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimary"
+    android:background="@android:color/transparent"
     android:orientation="vertical"
     tools:context=".ui.activity.SingleMusicActivity">
 
@@ -11,13 +12,15 @@
     <com.yuqf.roundimageview.RoundImageView
         android:layout_width="300dp"
         android:layout_height="200dp"
-        android:layout_margin="30dp"
-        android:src="@drawable/single_music_bkg" />
-
-    <com.yuqf.roundimageview.RoundImageView3
-        android:layout_width="200dp"
-        android:layout_height="200dp"
         android:layout_margin="10dp"
-        android:src="@drawable/single_music_bkg" />
+        android:src="@drawable/single_music_bkg"
+        app:border_color="@color/colorAccent"
+        app:border_width="10px"
+        app:shadow_color="@color/orange"
+        app:shadow_width="4px" />
+
+    <com.yuqf.roundimageview.RoundProgressBar
+        android:layout_width="200dp"
+        android:layout_height="200dp" />
 
 </LinearLayout>

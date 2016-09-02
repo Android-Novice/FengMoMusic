@@ -100,7 +100,7 @@ public class MusicRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
             float rating = ((float) music.getRating()) / 20;
             Log.d("MusicRecyclerAdapter", String.valueOf(music.getRating()) + "\n rating: " + String.valueOf(rating));
             ((MusicHolder) holder).ratingBar.setRating(rating);
-            holder.itemView.setTag(position);
+            holder.itemView.setTag(position - 1);
             ImageView imageView = ((MusicHolder) holder).playingStatusIV;
             if (playingMusic == music && playingIndex == position - 1) {
                 CommonUtils.setTextMarquee(musicNameTV);
@@ -113,12 +113,12 @@ public class MusicRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
         }
     }
 
-    public Music getMusicByPosition(int position) {
-        if (position > musicList.size() || position == 0)
-            return null;
-        else
-            return musicList.get(position - 1);
-    }
+//    public Music getMusicByPosition(int position) {
+//        if (position > musicList.size() || position == 0)
+//            return null;
+//        else
+//            return musicList.get(position - 1);
+//    }
 
     public List<Music> getMusicList() {
         return musicList;

@@ -21,7 +21,7 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile project(":roundimageview")
+    compile project(':customviews')
     testCompile 'junit:junit:4.12'
     //use to loading the web photo on the splashactivity
     compile 'com.android.support:appcompat-v7:23.2.1'

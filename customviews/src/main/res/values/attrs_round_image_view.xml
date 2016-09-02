@@ -1,0 +1,28 @@
+<resources>
+    <declare-styleable name="RoundImageView">
+        <attr name="border_width" format="dimension" />
+        <!--<attr name="border_width" format="integer" />-->
+        <attr name="border_color" format="color" />
+        <attr name="shadow_width" format="dimension" />
+        <!--<attr name="shadow_width" format="integer" />-->
+        <attr name="shadow_color" format="color" />
+    </declare-styleable>
+
+    <declare-styleable name="RoundProgressBar">
+        <attr name="bar_width" format="dimension" />
+        <attr name="bar_color" format="color" />
+        <attr name="show_background_arc" format="boolean" />
+        <attr name="arc_stretch_width" format="dimension" />
+        <attr name="arc_background_color" format="color" />
+        <attr name="io_circle_position" format="enum">
+            <enum name="outer" value="-1" />
+            <enum name="inner" value="-2" />
+            <enum name="center" value="-3" />
+        </attr>
+        <attr name="io_circle_width" format="dimension" />
+        <attr name="io_circle_color" format="color" />
+        <attr name="progress" format="integer" />
+    </declare-styleable>
+</resources>
+
+

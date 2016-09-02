@@ -34,6 +34,7 @@ public class MusicListActivity extends BaseActivity {
     private ImageView backgroundNormalIV;
     private Bitmap blurredBmp;
     private float scrolledTopRate = .5f;
+    private float scrolledAlpha = 0.55f;
 
 
     @Override
@@ -63,9 +64,9 @@ public class MusicListActivity extends BaseActivity {
                 else
                     toolBar.setVisibility(View.VISIBLE);
                 toolBar.setAlpha(alpha);
-                backgroundNormalIV.setAlpha(1 - alpha);
+                backgroundNormalIV.setAlpha((1 - alpha) * scrolledAlpha);
                 normalIV.setTop((int) (-scrollY * scrolledTopRate));
-                normalIV.setAlpha(1 - alpha);
+                normalIV.setAlpha((1 - alpha) * scrolledAlpha);
                 blurredIV.setTop((int) (-scrollY * scrolledTopRate));
             }
         });

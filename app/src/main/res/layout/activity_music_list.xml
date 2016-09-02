@@ -18,6 +18,7 @@
         android:id="@+id/music_list_background_normal"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:alpha="0.55"
         android:scaleType="fitXY"
         android:src="@drawable/music_list_background" />
 
@@ -36,6 +37,7 @@
             android:id="@+id/normal_iv"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:alpha="0.55"
             android:scaleType="fitXY"
             android:src="@drawable/singer_default" />
     </FrameLayout>
