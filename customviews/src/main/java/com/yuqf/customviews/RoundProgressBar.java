@@ -1,4 +1,4 @@
-package com.yuqf.roundimageview;
+package com.yuqf.customviews;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -13,10 +13,6 @@ import android.view.View;
 public class RoundProgressBar extends View {
 
     /**
-     * 内圆半径
-     **/
-    private int innerRadius;
-    /**
      * 进度条的条宽
      **/
     private int barWidth = 40;
@@ -24,6 +20,10 @@ public class RoundProgressBar extends View {
      * 进度条的颜色
      */
     private int barColor = Color.BLACK;
+    /**
+     * 进度条的透明度，值：0到255
+     **/
+    private int barAlpha = 100;
     /**
      * 是否展示进度条背景槽
      **/
@@ -95,6 +95,7 @@ public class RoundProgressBar extends View {
         ioCircleColor = typedArray.getColor(R.styleable.RoundProgressBar_io_circle_color, Color.BLUE);
         ioCircleWidth = typedArray.getDimensionPixelSize(R.styleable.RoundProgressBar_io_circle_width, 1);
         progress = typedArray.getInt(R.styleable.RoundProgressBar_progress, 0);
+        barAlpha = typedArray.getInt(R.styleable.RoundProgressBar_bar_alpha, 255);
         typedArray.recycle();
     }
 
@@ -117,6 +118,7 @@ public class RoundProgressBar extends View {
         barPaint.setStrokeCap(Paint.Cap.ROUND);
         barPaint.setStrokeWidth(barWidth);
         barPaint.setColor(barColor);
+        barPaint.setAlpha(barAlpha);
 
         invalidate();
     }
@@ -133,9 +135,9 @@ public class RoundProgressBar extends View {
         int startX = (getWidth() - outerRadius) / 2;
         int startY = (getHeight() - outerRadius) / 2;
 
-        innerRadius = outerRadius - barWidth;
+        int innerRadius = outerRadius - barWidth * 2;
         if (showBackgroundArc)
-            innerRadius -= stretchWidth;
+            innerRadius -= stretchWidth * 2;
         if (innerRadius <= 0) return;
 
         float outR = (float) outerRadius / 2;
@@ -143,7 +145,10 @@ public class RoundProgressBar extends View {
         RectF barRect;
         if (showBackgroundArc) {
             canvas.drawCircle(startX + outR, startY + outR, outR - (float) (barWidth + stretchWidth * 2) / 2, outerPaint);
-            barRect = new RectF(startX + stretchWidth + barR, startY + stretchWidth + barR, innerRadius + barR, innerRadius + barR);
+//            barRect = new RectF(startX + stretchWidth + barR, startY + stretchWidth + barR, innerRadius + barR, innerRadius + barR);
+            barRect = new RectF(startX + stretchWidth + barR, startY + stretchWidth + barR,
+                    startX + outerRadius - barR - stretchWidth,
+                    startY + outerRadius - barR - stretchWidth);
         } else {
             float ioCircleRadius = outR - (float) ioCircleWidth / 2;
             switch (ioCirclePosition) {
@@ -158,9 +163,10 @@ public class RoundProgressBar extends View {
                     break;
             }
             canvas.drawCircle(startX + outR - (float) ioCircleWidth / 2, startY + outR - (float) ioCircleWidth / 2, ioCircleRadius, outerPaint);
-            barRect = new RectF(startX + barR, startY + barR, outerRadius - barR, outerRadius - barR);
+            barRect = new RectF(startX + barR, startY + barR, startX + outerRadius - barR, startY + outerRadius - barR);
         }
-        canvas.drawArc(barRect, -90, (float) progress * 360 / 100, false, barPaint);
+        if (progress > 0)
+            canvas.drawArc(barRect, -90, (float) progress * 360 / 100, false, barPaint);
     }
 
     public int getProgress() {
@@ -169,6 +175,52 @@ public class RoundProgressBar extends View {
 
     public void setProgress(int progress) {
         this.progress = progress;
+        invalidate();
+    }
+
+    public void setBarWidth(int barWidth) {
+        this.barWidth = barWidth;
+        invalidate();
+    }
+
+    public void setBarColor(int barColor) {
+        this.barColor = barColor;
+        invalidate();
+    }
+
+    public void setShowBackgroundArc(boolean showBackgroundArc) {
+        this.showBackgroundArc = showBackgroundArc;
+        invalidate();
+    }
+
+    public void setStretchWidth(int stretchWidth) {
+        this.stretchWidth = stretchWidth;
+        invalidate();
+    }
+
+    public void setBackgroundArcColor(int backgroundArcColor) {
+        this.backgroundArcColor = backgroundArcColor;
+        invalidate();
+    }
+
+    public void setIoCirclePosition(IOCirclePosition ioCirclePosition) {
+        this.ioCirclePosition = ioCirclePosition;
+        invalidate();
+    }
+
+    public void setIoCircleWidth(int ioCircleWidth) {
+        this.ioCircleWidth = ioCircleWidth;
+        invalidate();
+    }
+
+    public void setIoCircleColor(int ioCircleColor) {
+        this.ioCircleColor = ioCircleColor;
+        invalidate();
+    }
+
+    public void setBarAlpha(int barAlpha) {
+        this.barAlpha = barAlpha;
+        barPaint.setAlpha(barAlpha);
         invalidate();
     }
 

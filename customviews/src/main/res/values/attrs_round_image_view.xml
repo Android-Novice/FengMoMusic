@@ -11,6 +11,7 @@
     <declare-styleable name="RoundProgressBar">
         <attr name="bar_width" format="dimension" />
         <attr name="bar_color" format="color" />
+        <attr name="bar_alpha" format="integer" />
         <attr name="show_background_arc" format="boolean" />
         <attr name="arc_stretch_width" format="dimension" />
         <attr name="arc_background_color" format="color" />
@@ -22,6 +23,12 @@
         <attr name="io_circle_width" format="dimension" />
         <attr name="io_circle_color" format="color" />
         <attr name="progress" format="integer" />
+    </declare-styleable>
+    <declare-styleable name="ReflectionImageView">
+        <attr name="draw_src" format="boolean" />
+        <attr name="reflection_gap" format="dimension" />
+        <attr name="reflection_gap_color" format="color" />
+        <attr name="reflection_rotate_degree" format="integer" />
     </declare-styleable>
 </resources>
 

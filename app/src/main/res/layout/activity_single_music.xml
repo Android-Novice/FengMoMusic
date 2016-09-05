@@ -9,18 +9,38 @@
     tools:context=".ui.activity.SingleMusicActivity">
 
 
-    <com.yuqf.roundimageview.RoundImageView
-        android:layout_width="300dp"
-        android:layout_height="200dp"
+    <com.yuqf.customviews.RoundImageView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:layout_margin="10dp"
         android:src="@drawable/single_music_bkg"
-        app:border_color="@color/colorAccent"
+        app:border_color="@android:color/holo_green_light"
         app:border_width="10px"
         app:shadow_color="@color/orange"
         app:shadow_width="4px" />
 
-    <com.yuqf.roundimageview.RoundProgressBar
-        android:layout_width="200dp"
-        android:layout_height="200dp" />
+    <com.yuqf.customviews.RoundProgressBar
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_margin="3dp"
+        app:arc_background_color="@color/orange"
+        app:arc_stretch_width="10px"
+        app:bar_alpha="150"
+        app:bar_color="@color/top_divider_line"
+        app:bar_width="10px"
+        app:io_circle_color="@color/orange"
+        app:io_circle_position="outer"
+        app:io_circle_width="1px"
+        app:progress="80"
+        app:show_background_arc="false" />
 
+    <com.yuqf.customviews.ReflectionImageView
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_margin="5dp"
+        android:src="@drawable/ic_launcher_96"
+        app:draw_src="true"
+        app:reflection_gap="4px"
+        app:reflection_gap_color="@android:color/transparent"
+        app:reflection_rotate_degree="90" />
 </LinearLayout>

@@ -1,4 +1,4 @@
-package com.yuqf.roundimageview;
+package com.yuqf.customviews;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -54,6 +54,42 @@ public class RoundImageView extends ImageView {
 
         paint = new Paint();
         paint.setAntiAlias(true);
+    }
+
+    public int getShadowRadius() {
+        return shadowRadius;
+    }
+
+    public void setShadowRadius(int shadowRadius) {
+        this.shadowRadius = shadowRadius;
+        invalidate();
+    }
+
+    public int getShadowColor() {
+        return shadowColor;
+    }
+
+    public void setShadowColor(int shadowColor) {
+        this.shadowColor = shadowColor;
+        invalidate();
+    }
+
+    public int getBorderWidth() {
+        return borderWidth;
+    }
+
+    public void setBorderWidth(int borderWidth) {
+        this.borderWidth = borderWidth;
+        invalidate();
+    }
+
+    public int getBorderColor() {
+        return borderColor;
+    }
+
+    public void setBorderColor(int borderColor) {
+        this.borderColor = borderColor;
+        invalidate();
     }
 
     @SuppressLint("DrawAllocation")
