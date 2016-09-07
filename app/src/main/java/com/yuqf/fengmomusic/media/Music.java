@@ -16,6 +16,7 @@ public class Music {
     private Bitmap cover;
     private boolean isLocal;
     private int bufferingProgress;
+    private String coverUrl;
 
     public int getId() {
         return id;
@@ -27,6 +28,14 @@ public class Music {
 
     public String getName() {
         return name;
+    }
+
+    public String getCoverUrl() {
+        return coverUrl;
+    }
+
+    public void setCoverUrl(String coverUrl) {
+        this.coverUrl = coverUrl;
     }
 
     public void setName(String name) {

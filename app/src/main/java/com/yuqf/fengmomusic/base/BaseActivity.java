@@ -1,11 +1,13 @@
 package com.yuqf.fengmomusic.base;
 
 import android.graphics.drawable.Drawable;
+import android.media.AudioManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -17,6 +19,7 @@ public class BaseActivity extends AppCompatActivity {
 
     private View statusBarReplaceView;
     private Toolbar toolbar;
+    public View toolbarContent;
     private final String logTag = "BaseActivity";
 
     @Override
@@ -24,6 +27,8 @@ public class BaseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         ActivityMgr.getActivityMgr().addActivity(this);
+
+        setVolumeControlStream(AudioManager.STREAM_MUSIC);
 //        StatusBarCompat.compat(this, R.color.colorPrimary);
 
 //        Window window = getWindow();
@@ -36,6 +41,7 @@ public class BaseActivity extends AppCompatActivity {
     //Init ActionBar and status bar
     public void initTopBars() {
         try {
+            toolbarContent = findViewById(R.id.toolbar);
             statusBarReplaceView = findViewById(R.id.tb_status_bkg);
             toolbar = (Toolbar) findViewById(R.id.tb_toolbar);
             if (statusBarReplaceView != null)
@@ -99,4 +105,14 @@ public class BaseActivity extends AppCompatActivity {
         ActivityMgr.getActivityMgr().removeActivity(this);
     }
 
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_VOLUME_DOWN:
+            case KeyEvent.KEYCODE_VOLUME_UP:
+
+                break;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
 }

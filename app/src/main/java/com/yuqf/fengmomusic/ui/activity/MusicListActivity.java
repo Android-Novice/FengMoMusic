@@ -28,7 +28,6 @@ public class MusicListActivity extends BaseActivity {
     private int screenWidth;
     private ImageView normalIV;
     private ImageView blurredIV;
-    private View toolBar;
     private FrameLayout photoContentView;
     private ImageView backgroundBlurredIV;
     private ImageView backgroundNormalIV;
@@ -52,7 +51,6 @@ public class MusicListActivity extends BaseActivity {
         blurredIV = (ImageView) findViewById(R.id.blurred_iv);
         backgroundBlurredIV = (ImageView) findViewById(R.id.music_list_background_blurred);
         backgroundNormalIV = (ImageView) findViewById(R.id.music_list_background_normal);
-        toolBar = findViewById(R.id.toolbar);
         photoContentView = (FrameLayout) findViewById(R.id.photo_content);
 
         musicListFragment = (MusicListFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_music_list);
@@ -60,10 +58,10 @@ public class MusicListActivity extends BaseActivity {
             @Override
             public void onNotifyScrolled(float alpha, int scrollY) {
                 if (alpha == 0)
-                    toolBar.setVisibility(View.INVISIBLE);
+                    toolbarContent.setVisibility(View.INVISIBLE);
                 else
-                    toolBar.setVisibility(View.VISIBLE);
-                toolBar.setAlpha(alpha);
+                    toolbarContent.setVisibility(View.VISIBLE);
+                toolbarContent.setAlpha(alpha);
                 backgroundNormalIV.setAlpha((1 - alpha) * scrolledAlpha);
                 normalIV.setTop((int) (-scrollY * scrolledTopRate));
                 normalIV.setAlpha((1 - alpha) * scrolledAlpha);
@@ -71,8 +69,8 @@ public class MusicListActivity extends BaseActivity {
             }
         });
 
-        toolBar.setAlpha(0);
-        toolBar.setBackgroundColor(Color.TRANSPARENT);
+        toolbarContent.setAlpha(0);
+        toolbarContent.setBackgroundColor(Color.TRANSPARENT);
         int height = (int) (Global.HEADER_HEIGHT * scrolledTopRate);
         photoContentView.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, screenWidth - height));
         normalIV.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, screenWidth));

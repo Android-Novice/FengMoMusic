@@ -28,7 +28,7 @@
         <attr name="draw_src" format="boolean" />
         <attr name="reflection_gap" format="dimension" />
         <attr name="reflection_gap_color" format="color" />
-        <attr name="reflection_rotate_degree" format="integer" />
+        <!--<attr name="reflection_rotate_degree" format="float" />-->
     </declare-styleable>
 </resources>
 

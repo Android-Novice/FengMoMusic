@@ -15,6 +15,7 @@ import android.graphics.Shader;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.widget.ImageView;
 
 public class ReflectionImageView extends ImageView {
@@ -42,9 +43,11 @@ public class ReflectionImageView extends ImageView {
      **/
     private int reflectionHeight;
 
-    private int rotateDegree;
-    private Bitmap reflectionImg;
+    //    private float rotateDegree;
     private Paint gapPaint;
+    private Bitmap oldSrcBmp;
+    private Bitmap reflectionImg;
+    private int viewWidth;
 
     public ReflectionImageView(Context context) {
         this(context, null);
@@ -65,7 +68,6 @@ public class ReflectionImageView extends ImageView {
         drawSrc = typedArray.getBoolean(R.styleable.ReflectionImageView_draw_src, false);
         reflectionGap = typedArray.getDimensionPixelSize(R.styleable.ReflectionImageView_reflection_gap, 4);
         gapColor = typedArray.getColor(R.styleable.ReflectionImageView_reflection_gap_color, Color.BLACK);
-        rotateDegree = typedArray.getInt(R.styleable.ReflectionImageView_reflection_rotate_degree, 0);
         typedArray.recycle();
     }
 
@@ -81,16 +83,21 @@ public class ReflectionImageView extends ImageView {
         if (drawable == null)
             return;
         Bitmap srcBmp = ((BitmapDrawable) drawable).getBitmap();
-        reflectionWidth = srcBmp.getWidth();
-        int srcHeight = srcBmp.getHeight();
-        int viewWidth = getWidth();
-        if (reflectionWidth > viewWidth) {
-            srcBmp = Bitmap.createScaledBitmap(srcBmp, viewWidth, srcHeight * viewWidth / reflectionWidth, false);
-            reflectionWidth = viewWidth;
-        }
-        if (reflectionImg == null)
+        if (oldSrcBmp != srcBmp) {
+            oldSrcBmp = srcBmp;
+            reflectionWidth = srcBmp.getWidth();
+
+            viewWidth = getWidth();
+            int srcHeight = srcBmp.getHeight();
+            if (reflectionWidth != viewWidth) {
+                srcBmp = Bitmap.createScaledBitmap(srcBmp, viewWidth, srcHeight * viewWidth / reflectionWidth, false);
+                reflectionWidth = viewWidth;
+            }
+            Log.d("ReflectionImageView", "onDraw....\n");
             reflectionImg = getReflectionBmp(srcBmp);
-        canvas.drawBitmap(reflectionImg, (viewWidth - reflectionImg.getWidth()) / 2, 0, null);
+        }
+        if (reflectionImg != null)
+            canvas.drawBitmap(reflectionImg, (viewWidth - reflectionImg.getWidth()) / 2, 0, null);
     }
 
     private Bitmap getReflectionBmp(Bitmap srcBmp) {
@@ -98,7 +105,7 @@ public class ReflectionImageView extends ImageView {
 
         reflectionHeight = bitmap.getHeight();
         Matrix matrix = new Matrix();
-        matrix.preRotate(rotateDegree);
+//        matrix.preRotate(rotateDegree);
         matrix.preScale(1, -1);
         Bitmap reflectBmp = Bitmap.createBitmap(bitmap, 0, 0, reflectionWidth, reflectionHeight, matrix, false);
 

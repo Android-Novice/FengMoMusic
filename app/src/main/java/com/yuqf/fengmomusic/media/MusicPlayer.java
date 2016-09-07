@@ -3,7 +3,6 @@ package com.yuqf.fengmomusic.media;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
@@ -64,8 +63,8 @@ public class MusicPlayer {
     private MusicPlayer() {
         listenerList = new ArrayList<>();
         playingMusics = new ArrayList<>();
-        audioManager = (AudioManager) MyApplication.getContext().getSystemService(Context.AUDIO_SERVICE);
-        manager = (NotificationManager) MyApplication.getContext().getSystemService(Context.NOTIFICATION_SERVICE);
+        audioManager = MyApplication.getAudioManager();
+        manager = MyApplication.getNotificationManager();
     }
 
     public void releasePlayer() {

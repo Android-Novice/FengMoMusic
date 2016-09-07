@@ -1,0 +1,81 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.fragment.PlayingMusicFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="40dp"
+        android:layout_marginRight="40dp"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/volume_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="1dp"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_volume_mute_white_24dp" />
+
+        <SeekBar
+            android:id="@+id/volume_seek_bar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center">
+
+        <FrameLayout
+            android:id="@+id/frame_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <com.yuqf.customviews.RoundProgressBar
+                android:id="@+id/round_progress_bar"
+                android:layout_width="205dp"
+                android:layout_height="205dp"
+                app:arc_background_color="@color/orange"
+                app:arc_stretch_width="10px"
+                app:bar_alpha="150"
+                app:bar_color="@color/top_divider_line"
+                app:bar_width="8px"
+                app:io_circle_color="@color/orange"
+                app:io_circle_position="outer"
+                app:io_circle_width="1px"
+                app:progress="80"
+                app:show_background_arc="false" />
+
+            <com.yuqf.customviews.RoundImageView
+                android:id="@+id/round_image_view"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_audiotrack_white_48dp"
+                app:border_color="@color/colorPrimary"
+                app:border_width="0px"
+                app:shadow_color="@android:color/black"
+                app:shadow_width="6px" />
+        </FrameLayout>
+
+        <com.yuqf.customviews.ReflectionImageView
+            android:id="@+id/reflection_image_view"
+            android:layout_width="200dp"
+            android:layout_height="150dp"
+            android:layout_below="@id/frame_layout"
+            android:src="@drawable/ic_launcher_96"
+            app:draw_src="false"
+            app:reflection_gap="4px"
+            app:reflection_gap_color="@android:color/transparent" />
+
+    </RelativeLayout>
+
+</FrameLayout>

@@ -12,6 +12,7 @@ import android.graphics.PorterDuffXfermode;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.widget.ImageView;
 
 public class RoundImageView extends ImageView {
@@ -21,6 +22,11 @@ public class RoundImageView extends ImageView {
     private int borderColor = Color.WHITE;
     private Paint borderPaint;
     private Paint paint;
+    private Bitmap roundImage;
+    private Drawable oldDrawable;
+    private Bitmap dstBitmap;
+    private int startX;
+    private int startY;
 
     public RoundImageView(Context context) {
         this(context, null);
@@ -32,13 +38,10 @@ public class RoundImageView extends ImageView {
 
     public RoundImageView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-
         TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.RoundImageView, defStyleAttr, 0);
         borderWidth = typedArray.getDimensionPixelSize(R.styleable.RoundImageView_border_width, 5);
-//        borderWidth = typedArray.getInt(R.styleable.RoundImageView_border_width, 5);
         borderColor = typedArray.getColor(R.styleable.RoundImageView_border_color, Color.WHITE);
         shadowRadius = typedArray.getLayoutDimension(R.styleable.RoundImageView_shadow_width, 4);
-//        shadowRadius = typedArray.getInt(R.styleable.RoundImageView_shadow_width, 4);
         shadowColor = typedArray.getColor(R.styleable.RoundImageView_shadow_color, Color.BLACK);
         typedArray.recycle();
 
@@ -99,18 +102,20 @@ public class RoundImageView extends ImageView {
         if (drawable == null) {
             return;
         }
-
-        Bitmap srcBmp = ((BitmapDrawable) drawable).getBitmap();
-        srcBmp = getScaleBitmap(srcBmp);
-        int canvasSize = getWidth();
-        if (canvasSize > getHeight())
-            canvasSize = getHeight();
-
-        int startX = (getWidth() - canvasSize) / 2;
-        int startY = (getHeight() - canvasSize) / 2;
-
-        Bitmap dstBitmap = getShadowBitmap(srcBmp, canvasSize);
-        canvas.drawBitmap(dstBitmap, startX, startY, null);
+        if (oldDrawable != drawable) {
+            oldDrawable = drawable;
+            Log.d("RoundImageView", "onDraw....\n");
+            Bitmap srcBmp = ((BitmapDrawable) drawable).getBitmap();
+            srcBmp = getScaleBitmap(srcBmp);
+            int canvasSize = getWidth();
+            if (canvasSize > getHeight())
+                canvasSize = getHeight();
+            startX = (getWidth() - canvasSize) / 2;
+            startY = (getHeight() - canvasSize) / 2;
+            dstBitmap = getShadowBitmap(srcBmp, canvasSize);
+        }
+        if (dstBitmap != null)
+            canvas.drawBitmap(dstBitmap, startX, startY, null);
 
         //这个也是一种绘制圆形图片的方法，但是这个有点问题没有解决
 //        int imageRadius = canvasSize - shadowRadius * 2 - borderWidth * 2;
@@ -149,7 +154,8 @@ public class RoundImageView extends ImageView {
 
         canvas.drawCircle(imageRadius / 2, imageRadius / 2, imageRadius / 2, paint);
         paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
-        canvas.drawBitmap(bitmap, 0, 0, paint);
+        canvas.drawBitmap(bitmap, (imageRadius - bitmap.getWidth()) / 2, (imageRadius - bitmap.getHeight()) / 2, paint);
+        roundImage = dstBitmap.copy(Bitmap.Config.ARGB_8888, true);
         return dstBitmap;
     }
 
@@ -177,5 +183,9 @@ public class RoundImageView extends ImageView {
         if (hasWindowFocus) {
             requestLayout();
         }
+    }
+
+    public Bitmap getRoundImage() {
+        return roundImage;
     }
 }

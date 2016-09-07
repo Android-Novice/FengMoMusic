@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@android:id/secondaryProgress">
+        <shape>
+            <!--<corners android:radius="2dp" />-->
+            <solid android:color="@color/progressbar_buffer" />
+        </shape>
+    </item>
+    <item android:id="@android:id/progress">
+        <shape>
+            <!--<corners android:radius="2dp" />-->
+            <solid android:color="@color/progressbar_second" />
+        </shape>
+    </item>
+</layer-list>
