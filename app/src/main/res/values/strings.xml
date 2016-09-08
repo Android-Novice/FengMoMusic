@@ -18,6 +18,8 @@
     <string name="no_audio_data">无数据，下拉刷新重试~</string>
     <string name="net_error">网络出问题啦~</string>
 
+    <string name="no_found_lyric">没有找到对应的歌词...</string>
+
     <string name="no_switching_when_buffering">正在进行缓冲，稍后再进行音乐切换。</string>
     <string-array name="singer_order_list">
         <item>热门</item>

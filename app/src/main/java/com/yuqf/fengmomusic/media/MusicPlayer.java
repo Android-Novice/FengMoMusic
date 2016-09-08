@@ -12,7 +12,6 @@ import android.support.v7.app.NotificationCompat;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.RemoteViews;
-import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
@@ -208,7 +207,7 @@ public class MusicPlayer {
 
     private boolean showBufferingToast() {
         if (isBuffering) {
-            Toast.makeText(MyApplication.getContext(), R.string.no_switching_when_buffering, Toast.LENGTH_LONG).show();
+            CommonUtils.showToast(R.string.no_switching_when_buffering, true);
             return true;
         }
         return false;

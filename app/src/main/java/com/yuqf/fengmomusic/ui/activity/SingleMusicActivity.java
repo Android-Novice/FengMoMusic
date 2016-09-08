@@ -9,7 +9,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -34,6 +33,7 @@ import com.yuqf.fengmomusic.ui.fragment.PlaylistFragment;
 import com.yuqf.fengmomusic.ui.fragment.SingerInfoFragment;
 import com.yuqf.fengmomusic.utils.Blur;
 import com.yuqf.fengmomusic.utils.CommonUtils;
+import com.yuqf.fengmomusic.utils.Global;
 
 import java.io.IOException;
 import java.util.Locale;
@@ -83,6 +83,11 @@ public class SingleMusicActivity extends BaseActivity implements MusicPlayerList
         initViewPager();
         MusicPlayer.getInstance().addPlayerListener(this);
         curMusic = MusicPlayer.getInstance().getCurMusic();
+        musicTV.setText(curMusic.getName());
+        CommonUtils.setTextMarquee(musicTV);
+
+        singerTV.setText(curMusic.getArtist());
+        CommonUtils.setTextMarquee(singerTV);
         notifyMusicId(curMusic.getId());
     }
 
@@ -108,6 +113,8 @@ public class SingleMusicActivity extends BaseActivity implements MusicPlayerList
         playedTV = (TextView) findViewById(R.id.played_time_tv);
         totalTV = (TextView) findViewById(R.id.total_time_tv);
         seekBar = (SeekBar) findViewById(R.id.seek_bar_playing);
+        seekBar.setProgress(0);
+        seekBar.setSecondaryProgress(0);
         btnPlayOrder = (ImageButton) findViewById(R.id.btn_play_order);
         btnPrevious = (ImageButton) findViewById(R.id.btn_previous);
         btnPlayPause = (ImageButton) findViewById(R.id.btn_play_pause);
@@ -123,8 +130,8 @@ public class SingleMusicActivity extends BaseActivity implements MusicPlayerList
     }
 
     private void initViewPager() {
-        viewPager = (ViewPager) findViewById(R.id.viewpager);
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
+        viewPager = (ViewPager) findViewById(R.id.viewpager);
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -192,7 +199,7 @@ public class SingleMusicActivity extends BaseActivity implements MusicPlayerList
     @Override
     public void onBufferingUpdate(Music music) {
         seekBar.setSecondaryProgress(music.getBufferingProgress());
-        playingMusicFragment.setRoundProgress(music.getBufferingProgress());
+//        playingMusicFragment.setRoundProgress(music.getBufferingProgress());
     }
 
     @Override
@@ -261,13 +268,26 @@ public class SingleMusicActivity extends BaseActivity implements MusicPlayerList
         }
     }
 
-    public void notifyMusicId(int musicId) {
+    private void notifyMusicId(int musicId) {
+        playingMusicFragment.setMusicId(musicId);
+        Bitmap bitmap500 = CommonUtils.getMusicCover(musicId, Global.Blurred_Image_Size);
+        if (bitmap500 == null) {
+            Log.d(logTag, "image 500 is null");
+            loadCoverFromWeb(musicId, Global.Blurred_Image_Size);
+        } else {
+            Log.d(logTag, "image 500 is not null");
+            blurredIV.setImageBitmap(bitmap500);
+        }
+    }
+
+    private void loadCoverFromWeb(int musicId, final int imageSize) {
         Retrofit retrofit1 = new Retrofit.Builder()
                 .baseUrl(CommonUtils.UrlHelper.Music_Cover_Base_Url)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         RetrofitServices.MusicService musicService1 = retrofit1.create(RetrofitServices.MusicService.class);
-        Call<ResponseBody> call = musicService1.getCoverUrl("rid_pic", "url", 300, musicId);
+
+        Call<ResponseBody> call = musicService1.getCoverUrl("rid_pic", "url", imageSize, musicId);
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -275,11 +295,7 @@ public class SingleMusicActivity extends BaseActivity implements MusicPlayerList
                     try {
                         String coverUrl = response.body().string();
                         Log.d(logTag, "300 pic: " + coverUrl);
-                        if (!TextUtils.isEmpty(coverUrl)) {
-                            String coverUrl500 = coverUrl.replace("/300/", "/500/");
-                            loadCoverByUrl(coverUrl, false);
-                            loadCoverByUrl(coverUrl500, true);
-                        }
+                        loadCoverByUrl(coverUrl);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -293,71 +309,48 @@ public class SingleMusicActivity extends BaseActivity implements MusicPlayerList
         });
     }
 
-    final Target target300 = new Target() {
-        @Override
-        public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-            Log.d(logTag, "onBitmapLoaded.... \n");
-            showCover(bitmap, false);
-        }
-
-        @Override
-        public void onBitmapFailed(Drawable errorDrawable) {
-            Log.d(logTag, "onBitmapFailed.... \n");
-            showCover(errorDrawable, false);
-        }
-
-        @Override
-        public void onPrepareLoad(Drawable placeHolderDrawable) {
-            Log.d(logTag, "onPrepareLoad.... \n");
-            showCover(placeHolderDrawable, false);
-        }
-    };
-
     final Target target500 = new Target() {
         @Override
         public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
             Log.d(logTag, "onBitmapLoaded.... \n");
-            showCover(bitmap, true);
+            showCover(bitmap);
         }
 
         @Override
         public void onBitmapFailed(Drawable errorDrawable) {
             Log.d(logTag, "onBitmapFailed.... \n");
-            showCover(errorDrawable, true);
+            showCover(errorDrawable);
         }
 
         @Override
         public void onPrepareLoad(Drawable placeHolderDrawable) {
             Log.d(logTag, "onPrepareLoad.... \n");
-            showCover(placeHolderDrawable, true);
+            showCover(placeHolderDrawable);
         }
     };
 
-    private void loadCoverByUrl(String url, boolean isBackground) {
+    private void loadCoverByUrl(String url) {
         Picasso.Builder builder = new Picasso.Builder(this);
         Picasso picasso = builder.build();
 
         picasso.load(url)
                 .placeholder(R.drawable.ic_audiotrack_white_48dp)
                 .error(R.drawable.ic_audiotrack_white_48dp)
-                .into(isBackground ? target500 : target300);
+                .into(target500);
     }
 
-    private void showCover(Drawable drawable, boolean isBackgroundCover) {
+    private void showCover(Drawable drawable) {
         if (drawable != null) {
             Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
-            showCover(bitmap, isBackgroundCover);
+            showCover(bitmap);
         }
     }
 
-    private void showCover(Bitmap bitmap, boolean isBackgroundCover) {
+    private void showCover(Bitmap bitmap) {
         if (bitmap != null) {
-            if (isBackgroundCover) {
-                playingMusicFragment.showCover(bitmap);
-            } else {
-                Bitmap blurredBmp = Blur.fastblur(MyApplication.getContext(), bitmap, 25);
-                blurredIV.setImageBitmap(blurredBmp);
-            }
+            Bitmap blurredBmp = Blur.fastblur(MyApplication.getContext(), bitmap, 25);
+            blurredIV.setImageBitmap(blurredBmp);
+            CommonUtils.saveMusicCover(blurredBmp, curMusic.getId(), Global.Blurred_Image_Size);
         }
     }
 
@@ -365,10 +358,19 @@ public class SingleMusicActivity extends BaseActivity implements MusicPlayerList
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_play_pause:
+                if (MusicPlayer.getInstance().isPlaying()) {
+                    MusicPlayer.getInstance().pause();
+                    btnPlayPause.setImageResource(R.drawable.ic_play_circle_outline_white_48dp);
+                } else {
+                    MusicPlayer.getInstance().replay();
+                    btnPlayPause.setImageResource(R.drawable.ic_pause_circle_outline_white_48dp);
+                }
                 break;
             case R.id.btn_previous:
+                MusicPlayer.getInstance().previous();
                 break;
             case R.id.btn_next:
+                MusicPlayer.getInstance().next();
                 break;
             case R.id.btn_play_order:
                 break;

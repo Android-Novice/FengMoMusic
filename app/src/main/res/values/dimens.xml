@@ -5,4 +5,9 @@
 
     <dimen name="singer_head_width">150dp</dimen>
     <dimen name="singer_head_height">150dp</dimen>
+
+    <dimen name="arc_stretch_width">10px</dimen>
+    <dimen name="bar_width">8px</dimen>
+    <dimen name="shadow_width">6px</dimen>
+    <dimen name="reflection_gap_width">4px</dimen>
 </resources>

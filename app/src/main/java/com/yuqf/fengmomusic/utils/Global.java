@@ -22,4 +22,7 @@ public class Global {
     public static final String SINGER_DEFAULT_URL = "default/singer.jpg";
 
     public static final int HEADER_HEIGHT = 200;
+
+    public static final int Round_Image_Size = 300;
+    public static final int Blurred_Image_Size = 500;
 }

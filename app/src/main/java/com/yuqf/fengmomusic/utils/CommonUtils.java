@@ -12,6 +12,7 @@ import android.util.DisplayMetrics;
 import android.util.Pair;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.yuqf.fengmomusic.base.MyApplication;
 
@@ -63,6 +64,24 @@ public class CommonUtils {
         context.startActivity(intent);
     }
 
+    private static Toast toast;
+
+    public static void showToast(int resId, boolean isLongTime) {
+        String text = MyApplication.getContext().getResources().getString(resId);
+        showToast(text, isLongTime);
+    }
+
+    public static void showToast(String text, boolean isLongTime) {
+        int time = isLongTime ? Toast.LENGTH_LONG : Toast.LENGTH_SHORT;
+        if (toast == null) {
+            toast = Toast.makeText(MyApplication.getContext(), text, time);
+        } else {
+            toast.cancel();
+            toast.setDuration(time);
+            toast.setText(text);
+        }
+        toast.show();
+    }
 
     //the item of RecyclerView click listener
     public interface OnRecyclerViewItemClickListener {
@@ -80,6 +99,25 @@ public class CommonUtils {
             textView.setFocusable(true);
             textView.setFocusableInTouchMode(true);
         }
+    }
+
+    public static void saveMusicCover(Bitmap bitmap, int musicId, int size) {
+        if (bitmap != null) {
+            String filePath = getMusicCoverPath(musicId, size);
+            saveBitmap(bitmap, filePath);
+        }
+    }
+
+    public static Bitmap getMusicCover(int musicId, int size) {
+        String filePath = getMusicCoverPath(musicId, size);
+        return decodeBitmap(filePath);
+    }
+
+    private static String getMusicCoverPath(int musicId, int size) {
+        String dirPath = getSRDirPath();
+        String name = String.valueOf(size) + ".jpgm";
+        String filePath = dirPath + "/Music_Cover/" + String.valueOf(musicId) + "/" + name;
+        return filePath;
     }
 
     public static void saveSingerHead(Bitmap bitmap, String url) {

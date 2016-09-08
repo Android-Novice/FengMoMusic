@@ -102,7 +102,15 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        ActivityMgr.getActivityMgr().removeActivity(this);
+        ActivityMgr.getActivityMgr().finishActivity(this);
+//        ActivityMgr.getActivityMgr().removeActivity(this);
+    }
+
+    @Override
+    public void onBackPressed() {
+        ActivityMgr.getActivityMgr().finishActivity(this);
+//        ActivityMgr.getActivityMgr().removeActivity(this);
+        super.onBackPressed();
     }
 
     @Override

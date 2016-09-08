@@ -1,10 +1,8 @@
 <resources>
     <declare-styleable name="RoundImageView">
         <attr name="border_width" format="dimension" />
-        <!--<attr name="border_width" format="integer" />-->
         <attr name="border_color" format="color" />
         <attr name="shadow_width" format="dimension" />
-        <!--<attr name="shadow_width" format="integer" />-->
         <attr name="shadow_color" format="color" />
     </declare-styleable>
 
@@ -28,7 +26,6 @@
         <attr name="draw_src" format="boolean" />
         <attr name="reflection_gap" format="dimension" />
         <attr name="reflection_gap_color" format="color" />
-        <!--<attr name="reflection_rotate_degree" format="float" />-->
     </declare-styleable>
 </resources>
 
