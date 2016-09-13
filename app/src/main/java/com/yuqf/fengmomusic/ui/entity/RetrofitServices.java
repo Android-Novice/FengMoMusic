@@ -70,6 +70,20 @@ public class RetrofitServices {
                                        @Query("rid") int id);
     }
 
+    public interface LyricService {
+        //        http://ttlyrics.duapp.com/api/lrc/?sh?Artist=shakira&Title=try%20everything&api=true
+//        http://ttlyrics.duapp.com/api/lrc/?dl?Id=-304546313
+//        http://lyrics.kugou.com/search?ver=1&man=yes&client=pc&keyword=歌曲名&duration=歌曲总时长(毫秒)&hash=歌曲Hash值
+//        http://lyrics.kugou.com/download?ver=1&client=pc&id=10515303&accesskey=3A20F6A1933DE370EBA0187297F5477D&fmt=lrc&charset=utf8
+        @GET("search?ver=1&man=yes&client=pc&hash=")
+        Call<GsonLyricList> getLyricList(@Query("keyword") String music,
+                                         @Query("duration") int duration);
+
+        @GET("download?ver=1&client=pc&fmt=lrc&charset=utf8")
+        Call<GSonLyric> getLyric(@Query("id") int id,
+                                 @Query("accesskey") String accessKey);
+    }
+
 //    public static class SingerConverterFactory extends Converter.Factory {
 //
 //        private static SingerConverterFactory factory;

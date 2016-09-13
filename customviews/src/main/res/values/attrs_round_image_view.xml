@@ -22,10 +22,22 @@
         <attr name="io_circle_color" format="color" />
         <attr name="progress" format="integer" />
     </declare-styleable>
+
     <declare-styleable name="ReflectionImageView">
         <attr name="draw_src" format="boolean" />
         <attr name="reflection_gap" format="dimension" />
         <attr name="reflection_gap_color" format="color" />
+    </declare-styleable>
+
+    <declare-styleable name="ScalableImageButton">
+        <attr name="scale_xy" format="float" />
+    </declare-styleable>
+
+    <declare-styleable name="LyricsView">
+        <attr name="playing_color" format="color" />
+        <attr name="playing_size" format="dimension" />
+        <attr name="normal_color" format="color" />
+        <attr name="normal_size" format="dimension" />
     </declare-styleable>
 </resources>
 

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -143,49 +144,125 @@
                 android:gravity="center"
                 android:orientation="horizontal">
 
-                <ImageButton
+                <!--<ImageButton-->
+                <!--android:id="@+id/btn_play_order"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:background="@drawable/button_style"-->
+                <!--android:padding="2dp"-->
+                <!--android:src="@drawable/ic_playlist_play_white_24dp" />-->
+
+                <!--<ImageButton-->
+                <!--android:id="@+id/btn_previous"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginLeft="40dp"-->
+                <!--android:background="@drawable/button_style"-->
+                <!--android:padding="2dp"-->
+                <!--android:src="@drawable/ic_skip_previous_white_36dp" />-->
+
+                <!--<ImageButton-->
+                <!--android:id="@+id/btn_play_pause"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginLeft="20dp"-->
+                <!--android:layout_marginRight="20dp"-->
+                <!--android:background="@drawable/button_style"-->
+                <!--android:padding="2dp"-->
+                <!--android:src="@drawable/ic_play_circle_outline_white_48dp" />-->
+
+                <!--<ImageButton-->
+                <!--android:id="@+id/btn_next"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginRight="40dp"-->
+                <!--android:background="@drawable/button_style"-->
+                <!--android:padding="2dp"-->
+                <!--android:src="@drawable/ic_skip_next_white_36dp" />-->
+
+                <!--<ImageButton-->
+                <!--android:id="@+id/btn_favorite"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:background="@drawable/button_style"-->
+                <!--android:padding="2dp"-->
+                <!--android:src="@drawable/ic_favorite_border_white_24dp" />-->
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2" />
+
+                <com.yuqf.customviews.ScalableImageButton
                     android:id="@+id/btn_play_order"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/button_style"
+                    android:adjustViewBounds="true"
+                    android:background="@android:color/transparent"
                     android:padding="2dp"
-                    android:src="@drawable/ic_playlist_play_white_24dp" />
+                    android:src="@drawable/ic_playlist_play_white_24dp"
+                    app:scale_xy="1.5" />
 
-                <ImageButton
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2" />
+
+                <com.yuqf.customviews.ScalableImageButton
                     android:id="@+id/btn_previous"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="40dp"
-                    android:background="@drawable/button_style"
+                    android:adjustViewBounds="true"
+                    android:background="@android:color/transparent"
                     android:padding="2dp"
                     android:src="@drawable/ic_skip_previous_white_36dp" />
 
-                <ImageButton
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1" />
+
+                <com.yuqf.customviews.ScalableImageButton
                     android:id="@+id/btn_play_pause"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginRight="20dp"
-                    android:background="@drawable/button_style"
+                    android:adjustViewBounds="true"
+                    android:background="@android:color/transparent"
                     android:padding="2dp"
                     android:src="@drawable/ic_play_circle_outline_white_48dp" />
 
-                <ImageButton
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1" />
+
+                <com.yuqf.customviews.ScalableImageButton
                     android:id="@+id/btn_next"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="40dp"
-                    android:background="@drawable/button_style"
+                    android:adjustViewBounds="true"
+                    android:background="@android:color/transparent"
                     android:padding="2dp"
                     android:src="@drawable/ic_skip_next_white_36dp" />
 
-                <ImageButton
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2" />
+
+                <com.yuqf.customviews.ScalableImageButton
                     android:id="@+id/btn_favorite"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/button_style"
+                    android:adjustViewBounds="true"
+                    android:background="@android:color/transparent"
                     android:padding="2dp"
-                    android:src="@drawable/ic_favorite_border_white_24dp" />
+                    android:src="@drawable/ic_favorite_border_white_24dp"
+                    app:scale_xy="1.5" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2" />
             </LinearLayout>
         </LinearLayout>
 

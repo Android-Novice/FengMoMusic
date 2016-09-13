@@ -1,7 +1,9 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:paddingTop="5dp"
     tools:context=".ui.fragment.MusicLyricFragment">
 
     <LinearLayout
@@ -11,6 +13,7 @@
         android:layout_gravity="center">
 
         <TextView
+            android:id="@+id/lyric_status_tv"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="bottom"
@@ -20,11 +23,18 @@
             android:textSize="18sp" />
     </LinearLayout>
 
+    <!--<ScrollView-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent">-->
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recycler_view"
+    <com.yuqf.customviews.LyricsView
+        android:id="@+id/lyric_tv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scrollbars="vertical" />
+        app:normal_color="@color/colorAccent"
+        app:normal_size="15sp"
+        app:playing_color="@color/orange"
+        app:playing_size="16sp" />
+    <!--</ScrollView>-->
 
 </FrameLayout>

@@ -8,6 +8,8 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.NotificationCompat;
 import android.text.TextUtils;
 import android.util.Log;
@@ -51,6 +53,21 @@ public class MusicPlayer {
     private NotificationManager manager;
     private int audioResult = -1;
     private PlayingStatus playingStatus = PlayingStatus.None;
+    private final int MSG_WHAT = 110;
+
+    private Handler handler = new Handler(new Handler.Callback() {
+        @Override
+        public boolean handleMessage(Message msg) {
+            if (msg.what == MSG_WHAT) {
+                if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+                    curMusic.setPlayedPosition(mediaPlayer.getCurrentPosition() / 1000);
+                    notifyListeners(MusicState.PlayedDuration);
+                }
+                handler.sendEmptyMessageDelayed(MSG_WHAT, 500);
+            }
+            return false;
+        }
+    });
 
     public static MusicPlayer getInstance() {
         if (musicPlayer == null) {
@@ -227,10 +244,10 @@ public class MusicPlayer {
             public void onBufferingUpdate(MediaPlayer mp, int percent) {
                 curMusic.setBufferingProgress(percent);
                 notifyListeners(MusicState.Buffering);
-                if (mp.isPlaying()) {
-                    curMusic.setPlayedPosition(mp.getCurrentPosition() / 1000);
-                    notifyListeners(MusicState.PlayedDuration);
-                }
+//                if (mp.isPlaying()) {
+//                    curMusic.setPlayedPosition(mp.getCurrentPosition() / 1000);
+//                    notifyListeners(MusicState.PlayedDuration);
+//                }
 
                 Log.d(logTag, "onBufferingUpdate: " + String.valueOf(percent) + "\nplayed duration: " + curMusic.getPlayedPosition());
             }
@@ -280,6 +297,7 @@ public class MusicPlayer {
                 notifyListeners(MusicState.EndBuffering);
                 notifyListeners(MusicState.Prepared);
                 mp.start();
+                handler.sendEmptyMessageDelayed(MSG_WHAT, 500);
             }
         });
 

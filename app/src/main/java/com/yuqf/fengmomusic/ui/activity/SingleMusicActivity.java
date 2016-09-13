@@ -178,6 +178,7 @@ public class SingleMusicActivity extends BaseActivity implements MusicPlayerList
         seekBar.setProgress(0);
         seekBar.setSecondaryProgress(0);
         playingMusicFragment.setRoundProgress(0);
+        musicLyricFragment.nextMusicLyric();
 //        musicCoverIV.setImageResource(R.drawable.music_white);
 //        playingMusicFragment.showCover(null);
         if (curMusic != music) {
@@ -207,6 +208,7 @@ public class SingleMusicActivity extends BaseActivity implements MusicPlayerList
         int mins = music.getDuration() / 60;
         int seconds = music.getDuration() % 60;
         totalTV.setText(String.format(Locale.getDefault(), "%02d:%02d", mins, seconds));
+        musicLyricFragment.showLyric(curMusic);
         isPrepared = true;
     }
 
@@ -234,6 +236,7 @@ public class SingleMusicActivity extends BaseActivity implements MusicPlayerList
             seekBar.setProgress(progress);
             playingMusicFragment.setRoundProgress(progress);
         }
+        musicLyricFragment.notifyPlayedDuration();
     }
 
     @Override

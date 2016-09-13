@@ -16,10 +16,14 @@ import android.widget.Toast;
 
 import com.yuqf.fengmomusic.base.MyApplication;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.util.List;
 
 public class CommonUtils {
@@ -76,7 +80,7 @@ public class CommonUtils {
         if (toast == null) {
             toast = Toast.makeText(MyApplication.getContext(), text, time);
         } else {
-            toast.cancel();
+//            toast.cancel();
             toast.setDuration(time);
             toast.setText(text);
         }
@@ -236,6 +240,58 @@ public class CommonUtils {
         return bitmap;
     }
 
+    public static void saveLyric(String artist, String name, int musicId, String content) {
+        String lrcFile = getLyricPath(artist, name, musicId);
+        try {
+            FileOutputStream stream = new FileOutputStream(lrcFile);
+            OutputStreamWriter writer = new OutputStreamWriter(stream);
+            writer.write(content, 0, content.length());
+            stream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static String readLyric(String artist, String name, int musicId) {
+        String lrcFile = getLyricPath(artist, name, musicId);
+
+        try {
+            FileInputStream stream = new FileInputStream(lrcFile);
+            if (stream != null) {
+                InputStreamReader reader = new InputStreamReader(stream);
+                BufferedReader bufferedReader = new BufferedReader(reader);
+                StringBuilder sb = new StringBuilder();
+                String line;
+                while ((line = bufferedReader.readLine()) != null) {
+                    sb.append(line);
+                }
+                return sb.toString();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private static String getLyricPath(String artist, String name, int musicId) {
+        String rootPath = getLyricRootPath();
+        String lyricDir = rootPath + "/" + artist + "/" + name;
+        File parentDir = new File(lyricDir);
+        if (!parentDir.exists())
+            parentDir.mkdirs();
+        return parentDir + "/" + String.valueOf(musicId) + ".lrc";
+    }
+
+    private static String getLyricRootPath() {
+        String filePath = "";
+        if (Environment.getExternalStorageState() == Environment.MEDIA_MOUNTED || !Environment.isExternalStorageRemovable()) {
+            filePath = MyApplication.getContext().getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS).getPath();
+        }
+        if (TextUtils.isEmpty(filePath))
+            filePath = MyApplication.getContext().getFilesDir().getPath();
+        return filePath;
+    }
+
     public class UrlHelper {
         public final static String Singer_Get_Base_Url = "http://artistlistinfo.kuwo.cn/";
         public final static String Singer_Head_Get_Base_Url = "http://img1.sycdn.kuwo.cn/star/starheads/";
@@ -246,5 +302,9 @@ public class CommonUtils {
 
         public final static String Music_Cover_Base_Url = "http://artistpicserver.kuwo.cn/";
         public final static String Music_File_Base_Url = "http://antiserver.kuwo.cn/";
+
+        //        public final static String Lyric_Base_Url="http://ttlyrics.duapp.com/api/lrc/";
+        public final static String Lyric_Base_Url = "http://lyrics.kugou.com/";
+
     }
 }
