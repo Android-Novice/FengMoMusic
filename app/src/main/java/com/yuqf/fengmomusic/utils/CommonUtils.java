@@ -242,21 +242,56 @@ public class CommonUtils {
 
     public static void saveLyric(String artist, String name, int musicId, String content) {
         String lrcFile = getLyricPath(artist, name, musicId);
-        try {
-            FileOutputStream stream = new FileOutputStream(lrcFile);
-            OutputStreamWriter writer = new OutputStreamWriter(stream);
-            writer.write(content, 0, content.length());
-            stream.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        saveTextToDevice(content, lrcFile);
+//        try {
+//            FileOutputStream stream = new FileOutputStream(lrcFile);
+//            OutputStreamWriter writer = new OutputStreamWriter(stream);
+//            writer.write(content, 0, content.length());
+//            stream.close();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
     }
 
     public static String readLyric(String artist, String name, int musicId) {
         String lrcFile = getLyricPath(artist, name, musicId);
+        return readTextFromDevice(lrcFile);
+    }
 
+    private static String getLyricPath(String artist, String name, int musicId) {
+        String rootPath = getDocumentRootPath();
+        String lyricDir = rootPath + "/" + artist + "/" + name;
+        File parentDir = new File(lyricDir);
+        if (!parentDir.exists())
+            parentDir.mkdirs();
+        return parentDir + "/" + String.valueOf(musicId) + ".lrc";
+    }
+
+    public static void saveSingerInfoJson(String artist, int artistId, String json) {
+        String jsonPath = getSingerJsonPath(artist, artistId);
+        saveTextToDevice(json, jsonPath);
+    }
+
+    public static String readSingerInfoJson(String artist, int artistId) {
+        String jsonPath = getSingerJsonPath(artist, artistId);
+        return readTextFromDevice(jsonPath);
+    }
+
+    private static String getSingerJsonPath(String artist, int artistId) {
+        String rootPath = getDocumentRootPath();
+        String jsonDir = rootPath + "/" + artist;
+        File parentDir = new File(jsonDir);
+        if (!parentDir.exists())
+            parentDir.mkdirs();
+        return jsonDir + "/" + String.valueOf(artistId) + ".json";
+    }
+
+    private static String readTextFromDevice(String filePath) {
+        File file = new File(filePath);
+        if (!file.exists())
+            return null;
         try {
-            FileInputStream stream = new FileInputStream(lrcFile);
+            FileInputStream stream = new FileInputStream(filePath);
             if (stream != null) {
                 InputStreamReader reader = new InputStreamReader(stream);
                 BufferedReader bufferedReader = new BufferedReader(reader);
@@ -273,16 +308,18 @@ public class CommonUtils {
         return null;
     }
 
-    private static String getLyricPath(String artist, String name, int musicId) {
-        String rootPath = getLyricRootPath();
-        String lyricDir = rootPath + "/" + artist + "/" + name;
-        File parentDir = new File(lyricDir);
-        if (!parentDir.exists())
-            parentDir.mkdirs();
-        return parentDir + "/" + String.valueOf(musicId) + ".lrc";
+    private static void saveTextToDevice(String content, String filePath) {
+        try {
+            FileOutputStream stream = new FileOutputStream(filePath);
+            OutputStreamWriter writer = new OutputStreamWriter(stream);
+            writer.write(content, 0, content.length());
+            stream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    private static String getLyricRootPath() {
+    private static String getDocumentRootPath() {
         String filePath = "";
         if (Environment.getExternalStorageState() == Environment.MEDIA_MOUNTED || !Environment.isExternalStorageRemovable()) {
             filePath = MyApplication.getContext().getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS).getPath();
@@ -305,6 +342,8 @@ public class CommonUtils {
 
         //        public final static String Lyric_Base_Url="http://ttlyrics.duapp.com/api/lrc/";
         public final static String Lyric_Base_Url = "http://lyrics.kugou.com/";
+
+        public final static String Singer_Info_Base_Url = "http://search.kuwo.cn/";
 
     }
 }

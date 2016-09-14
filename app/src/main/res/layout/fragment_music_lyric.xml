@@ -23,10 +23,6 @@
             android:textSize="18sp" />
     </LinearLayout>
 
-    <!--<ScrollView-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="match_parent">-->
-
     <com.yuqf.customviews.LyricsView
         android:id="@+id/lyric_tv"
         android:layout_width="match_parent"
@@ -35,6 +31,5 @@
         app:normal_size="15sp"
         app:playing_color="@color/orange"
         app:playing_size="16sp" />
-    <!--</ScrollView>-->
 
 </FrameLayout>

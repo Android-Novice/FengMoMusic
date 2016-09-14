@@ -22,6 +22,10 @@ public class RetrofitServices {
                                              @Query("pn") String pIndex,    // the server can't provide all kinds, but only one page, this is page Index
                                              @Query("rn") String pCount,   // music count per page, default 100
                                              @Query("prefix") String prefix);
+
+        //        http://search.kuwo.cn/r.s?stype=artistinfo&artistid=
+        @GET("r.s?stype=artistinfo")
+        Call<ResponseBody> getSingerInfo(@Query("artistid") int artistid);
     }
 
     public interface RankingService {

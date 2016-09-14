@@ -39,7 +39,7 @@ public class MusicPlayer {
 
     private static MusicPlayer musicPlayer;
     private List<MusicPlayerListener> listenerList;
-    private PlayIndexChangedListener changedListener;
+    private List<PlayIndexChangedListener> changedListenerList;
 
     private MediaPlayer mediaPlayer;
     private List<Music> playingMusics;
@@ -78,6 +78,7 @@ public class MusicPlayer {
 
     private MusicPlayer() {
         listenerList = new ArrayList<>();
+        changedListenerList = new ArrayList<>();
         playingMusics = new ArrayList<>();
         audioManager = MyApplication.getAudioManager();
         manager = MyApplication.getNotificationManager();
@@ -112,14 +113,19 @@ public class MusicPlayer {
             listenerList.add(playerListener);
     }
 
-    public void setChangedListener(PlayIndexChangedListener changedListener) {
-        this.changedListener = changedListener;
+    public void addChangedListener(PlayIndexChangedListener changedListener) {
+        if (changedListener != null && !changedListenerList.contains(changedListener))
+            changedListenerList.add(changedListener);
     }
 
     public void setPlayingMusics(List<Music> playingMusics) {
         if (showBufferingToast()) return;
         playIndex = -1;
         this.playingMusics = playingMusics;
+    }
+
+    public List<Music> getPlayingMusics() {
+        return playingMusics;
     }
 
     public void pause() {
@@ -178,8 +184,10 @@ public class MusicPlayer {
             curMusic = playingMusics.get(playIndex);
             if (!curMusic.isLocal()) {
                 isBuffering = true;
-                if (changedListener != null)
-                    changedListener.onPlayingIndexChange(curMusic, playIndex, oldIndex);
+                for (PlayIndexChangedListener changedListener : changedListenerList) {
+                    if (changedListener != null)
+                        changedListener.onPlayingIndexChange(curMusic, playIndex, oldIndex);
+                }
                 notifyListeners(MusicState.Preparing);
                 notifyListeners(MusicState.StartBuffering);
                 playWebMusic(curMusic.getId());
@@ -249,7 +257,7 @@ public class MusicPlayer {
 //                    notifyListeners(MusicState.PlayedDuration);
 //                }
 
-                Log.d(logTag, "onBufferingUpdate: " + String.valueOf(percent) + "\nplayed duration: " + curMusic.getPlayedPosition());
+//                Log.d(logTag, "onBufferingUpdate: " + String.valueOf(percent) + "\nplayed duration: " + curMusic.getPlayedPosition());
             }
         });
         mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {

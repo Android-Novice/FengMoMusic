@@ -12,12 +12,14 @@ import com.yuqf.fengmomusic.base.MyApplication;
 public class LinearLayoutItemDecoration extends RecyclerView.ItemDecoration {
 
     private Drawable drawable;
+    private boolean showHeader;
 
-    public LinearLayoutItemDecoration() {
+    public LinearLayoutItemDecoration(boolean showHeader) {
         super();
 //        TypedArray typedArray = MyApplication.getContext().obtainStyledAttributes(new int[]{R.attr});
 //        drawable = typedArray.getDrawable(0);
         drawable = MyApplication.getContext().getResources().getDrawable(R.drawable.music_list_divider_line);
+        this.showHeader = showHeader;
     }
 
     @Override
@@ -25,7 +27,8 @@ public class LinearLayoutItemDecoration extends RecyclerView.ItemDecoration {
         int left = parent.getPaddingLeft();
         int right = parent.getWidth() - parent.getPaddingRight();
         int childCount = parent.getChildCount();
-        for (int i = 1; i < childCount - 1; i++) {
+        int startIndex = showHeader ? 1 : 0;
+        for (int i = startIndex; i < childCount - 1; i++) {
             View view = parent.getChildAt(i);
             int top = view.getBottom();
             int bottom = top + drawable.getIntrinsicHeight();

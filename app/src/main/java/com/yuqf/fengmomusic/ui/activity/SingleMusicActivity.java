@@ -123,6 +123,7 @@ public class SingleMusicActivity extends BaseActivity implements MusicPlayerList
         blurredIV = (ImageView) findViewById(R.id.blurred_iv);
 
         btnPlayPause.setOnClickListener(this);
+        btnPlayPause.setImageResource(R.drawable.ic_pause_circle_outline_white_48dp);
         btnPrevious.setOnClickListener(this);
         btnPlayPause.setOnClickListener(this);
         btnNext.setOnClickListener(this);
@@ -273,6 +274,7 @@ public class SingleMusicActivity extends BaseActivity implements MusicPlayerList
 
     private void notifyMusicId(int musicId) {
         playingMusicFragment.setMusicId(musicId);
+        playlistFragment.setMusic(curMusic);
         Bitmap bitmap500 = CommonUtils.getMusicCover(musicId, Global.Blurred_Image_Size);
         if (bitmap500 == null) {
             Log.d(logTag, "image 500 is null");
@@ -384,11 +386,12 @@ public class SingleMusicActivity extends BaseActivity implements MusicPlayerList
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        Log.d("VolumeTag", String.valueOf(keyCode) + "=======");
+        Log.d("VolumeTag", String.valueOf(keyCode) + "=======" + String.valueOf(keyCode));
         switch (keyCode) {
             case KeyEvent.KEYCODE_VOLUME_DOWN:
             case KeyEvent.KEYCODE_VOLUME_UP:
             case KeyEvent.KEYCODE_VOLUME_MUTE:
+                Log.d("VolumeTag_1", "===========");
                 playingMusicFragment.updateVolume();
                 break;
         }

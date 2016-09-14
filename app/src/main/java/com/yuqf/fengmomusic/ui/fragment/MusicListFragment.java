@@ -65,8 +65,8 @@ public class MusicListFragment extends Fragment implements PlayIndexChangedListe
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        MusicPlayer.getInstance().setChangedListener(this);
-        adapter = new MusicRecyclerViewAdapter();
+        MusicPlayer.getInstance().addChangedListener(this);
+        adapter = new MusicRecyclerViewAdapter(true, true);
         adapter.setOnRecyclerViewItemClickListener(new CommonUtils.OnRecyclerViewItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
@@ -85,7 +85,7 @@ public class MusicListFragment extends Fragment implements PlayIndexChangedListe
 
     @Override
     public void onPlayingIndexChange(Music music, int curPosition, int oldPosition) {
-        adapter.updateItemState(music, curPosition, oldPosition);
+        adapter.updateItemState(music);
     }
 
     @Override
@@ -106,7 +106,7 @@ public class MusicListFragment extends Fragment implements PlayIndexChangedListe
         recyclerView = (RecyclerView) parentView.findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
 
-        recyclerView.addItemDecoration(new LinearLayoutItemDecoration());
+        recyclerView.addItemDecoration(new LinearLayoutItemDecoration(true));
         final LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setAdapter(adapter);

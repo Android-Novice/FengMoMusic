@@ -35,24 +35,33 @@ public class MusicRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
     private final int HeaderType = 3;
     private boolean isLoading;
 
-    private int playingIndex = -1;
     private Music playingMusic;
+    private boolean showHeader;
+    private boolean showFooter;
 
-    public MusicRecyclerViewAdapter() {
+    public MusicRecyclerViewAdapter(boolean showHeader, boolean showFooter) {
         super();
         musicList = new ArrayList<>();
         inflater = LayoutInflater.from(MyApplication.getContext());
         rMusicList = new ArrayList<>();
         sMusicList = new ArrayList<>();
+        this.showHeader = showHeader;
+        this.showFooter = showFooter;
     }
 
     @Override
     public int getItemViewType(int position) {
         if (position == musicList.size() + 1)
-            return Type_Footer;
-        else if (position == 0)
-            return HeaderType;
-        else
+            if (showFooter)
+                return Type_Footer;
+            else
+                return Type_Music;
+        else if (position == 0) {
+            if (showHeader)
+                return HeaderType;
+            else
+                return Type_Music;
+        } else
             return Type_Music;
     }
 
@@ -93,16 +102,19 @@ public class MusicRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof MusicHolder) {
-            Music music = musicList.get(position - 1);
+            int newPosition = position;
+            if (showHeader)
+                newPosition = position - 1;
+            Music music = musicList.get(newPosition);
             TextView musicNameTV = ((MusicHolder) holder).musicNameTV;
             musicNameTV.setText(music.getName());
             ((MusicHolder) holder).singerNameTV.setText(music.getArtist());
             float rating = ((float) music.getRating()) / 20;
             Log.d("MusicRecyclerAdapter", String.valueOf(music.getRating()) + "\n rating: " + String.valueOf(rating));
             ((MusicHolder) holder).ratingBar.setRating(rating);
-            holder.itemView.setTag(position - 1);
+            holder.itemView.setTag(newPosition);
             ImageView imageView = ((MusicHolder) holder).playingStatusIV;
-            if (playingMusic == music && playingIndex == position - 1) {
+            if (playingMusic == music) {
                 CommonUtils.setTextMarquee(musicNameTV);
                 imageView.setVisibility(View.VISIBLE);
             } else
@@ -128,8 +140,14 @@ public class MusicRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
     public int getItemCount() {
         if (musicList.size() == 0)
             return 0;
-        else
-            return musicList.size() + 2;
+        else {
+            int totalCount = musicList.size();
+            if (showHeader)
+                totalCount++;
+            if (showFooter)
+                totalCount++;
+            return totalCount;
+        }
     }
 
     public void notifyLoadStatus(boolean isLoading) {
@@ -138,8 +156,7 @@ public class MusicRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
             notifyDataSetChanged();
     }
 
-    public void updateItemState(Music curMusic, int newIndex, int oldIndex) {
-        this.playingIndex = newIndex;
+    public void updateItemState(Music curMusic) {
         this.playingMusic = curMusic;
         notifyDataSetChanged();
     }
@@ -227,6 +244,11 @@ public class MusicRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
                 musicList.remove(index);
             }
         }
+        notifyDataSetChanged();
+    }
+
+    public void addMusicList(List<Music> musics) {
+        musicList.addAll(musics);
         notifyDataSetChanged();
     }
 

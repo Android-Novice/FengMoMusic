@@ -23,7 +23,9 @@ public class LyricsParser {
                 } else {
                     String curTimeStr = curItem.substring(0, timeEndIndex);
                     String curContent = curItem.substring(timeEndIndex + 1);
-                    lyricsItems.add(getLyricsItem(curTimeStr, curContent));
+                    LyricsItem item = getLyricsItem(curTimeStr, curContent);
+//                    item.setLyric(String.valueOf(lyricsItems.size()) + "------" + item.getLyric());
+                    lyricsItems.add(item);
                 }
             }
         }
