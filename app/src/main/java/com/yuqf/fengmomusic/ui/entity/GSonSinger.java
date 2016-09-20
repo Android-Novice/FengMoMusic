@@ -180,6 +180,8 @@ public class GSonSinger {
     }
 
     public String getPic() {
+        if (pic.startsWith("120"))
+            pic = pic.replace("120", "240");
         return pic;
     }
 

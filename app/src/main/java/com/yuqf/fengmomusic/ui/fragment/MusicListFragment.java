@@ -188,7 +188,10 @@ public class MusicListFragment extends Fragment implements PlayIndexChangedListe
     }
 
     private void loadRMusic() {
-        if (isLoading || allLoaded) return;
+        if (isLoading || allLoaded) {
+            finishRefreshing();
+            return;
+        }
         this.pIndex++;
         isLoading = true;
 
@@ -233,7 +236,10 @@ public class MusicListFragment extends Fragment implements PlayIndexChangedListe
     }
 
     private void loadSMusic() {
-        if (isLoading || allLoaded) return;
+        if (isLoading || allLoaded) {
+            finishRefreshing();
+            return;
+        }
         this.pIndex++;
         isLoading = true;
 

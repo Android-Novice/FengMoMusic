@@ -2,6 +2,7 @@ package com.yuqf.fengmomusic.ui.adapter;
 
 import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 
 public class GridSpacingItemDecoration extends RecyclerView.ItemDecoration {
@@ -29,5 +30,12 @@ public class GridSpacingItemDecoration extends RecyclerView.ItemDecoration {
 
         }
         outRect.top = spacing;
+
+        int width = view.getWidth();
+        int height = view.getHeight();
+        Log.d("SpacingItem", String.format("width:%d\nheight:%d\nTop:%d\nLeft:%d\nRight:%d\nBottom:%d\n",
+                width, height, outRect.top, outRect.left, outRect.right, outRect.bottom));
     }
+
+
 }

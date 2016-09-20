@@ -3,9 +3,9 @@
     android:id="@+id/singer_choice_tv"
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
-    android:layout_marginLeft="2dp"
-    android:layout_marginRight="2dp"
+    android:background="@drawable/singer_fragment_top_style"
     android:gravity="center"
     android:minWidth="40dp"
     android:text="A"
+    android:textColor="@color/singer_fragment_top_text_style"
     android:textSize="18sp" />

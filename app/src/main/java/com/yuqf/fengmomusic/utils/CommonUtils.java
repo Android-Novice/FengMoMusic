@@ -267,17 +267,17 @@ public class CommonUtils {
         return parentDir + "/" + String.valueOf(musicId) + ".lrc";
     }
 
-    public static void saveSingerInfoJson(String artist, int artistId, String json) {
+    public static void saveSingerInfoJson(String artist, String artistId, String json) {
         String jsonPath = getSingerJsonPath(artist, artistId);
         saveTextToDevice(json, jsonPath);
     }
 
-    public static String readSingerInfoJson(String artist, int artistId) {
+    public static String readSingerInfoJson(String artist, String artistId) {
         String jsonPath = getSingerJsonPath(artist, artistId);
         return readTextFromDevice(jsonPath);
     }
 
-    private static String getSingerJsonPath(String artist, int artistId) {
+    private static String getSingerJsonPath(String artist, String artistId) {
         String rootPath = getDocumentRootPath();
         String jsonDir = rootPath + "/" + artist;
         File parentDir = new File(jsonDir);

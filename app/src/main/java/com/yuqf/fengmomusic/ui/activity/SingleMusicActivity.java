@@ -275,6 +275,7 @@ public class SingleMusicActivity extends BaseActivity implements MusicPlayerList
     private void notifyMusicId(int musicId) {
         playingMusicFragment.setMusicId(musicId);
         playlistFragment.setMusic(curMusic);
+        singerInfoFragment.showSingerInfo(curMusic.getArtist(), curMusic.getArtistId());
         Bitmap bitmap500 = CommonUtils.getMusicCover(musicId, Global.Blurred_Image_Size);
         if (bitmap500 == null) {
             Log.d(logTag, "image 500 is null");

@@ -5,13 +5,13 @@ import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Pair;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,7 +23,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.yuqf.fengmomusic.R;
 import com.yuqf.fengmomusic.ui.activity.MusicListActivity;
-import com.yuqf.fengmomusic.ui.adapter.GridSpacingItemDecoration;
 import com.yuqf.fengmomusic.ui.adapter.SingerRecyclerViewAdapter;
 import com.yuqf.fengmomusic.ui.entity.GsonSingerList;
 import com.yuqf.fengmomusic.ui.entity.RetrofitServices;
@@ -142,7 +141,7 @@ public class SingerListFragment extends Fragment implements SwipeRefreshLayout.O
         final GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), spanCount);
         gridLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(gridLayoutManager);
-        recyclerView.addItemDecoration(new GridSpacingItemDecoration(20, spanCount, true));
+//        recyclerView.addItemDecoration(new GridSpacingItemDecoration(20, spanCount, true));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override

@@ -1,6 +1,5 @@
 package com.yuqf.fengmomusic.ui.fragment;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -21,7 +20,6 @@ public class SingerFragment extends Fragment {
 
     private final String logTag = "SingerFragment";
     private View parentView;
-    //    private ImageView loadingCoverIV;
     private LinearLayout singerKindContainer;
     private LinearLayout singerOrderContainer;
     private List<SingerListFragment> fragmentList;
@@ -29,9 +27,6 @@ public class SingerFragment extends Fragment {
 
     private int category = 0;//0-10
     private int prefixIndex = 0;
-    private int selectedColor = Color.TRANSPARENT;
-    private int normalColor = Color.TRANSPARENT;
-    final int normalBackColor = Color.TRANSPARENT;
     private SingerListFragment curFragment;
 
     public SingerFragment() {
@@ -49,9 +44,6 @@ public class SingerFragment extends Fragment {
                              Bundle savedInstanceState) {
         if (parentView == null) {
             parentView = inflater.inflate(R.layout.fragment_singer, container, false);
-
-            selectedColor = getResources().getColor(R.color.colorPrimaryDark);
-            normalColor = getResources().getColor(R.color.colorAccent);
 
             initChoiceLayout();
         } else {
@@ -72,7 +64,7 @@ public class SingerFragment extends Fragment {
 
         for (int i = 0; i < singerKindsArr.length; i++) {
             String kind = singerKindsArr[i];
-            View view = inflater.inflate(R.layout.singer_kind_choice_layout, singerKindContainer, false);
+            View view = inflater.inflate(R.layout.singer_order_choice_layout, singerKindContainer, false);
             final TextView kindTV = (TextView) view.findViewById(R.id.singer_choice_tv);
             kindTV.setText(kind);
             initTopChoiceItem(i, category, singerKindsArr.length, view, kindTV);
@@ -84,11 +76,9 @@ public class SingerFragment extends Fragment {
                     Log.d(logTag, "click singer kind index: " + String.valueOf(category));
                     View oldView = singerKindContainer.getChildAt(category);
                     TextView oldTV = (TextView) oldView.findViewById(R.id.singer_choice_tv);
-                    oldTV.setTextColor(normalColor);
-                    oldTV.setBackgroundColor(normalBackColor);
+                    oldTV.setSelected(false);
                     category = curIndex;
-                    kindTV.setTextColor(selectedColor);
-                    kindTV.setBackgroundColor(normalColor);
+                    kindTV.setSelected(true);
                     showFragmentByKind();
                 }
             });
@@ -107,11 +97,9 @@ public class SingerFragment extends Fragment {
                     if (prefixIndex == curIndex) return;
                     View oldView = singerOrderContainer.getChildAt(prefixIndex);
                     TextView oldTV = (TextView) oldView.findViewById(R.id.singer_choice_tv);
-                    oldTV.setTextColor(normalColor);
-                    oldTV.setBackgroundColor(normalBackColor);
+                    oldTV.setSelected(false);
                     prefixIndex = curIndex;
-                    orderTV.setTextColor(selectedColor);
-                    orderTV.setBackgroundColor(normalColor);
+                    orderTV.setSelected(true);
                     showFragmentByKind();
                 }
             });
@@ -130,11 +118,9 @@ public class SingerFragment extends Fragment {
             ((ViewGroup.MarginLayoutParams) layoutParams).setMargins(3, 0, 3, 0);
         }
         if (actualIndex == curIndex) {
-            textView.setTextColor(selectedColor);
-            textView.setBackgroundColor(normalColor);
+            textView.setSelected(true);
         } else {
-            textView.setTextColor(normalColor);
-            textView.setBackgroundColor(normalBackColor);
+            textView.setSelected(false);
         }
     }
 

@@ -25,7 +25,7 @@ public class RetrofitServices {
 
         //        http://search.kuwo.cn/r.s?stype=artistinfo&artistid=
         @GET("r.s?stype=artistinfo")
-        Call<ResponseBody> getSingerInfo(@Query("artistid") int artistid);
+        Call<ResponseBody> getSingerInfo(@Query("artistid") String artistid);
     }
 
     public interface RankingService {
