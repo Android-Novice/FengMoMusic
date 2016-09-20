@@ -15,7 +15,8 @@ import com.yuqf.customviews.RoundImageView;
 import com.yuqf.fengmomusic.R;
 import com.yuqf.fengmomusic.ui.entity.GSonSinger;
 import com.yuqf.fengmomusic.ui.entity.RetrofitServices;
-import com.yuqf.fengmomusic.utils.CommonUtils;
+import com.yuqf.fengmomusic.utils.FileUtils;
+import com.yuqf.fengmomusic.utils.UrlHelper;
 
 import java.io.IOException;
 
@@ -97,7 +98,7 @@ public class SingerInfoFragment extends Fragment {
 
     private void showInfo() {
         Log.d(logTag, "1===============6");
-        String json = CommonUtils.readSingerInfoJson(artist, artistId);
+        String json = FileUtils.readSingerInfoJson(artist, artistId);
         if (!TextUtils.isEmpty(json)) {
             Log.d(logTag, "1===============7");
             showContent(true);
@@ -105,7 +106,7 @@ public class SingerInfoFragment extends Fragment {
             return;
         }
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(CommonUtils.UrlHelper.Singer_Info_Base_Url)
+                .baseUrl(UrlHelper.Singer_Info_Base_Url)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         RetrofitServices.SingerService service = retrofit.create(RetrofitServices.SingerService.class);
@@ -120,7 +121,7 @@ public class SingerInfoFragment extends Fragment {
                         if (!TextUtils.isEmpty(json)) {
                             showContent(true);
                             parseJson(json);
-                            CommonUtils.saveSingerInfoJson(artist, artistId, json);
+                            FileUtils.saveSingerInfoJson(artist, artistId, json);
                             return;
                         }
                     } catch (IOException e) {
@@ -182,7 +183,7 @@ public class SingerInfoFragment extends Fragment {
         constellationTV.setText(getString(gSonSinger.getConstellation()));
         singerDetailTV.setText(getString(gSonSinger.getInfo()));
 
-        Bitmap bitmap = CommonUtils.getSingerHead(gSonSinger.getPic());
+        Bitmap bitmap = FileUtils.getSingerHead(gSonSinger.getPic());
         if (bitmap != null)
             headerIV.setImageBitmap(bitmap);
         else

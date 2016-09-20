@@ -23,8 +23,9 @@ import com.yuqf.customviews.RoundProgressBar;
 import com.yuqf.fengmomusic.R;
 import com.yuqf.fengmomusic.base.MyApplication;
 import com.yuqf.fengmomusic.ui.entity.RetrofitServices;
-import com.yuqf.fengmomusic.utils.CommonUtils;
+import com.yuqf.fengmomusic.utils.FileUtils;
 import com.yuqf.fengmomusic.utils.Global;
+import com.yuqf.fengmomusic.utils.UrlHelper;
 
 import java.io.IOException;
 
@@ -178,7 +179,7 @@ public class PlayingMusicFragment extends Fragment implements Button.OnClickList
         this.musicId = musicId;
         setRoundProgress(0);
         if (rootView != null) {
-            Bitmap bitmap300 = CommonUtils.getMusicCover(musicId, Global.Round_Image_Size);
+            Bitmap bitmap300 = FileUtils.getMusicCover(musicId, Global.Round_Image_Size);
             if (bitmap300 == null) {
                 loadCoverFromWeb(musicId);
             } else {
@@ -189,7 +190,7 @@ public class PlayingMusicFragment extends Fragment implements Button.OnClickList
 
     private void loadCoverFromWeb(int musicId) {
         Retrofit retrofit1 = new Retrofit.Builder()
-                .baseUrl(CommonUtils.UrlHelper.Music_Cover_Base_Url)
+                .baseUrl(UrlHelper.Music_Cover_Base_Url)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         RetrofitServices.MusicService musicService1 = retrofit1.create(RetrofitServices.MusicService.class);
@@ -225,7 +226,7 @@ public class PlayingMusicFragment extends Fragment implements Button.OnClickList
             Log.d(logTag, "onBitmapLoaded.... \n");
 
             showCover(bitmap);
-            CommonUtils.saveMusicCover(bitmap, musicId, Global.Round_Image_Size);
+            FileUtils.saveMusicCover(bitmap, musicId, Global.Round_Image_Size);
         }
 
         @Override

@@ -14,8 +14,9 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.yuqf.fengmomusic.R;
 import com.yuqf.fengmomusic.base.MyApplication;
+import com.yuqf.fengmomusic.interfaces.OnRecyclerViewItemClickListener;
 import com.yuqf.fengmomusic.ui.entity.GsonRankingList;
-import com.yuqf.fengmomusic.utils.CommonUtils;
+import com.yuqf.fengmomusic.utils.FileUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +27,7 @@ public class RankingRecyclerViewAdapter extends RecyclerView.Adapter<RankingRecy
     private List<GsonRankingList.ChildRanking> childRankingList;
     private LayoutInflater layoutInflater;
     private List<String> sourceIdList;
-    private CommonUtils.OnRecyclerViewItemClickListener viewItemClickListener;
+    private OnRecyclerViewItemClickListener viewItemClickListener;
     private Picasso picasso;
 
     public RankingRecyclerViewAdapter() {
@@ -65,7 +66,7 @@ public class RankingRecyclerViewAdapter extends RecyclerView.Adapter<RankingRecy
 //        if (TextUtils.isEmpty(picPath))
 //            picPath = childRanking.getPic();
         String picPath = childRanking.getPicPath();
-        Bitmap bitmap = CommonUtils.getRankingCover(childRanking.getName(), picPath);
+        Bitmap bitmap = FileUtils.getRankingCover(childRanking.getName(), picPath);
         if (bitmap != null) {
             holder.rankingIV.setImageBitmap(bitmap);
         } else {
@@ -75,7 +76,7 @@ public class RankingRecyclerViewAdapter extends RecyclerView.Adapter<RankingRecy
                     @Override
                     public void onSuccess() {
                         Bitmap bitmap = ((BitmapDrawable) holder.rankingIV.getDrawable()).getBitmap();
-                        CommonUtils.saveRankingCover(bitmap, childRanking.getName(), coverPath);
+                        FileUtils.saveRankingCover(bitmap, childRanking.getName(), coverPath);
                     }
 
                     @Override
@@ -179,11 +180,11 @@ public class RankingRecyclerViewAdapter extends RecyclerView.Adapter<RankingRecy
         }
     }
 
-    public CommonUtils.OnRecyclerViewItemClickListener getViewItemClickListener() {
+    public OnRecyclerViewItemClickListener getViewItemClickListener() {
         return viewItemClickListener;
     }
 
-    public void setViewItemClickListener(CommonUtils.OnRecyclerViewItemClickListener viewItemClickListener) {
+    public void setViewItemClickListener(OnRecyclerViewItemClickListener viewItemClickListener) {
         this.viewItemClickListener = viewItemClickListener;
     }
 

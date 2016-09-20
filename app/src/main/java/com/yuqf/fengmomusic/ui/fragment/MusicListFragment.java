@@ -20,6 +20,7 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.yuqf.fengmomusic.R;
+import com.yuqf.fengmomusic.interfaces.OnRecyclerViewItemClickListener;
 import com.yuqf.fengmomusic.media.Music;
 import com.yuqf.fengmomusic.media.MusicPlayer;
 import com.yuqf.fengmomusic.media.PlayIndexChangedListener;
@@ -28,8 +29,8 @@ import com.yuqf.fengmomusic.ui.adapter.MusicRecyclerViewAdapter;
 import com.yuqf.fengmomusic.ui.entity.GsonRMusicList;
 import com.yuqf.fengmomusic.ui.entity.GsonSMusicList;
 import com.yuqf.fengmomusic.ui.entity.RetrofitServices;
-import com.yuqf.fengmomusic.utils.CommonUtils;
 import com.yuqf.fengmomusic.utils.Global;
+import com.yuqf.fengmomusic.utils.UrlHelper;
 
 import java.io.IOException;
 import java.util.List;
@@ -67,7 +68,7 @@ public class MusicListFragment extends Fragment implements PlayIndexChangedListe
         super.onCreate(savedInstanceState);
         MusicPlayer.getInstance().addChangedListener(this);
         adapter = new MusicRecyclerViewAdapter(true, true);
-        adapter.setOnRecyclerViewItemClickListener(new CommonUtils.OnRecyclerViewItemClickListener() {
+        adapter.setOnRecyclerViewItemClickListener(new OnRecyclerViewItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
                 MusicPlayer.getInstance().setPlayingMusics(adapter.getMusicList());
@@ -196,7 +197,7 @@ public class MusicListFragment extends Fragment implements PlayIndexChangedListe
         isLoading = true;
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(CommonUtils.UrlHelper.Music_From_Ranking_Base_Url)
+                .baseUrl(UrlHelper.Music_From_Ranking_Base_Url)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         RetrofitServices.MusicService service = retrofit.create(RetrofitServices.MusicService.class);
@@ -244,7 +245,7 @@ public class MusicListFragment extends Fragment implements PlayIndexChangedListe
         isLoading = true;
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(CommonUtils.UrlHelper.Music_From_Singer_Base_Url)
+                .baseUrl(UrlHelper.Music_From_Singer_Base_Url)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         RetrofitServices.MusicService service = retrofit.create(RetrofitServices.MusicService.class);

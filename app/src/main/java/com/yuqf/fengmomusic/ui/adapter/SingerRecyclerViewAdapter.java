@@ -14,8 +14,10 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.yuqf.fengmomusic.R;
 import com.yuqf.fengmomusic.base.MyApplication;
+import com.yuqf.fengmomusic.interfaces.OnRecyclerViewItemClickListener;
 import com.yuqf.fengmomusic.ui.entity.GsonSingerList;
-import com.yuqf.fengmomusic.utils.CommonUtils;
+import com.yuqf.fengmomusic.utils.FileUtils;
+import com.yuqf.fengmomusic.utils.UrlHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +28,7 @@ public class SingerRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
     private LayoutInflater layoutInflater;
     private final int SingerType = 1;
     private final int FooterType = 2;
-    private CommonUtils.OnRecyclerViewItemClickListener viewItemClickListener;
+    private OnRecyclerViewItemClickListener viewItemClickListener;
     private boolean loading;
     private Picasso picasso;
 
@@ -66,14 +68,14 @@ public class SingerRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
         if (holder instanceof SingerHolder) {
             final GsonSingerList.Singer singer = singerList.get(position);
             String name = singer.getName();
-            String url = CommonUtils.UrlHelper.Singer_Head_Get_Base_Url + singer.getPic();
+            String url = UrlHelper.Singer_Head_Get_Base_Url + singer.getPic();
             String playCount = String.valueOf(singer.getListen()) + MyApplication.getContext().getResources().getString(R.string.play_count_suffix);
             String musicCount = String.valueOf(singer.getMusic_num()) + MyApplication.getContext().getResources().getString(R.string.music_count_suffix);
             ((SingerHolder) holder).singerNameTV.setText(name);
             ((SingerHolder) holder).playCountTV.setText(playCount);
             ((SingerHolder) holder).musicCountTV.setText(musicCount);
             final ImageView headIV = ((SingerHolder) holder).singerHeadIV;
-            Bitmap bitmap = CommonUtils.getSingerHead(singer.getPic());
+            Bitmap bitmap = FileUtils.getSingerHead(singer.getPic());
             if (bitmap != null) {
                 headIV.setImageBitmap(bitmap);
             } else {
@@ -81,7 +83,7 @@ public class SingerRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                     @Override
                     public void onSuccess() {
                         Bitmap bitmap = ((BitmapDrawable) headIV.getDrawable()).getBitmap();
-                        CommonUtils.saveSingerHead(bitmap, singer.getPic());
+                        FileUtils.saveSingerHead(bitmap, singer.getPic());
                     }
 
                     @Override
@@ -102,11 +104,11 @@ public class SingerRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
         }
     }
 
-    public CommonUtils.OnRecyclerViewItemClickListener getViewItemClickListener() {
+    public OnRecyclerViewItemClickListener getViewItemClickListener() {
         return viewItemClickListener;
     }
 
-    public void setViewItemClickListener(CommonUtils.OnRecyclerViewItemClickListener viewItemClickListener) {
+    public void setViewItemClickListener(OnRecyclerViewItemClickListener viewItemClickListener) {
         this.viewItemClickListener = viewItemClickListener;
     }
 

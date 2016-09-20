@@ -17,6 +17,7 @@ import com.yuqf.fengmomusic.base.BaseActivity;
 import com.yuqf.fengmomusic.ui.fragment.MusicListFragment;
 import com.yuqf.fengmomusic.utils.Blur;
 import com.yuqf.fengmomusic.utils.CommonUtils;
+import com.yuqf.fengmomusic.utils.FileUtils;
 import com.yuqf.fengmomusic.utils.Global;
 
 public class MusicListActivity extends BaseActivity {
@@ -104,7 +105,7 @@ public class MusicListActivity extends BaseActivity {
         boolean hasWebCover = true;
         if (from.equals(Global.INTENT_FROM_RANKING)) {
             Log.d(logTag, "1....\n");
-            normalBmp = CommonUtils.getRankingCover(title, coverUrl);
+            normalBmp = FileUtils.getRankingCover(title, coverUrl);
             if (normalBmp == null) {
                 Log.d(logTag, "2....\n");
                 hasWebCover = false;
@@ -112,7 +113,7 @@ public class MusicListActivity extends BaseActivity {
             }
         } else if (from.equals(Global.INTENT_FROM_SINGER)) {
             Log.d(logTag, "3....\n");
-            normalBmp = CommonUtils.getSingerHead(coverUrl);
+            normalBmp = FileUtils.getSingerHead(coverUrl);
             if (normalBmp == null) {
                 Log.d(logTag, "4....\n");
                 hasWebCover = false;
@@ -134,37 +135,37 @@ public class MusicListActivity extends BaseActivity {
         if (from.equals(Global.INTENT_FROM_RANKING)) {
             if (hasWebCover) {
                 Log.d(logTag, "7....\n");
-                blurredBmp = CommonUtils.getBlurredRankingBitmap(title, coverUrl);
+                blurredBmp = FileUtils.getBlurredRankingBitmap(title, coverUrl);
                 if (blurredBmp == null) {
                     Log.d(logTag, "8....\n");
                     blurredBmp = Blur.fastblur(this, blurringBmp, 13);
-                    CommonUtils.saveBlurredRankingBitmap(blurredBmp, title, coverUrl);
+                    FileUtils.saveBlurredRankingBitmap(blurredBmp, title, coverUrl);
                 }
             } else {
                 Log.d(logTag, "9....\n");
-                blurredBmp = CommonUtils.getBlurredRankingBitmap(Global.RANKING_DEFAULT_NAME, Global.RANKING_DEFAULT_URL);
+                blurredBmp = FileUtils.getBlurredRankingBitmap(Global.RANKING_DEFAULT_NAME, Global.RANKING_DEFAULT_URL);
                 if (blurredBmp == null) {
                     Log.d(logTag, "10....\n");
                     blurredBmp = Blur.fastblur(this, blurringBmp, 13);
-                    CommonUtils.saveBlurredRankingBitmap(blurredBmp, Global.RANKING_DEFAULT_NAME, Global.RANKING_DEFAULT_URL);
+                    FileUtils.saveBlurredRankingBitmap(blurredBmp, Global.RANKING_DEFAULT_NAME, Global.RANKING_DEFAULT_URL);
                 }
             }
         } else if (from.equals(Global.INTENT_FROM_SINGER)) {
             if (hasWebCover) {
                 Log.d(logTag, "11....\n");
-                blurredBmp = CommonUtils.getBlurredSingerBitmap(coverUrl);
+                blurredBmp = FileUtils.getBlurredSingerBitmap(coverUrl);
                 if (blurredBmp == null) {
                     Log.d(logTag, "12....\n");
                     blurredBmp = Blur.fastblur(this, blurringBmp, 13);
-                    CommonUtils.saveBlurredSingerBitmap(blurredBmp, coverUrl);
+                    FileUtils.saveBlurredSingerBitmap(blurredBmp, coverUrl);
                 }
             } else {
                 Log.d(logTag, "13....\n");
-                blurredBmp = CommonUtils.getBlurredSingerBitmap(Global.SINGER_DEFAULT_URL);
+                blurredBmp = FileUtils.getBlurredSingerBitmap(Global.SINGER_DEFAULT_URL);
                 if (blurredBmp == null) {
                     Log.d(logTag, "14....\n");
                     blurredBmp = Blur.fastblur(this, blurringBmp, 13);
-                    CommonUtils.saveBlurredSingerBitmap(blurredBmp, Global.SINGER_DEFAULT_URL);
+                    FileUtils.saveBlurredSingerBitmap(blurredBmp, Global.SINGER_DEFAULT_URL);
                 }
             }
         }

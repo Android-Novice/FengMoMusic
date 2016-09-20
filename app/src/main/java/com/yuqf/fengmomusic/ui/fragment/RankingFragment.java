@@ -19,6 +19,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.yuqf.fengmomusic.R;
+import com.yuqf.fengmomusic.interfaces.OnRecyclerViewItemClickListener;
 import com.yuqf.fengmomusic.ui.activity.MusicListActivity;
 import com.yuqf.fengmomusic.ui.adapter.GridSpacingItemDecoration;
 import com.yuqf.fengmomusic.ui.adapter.RankingRecyclerViewAdapter;
@@ -26,6 +27,7 @@ import com.yuqf.fengmomusic.ui.entity.GsonRankingList;
 import com.yuqf.fengmomusic.ui.entity.RetrofitServices;
 import com.yuqf.fengmomusic.utils.CommonUtils;
 import com.yuqf.fengmomusic.utils.Global;
+import com.yuqf.fengmomusic.utils.UrlHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,7 +62,7 @@ public class RankingFragment extends Fragment implements SwipeRefreshLayout.OnRe
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         adapter = new RankingRecyclerViewAdapter();
-        adapter.setViewItemClickListener(new CommonUtils.OnRecyclerViewItemClickListener() {
+        adapter.setViewItemClickListener(new OnRecyclerViewItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
                 GsonRankingList.ChildRanking curItem = adapter.GetChildByPosition(position);
@@ -189,7 +191,7 @@ public class RankingFragment extends Fragment implements SwipeRefreshLayout.OnRe
         isFirstLoaded = true;
         isLoading = true;
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(CommonUtils.UrlHelper.Ranking_Get_Base_Url)
+                .baseUrl(UrlHelper.Ranking_Get_Base_Url)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 

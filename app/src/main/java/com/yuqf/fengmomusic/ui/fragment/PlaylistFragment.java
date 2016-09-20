@@ -12,12 +12,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.yuqf.fengmomusic.R;
+import com.yuqf.fengmomusic.interfaces.OnRecyclerViewItemClickListener;
 import com.yuqf.fengmomusic.media.Music;
 import com.yuqf.fengmomusic.media.MusicPlayer;
 import com.yuqf.fengmomusic.media.PlayIndexChangedListener;
 import com.yuqf.fengmomusic.ui.adapter.LinearLayoutItemDecoration;
 import com.yuqf.fengmomusic.ui.adapter.MusicRecyclerViewAdapter;
-import com.yuqf.fengmomusic.utils.CommonUtils;
 
 public class PlaylistFragment extends Fragment implements PlayIndexChangedListener {
     private final String logTag = "MusicListFragment";
@@ -35,7 +35,7 @@ public class PlaylistFragment extends Fragment implements PlayIndexChangedListen
         MusicPlayer.getInstance().addChangedListener(this);
         adapter = new MusicRecyclerViewAdapter(false, false);
         adapter.addMusicList(MusicPlayer.getInstance().getPlayingMusics());
-        adapter.setOnRecyclerViewItemClickListener(new CommonUtils.OnRecyclerViewItemClickListener() {
+        adapter.setOnRecyclerViewItemClickListener(new OnRecyclerViewItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
                 MusicPlayer.getInstance().setPlayingMusics(adapter.getMusicList());

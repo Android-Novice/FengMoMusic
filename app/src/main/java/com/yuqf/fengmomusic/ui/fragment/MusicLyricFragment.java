@@ -16,7 +16,8 @@ import com.yuqf.fengmomusic.media.Music;
 import com.yuqf.fengmomusic.ui.entity.GSonLyric;
 import com.yuqf.fengmomusic.ui.entity.GsonLyricList;
 import com.yuqf.fengmomusic.ui.entity.RetrofitServices;
-import com.yuqf.fengmomusic.utils.CommonUtils;
+import com.yuqf.fengmomusic.utils.FileUtils;
+import com.yuqf.fengmomusic.utils.UrlHelper;
 
 import java.io.UnsupportedEncodingException;
 import java.util.List;
@@ -50,6 +51,7 @@ public class MusicLyricFragment extends Fragment {
             loadingContent = rootView.findViewById(R.id.no_lyric_content);
             lyricStatusTV = (TextView) rootView.findViewById(R.id.lyric_status_tv);
             lyricTV = (LyricsView) rootView.findViewById(R.id.lyric_tv);
+            showLyric();
         } else {
             ViewGroup viewGroup = (ViewGroup) rootView.getParent();
             if (viewGroup != null) {
@@ -70,8 +72,12 @@ public class MusicLyricFragment extends Fragment {
     public void showLyric(Music music) {
         this.music = music;
         if (rootView == null) return;
-        showLoadState(0);
+        showLyric();
+    }
 
+    public void showLyric() {
+        showLoadState(0);
+        if (music == null) return;
         artist = music.getArtist();
         if (artist.contains("&")) {
             String[] array = artist.split("&");
@@ -84,7 +90,7 @@ public class MusicLyricFragment extends Fragment {
             if (name.endsWith("-"))
                 name = name.substring(0, name.length() - 1);
         }
-        String lyric = CommonUtils.readLyric(artist, name, music.getId());
+        String lyric = FileUtils.readLyric(artist, name, music.getId());
         if (!TextUtils.isEmpty(lyric)) {
             showLoadState(2);
             lyricTV.setText(lyric);
@@ -92,7 +98,7 @@ public class MusicLyricFragment extends Fragment {
         }
         String key = name + " " + artist;
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(CommonUtils.UrlHelper.Lyric_Base_Url)
+                .baseUrl(UrlHelper.Lyric_Base_Url)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         final RetrofitServices.LyricService lyricService = retrofit.create(RetrofitServices.LyricService.class);
@@ -173,7 +179,7 @@ public class MusicLyricFragment extends Fragment {
                             if (!TextUtils.isEmpty(content)) {
                                 showLoadState(2);
                                 lyricTV.setText(content);
-                                CommonUtils.saveLyric(artist, MusicLyricFragment.this.name, music.getId(), content);
+                                FileUtils.saveLyric(artist, MusicLyricFragment.this.name, music.getId(), content);
                                 return;
                             }
                         }

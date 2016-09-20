@@ -23,6 +23,7 @@ import com.yuqf.fengmomusic.base.MyApplication;
 import com.yuqf.fengmomusic.ui.entity.RetrofitServices;
 import com.yuqf.fengmomusic.utils.CommonUtils;
 import com.yuqf.fengmomusic.utils.Global;
+import com.yuqf.fengmomusic.utils.UrlHelper;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -325,7 +326,7 @@ public class MusicPlayer {
 
     private void playWebMusic(int id) {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(CommonUtils.UrlHelper.Music_File_Base_Url)
+                .baseUrl(UrlHelper.Music_File_Base_Url)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         RetrofitServices.MusicService musicService = retrofit.create(RetrofitServices.MusicService.class);
@@ -355,7 +356,7 @@ public class MusicPlayer {
         });
 
         Retrofit retrofit1 = new Retrofit.Builder()
-                .baseUrl(CommonUtils.UrlHelper.Music_Cover_Base_Url)
+                .baseUrl(UrlHelper.Music_Cover_Base_Url)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         RetrofitServices.MusicService musicService1 = retrofit1.create(RetrofitServices.MusicService.class);

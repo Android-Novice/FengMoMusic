@@ -22,12 +22,14 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.yuqf.fengmomusic.R;
+import com.yuqf.fengmomusic.interfaces.OnRecyclerViewItemClickListener;
 import com.yuqf.fengmomusic.ui.activity.MusicListActivity;
 import com.yuqf.fengmomusic.ui.adapter.SingerRecyclerViewAdapter;
 import com.yuqf.fengmomusic.ui.entity.GsonSingerList;
 import com.yuqf.fengmomusic.ui.entity.RetrofitServices;
 import com.yuqf.fengmomusic.utils.CommonUtils;
 import com.yuqf.fengmomusic.utils.Global;
+import com.yuqf.fengmomusic.utils.UrlHelper;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -89,7 +91,7 @@ public class SingerListFragment extends Fragment implements SwipeRefreshLayout.O
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         adapter = new SingerRecyclerViewAdapter(getContext());
-        adapter.setViewItemClickListener(new CommonUtils.OnRecyclerViewItemClickListener() {
+        adapter.setViewItemClickListener(new OnRecyclerViewItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
                 GsonSingerList.Singer singer = adapter.getSingerByPosition(position);
@@ -188,7 +190,7 @@ public class SingerListFragment extends Fragment implements SwipeRefreshLayout.O
         isLoading = true;
         this.pageIndex++;
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(CommonUtils.UrlHelper.Singer_Get_Base_Url)
+                .baseUrl(UrlHelper.Singer_Get_Base_Url)
                 .addConverterFactory(GsonConverterFactory.create())
 //                .addConverterFactory(RetrofitServices.SingerConverterFactory.create())
                 .build();

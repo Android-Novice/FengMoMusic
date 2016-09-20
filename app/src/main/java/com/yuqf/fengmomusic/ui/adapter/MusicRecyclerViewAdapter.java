@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.yuqf.fengmomusic.R;
 import com.yuqf.fengmomusic.base.MyApplication;
+import com.yuqf.fengmomusic.interfaces.OnRecyclerViewItemClickListener;
 import com.yuqf.fengmomusic.media.Music;
 import com.yuqf.fengmomusic.ui.entity.GsonRMusicList;
 import com.yuqf.fengmomusic.ui.entity.GsonSMusicList;
@@ -29,7 +30,7 @@ public class MusicRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
     private List<GsonSMusicList.SMusic> sMusicList;
 
     private LayoutInflater inflater;
-    private CommonUtils.OnRecyclerViewItemClickListener onRecyclerViewItemClickListener;
+    private OnRecyclerViewItemClickListener onRecyclerViewItemClickListener;
     private final int Type_Footer = 2;
     private final int Type_Music = 1;
     private final int HeaderType = 3;
@@ -161,7 +162,7 @@ public class MusicRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
         notifyDataSetChanged();
     }
 
-    public void setOnRecyclerViewItemClickListener(CommonUtils.OnRecyclerViewItemClickListener onRecyclerViewItemClickListener) {
+    public void setOnRecyclerViewItemClickListener(OnRecyclerViewItemClickListener onRecyclerViewItemClickListener) {
         this.onRecyclerViewItemClickListener = onRecyclerViewItemClickListener;
     }
 

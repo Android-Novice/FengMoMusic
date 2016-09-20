@@ -33,7 +33,9 @@ import com.yuqf.fengmomusic.ui.fragment.PlaylistFragment;
 import com.yuqf.fengmomusic.ui.fragment.SingerInfoFragment;
 import com.yuqf.fengmomusic.utils.Blur;
 import com.yuqf.fengmomusic.utils.CommonUtils;
+import com.yuqf.fengmomusic.utils.FileUtils;
 import com.yuqf.fengmomusic.utils.Global;
+import com.yuqf.fengmomusic.utils.UrlHelper;
 
 import java.io.IOException;
 import java.util.Locale;
@@ -276,7 +278,7 @@ public class SingleMusicActivity extends BaseActivity implements MusicPlayerList
         playingMusicFragment.setMusicId(musicId);
         playlistFragment.setMusic(curMusic);
         singerInfoFragment.showSingerInfo(curMusic.getArtist(), curMusic.getArtistId());
-        Bitmap bitmap500 = CommonUtils.getMusicCover(musicId, Global.Blurred_Image_Size);
+        Bitmap bitmap500 = FileUtils.getMusicCover(musicId, Global.Blurred_Image_Size);
         if (bitmap500 == null) {
             Log.d(logTag, "image 500 is null");
             loadCoverFromWeb(musicId, Global.Blurred_Image_Size);
@@ -288,7 +290,7 @@ public class SingleMusicActivity extends BaseActivity implements MusicPlayerList
 
     private void loadCoverFromWeb(int musicId, final int imageSize) {
         Retrofit retrofit1 = new Retrofit.Builder()
-                .baseUrl(CommonUtils.UrlHelper.Music_Cover_Base_Url)
+                .baseUrl(UrlHelper.Music_Cover_Base_Url)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         RetrofitServices.MusicService musicService1 = retrofit1.create(RetrofitServices.MusicService.class);
@@ -356,7 +358,7 @@ public class SingleMusicActivity extends BaseActivity implements MusicPlayerList
         if (bitmap != null) {
             Bitmap blurredBmp = Blur.fastblur(MyApplication.getContext(), bitmap, 25);
             blurredIV.setImageBitmap(blurredBmp);
-            CommonUtils.saveMusicCover(blurredBmp, curMusic.getId(), Global.Blurred_Image_Size);
+            FileUtils.saveMusicCover(blurredBmp, curMusic.getId(), Global.Blurred_Image_Size);
         }
     }
 
