@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Rect;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.Pair;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -56,7 +57,7 @@ public class CommonUtils {
         context.startActivity(intent);
     }
 
-    private static Toast toast;
+    private static Toast toast = null;
 
     public static void showToast(int resId, boolean isLongTime) {
         String text = MyApplication.getContext().getResources().getString(resId);
@@ -64,11 +65,11 @@ public class CommonUtils {
     }
 
     public static void showToast(String text, boolean isLongTime) {
+        Log.d("Show_Toast", text + "\n=======================");
         int time = isLongTime ? Toast.LENGTH_LONG : Toast.LENGTH_SHORT;
         if (toast == null) {
             toast = Toast.makeText(MyApplication.getContext(), text, time);
         } else {
-//            toast.cancel();
             toast.setDuration(time);
             toast.setText(text);
         }

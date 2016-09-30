@@ -1,4 +1,6 @@
-package com.yuqf.fengmomusic.media;
+package com.yuqf.fengmomusic.interfaces;
+
+import com.yuqf.fengmomusic.media.Music;
 
 public interface MusicPlayerListener {
 

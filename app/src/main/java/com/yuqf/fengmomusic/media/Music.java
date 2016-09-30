@@ -17,6 +17,15 @@ public class Music {
     private boolean isLocal;
     private int bufferingProgress;
     private String coverUrl;
+    private String playUrl;
+
+    public String getPlayUrl() {
+        return playUrl;
+    }
+
+    public void setPlayUrl(String playUrl) {
+        this.playUrl = playUrl;
+    }
 
     public int getId() {
         return id;

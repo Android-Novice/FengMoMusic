@@ -1,6 +1,7 @@
 package com.yuqf.fengmomusic.ui.fragment;
 
 
+import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -20,10 +21,13 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.yuqf.fengmomusic.R;
+import com.yuqf.fengmomusic.base.MyApplication;
+import com.yuqf.fengmomusic.download.DownloaderNew;
 import com.yuqf.fengmomusic.interfaces.OnRecyclerViewItemClickListener;
+import com.yuqf.fengmomusic.interfaces.PlayIndexChangedListener;
 import com.yuqf.fengmomusic.media.Music;
 import com.yuqf.fengmomusic.media.MusicPlayer;
-import com.yuqf.fengmomusic.media.PlayIndexChangedListener;
+import com.yuqf.fengmomusic.ui.activity.DownloadActivity;
 import com.yuqf.fengmomusic.ui.adapter.LinearLayoutItemDecoration;
 import com.yuqf.fengmomusic.ui.adapter.MusicRecyclerViewAdapter;
 import com.yuqf.fengmomusic.ui.entity.GsonRMusicList;
@@ -73,13 +77,18 @@ public class MusicListFragment extends Fragment implements PlayIndexChangedListe
             public void onItemClick(View view, int position) {
                 MusicPlayer.getInstance().setPlayingMusics(adapter.getMusicList());
                 MusicPlayer.getInstance().play(position);
-//                Music music = adapter.getMusicByPosition(position);
-//                musicPlayerView.play(music);
             }
 
             @Override
             public void onItemDownloadClick(View view, int position) {
-
+                Music music = adapter.getMusicList().get(position);
+                DownloaderNew downloader = new DownloaderNew(music);
+                Intent intent = new Intent(getContext(), DownloadActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                intent.putExtra("artist", music.getArtist());
+//                intent.putExtra("musicId", music.getId());
+//                intent.putExtra("music", music.getName());
+                MyApplication.getContext().startActivity(intent);
             }
         });
     }

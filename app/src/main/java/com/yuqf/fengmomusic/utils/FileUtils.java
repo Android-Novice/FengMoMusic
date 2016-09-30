@@ -3,8 +3,11 @@ package com.yuqf.fengmomusic.utils;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Environment;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
+
 import com.yuqf.fengmomusic.base.MyApplication;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -13,6 +16,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.util.Locale;
 
 public class FileUtils {
 
@@ -131,24 +135,13 @@ public class FileUtils {
         return decodeBitmap(filePath);
     }
 
+    @Nullable
     private static Bitmap decodeBitmap(String filePath) {
         File file = new File(filePath);
         if (file.exists()) {
             return BitmapFactory.decodeFile(filePath);
         }
         return null;
-    }
-
-    public static Bitmap scaleBitmap(Bitmap bitmap, int screenWidth, int screenHeight) {
-        int bmpWidth = bitmap.getWidth();
-        int bmpHeight = bitmap.getHeight();
-        float widthRate = (float) screenWidth / bmpWidth;
-        float heightRate = (float) screenHeight / bmpHeight;
-
-        if (widthRate < heightRate)
-            widthRate = heightRate;
-        bitmap = Bitmap.createScaledBitmap(bitmap, (int) (bmpWidth * widthRate), (int) (bmpHeight * widthRate), false);
-        return bitmap;
     }
 
     public static void saveLyric(String artist, String name, int musicId, String content) {
@@ -197,6 +190,7 @@ public class FileUtils {
         return jsonDir + "/" + String.valueOf(artistId) + ".json";
     }
 
+    @Nullable
     private static String readTextFromDevice(String filePath) {
         File file = new File(filePath);
         if (!file.exists())
@@ -224,6 +218,7 @@ public class FileUtils {
             FileOutputStream stream = new FileOutputStream(filePath);
             OutputStreamWriter writer = new OutputStreamWriter(stream);
             writer.write(content, 0, content.length());
+            writer.flush();
             stream.close();
         } catch (IOException e) {
             e.printStackTrace();
@@ -240,4 +235,22 @@ public class FileUtils {
         return filePath;
     }
 
+    public static String getMusicPath(String music, String artist) {
+        String filePath = getMusicRootPath();
+        artist = artist.replace("&", "+");
+        File fileDir = new File(filePath);
+        if (!fileDir.exists())
+            fileDir.mkdirs();
+        return String.format(Locale.getDefault(), "%s/%s-%s.mp3", filePath, artist, music);
+    }
+
+    private static String getMusicRootPath() {
+        String filePath = "";
+        if (Environment.getExternalStorageState() == Environment.MEDIA_MOUNTED || !Environment.isExternalStorageRemovable()) {
+            filePath = MyApplication.getContext().getExternalFilesDir(Environment.DIRECTORY_MUSIC).getPath();
+        }
+        if (TextUtils.isEmpty(filePath))
+            filePath = MyApplication.getContext().getFilesDir().getPath();
+        return filePath;
+    }
 }

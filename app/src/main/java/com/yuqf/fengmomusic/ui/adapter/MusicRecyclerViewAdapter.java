@@ -23,7 +23,7 @@ import com.yuqf.fengmomusic.utils.Global;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MusicRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements View.OnClickListener {
+public class MusicRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private List<Music> musicList;
     private List<GsonRMusicList.RMusic> rMusicList;
@@ -75,11 +75,25 @@ public class MusicRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
                 view.setClickable(false);
                 return footerHolder;
             case Type_Music:
-                View view2 = inflater.inflate(R.layout.item_music_layout, parent, false);
+                final View view2 = inflater.inflate(R.layout.item_music_layout, parent, false);
                 MusicHolder musicHolder = new MusicHolder(view2);
                 view2.setClickable(true);
-                musicHolder.downloadButton.setOnClickListener(this);
-                view2.setOnClickListener(this);
+                musicHolder.downloadButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (onRecyclerViewItemClickListener != null) {
+                            onRecyclerViewItemClickListener.onItemDownloadClick(view2, (int) view2.getTag());
+                        }
+                    }
+                });
+                view2.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (onRecyclerViewItemClickListener != null) {
+                            onRecyclerViewItemClickListener.onItemClick(v, (int) v.getTag());
+                        }
+                    }
+                });
                 return musicHolder;
             case HeaderType:
                 View header = inflater.inflate(R.layout.item_header_layout, parent, false);
@@ -88,16 +102,6 @@ public class MusicRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
                 return headerHolder;
         }
         return null;
-    }
-
-    @Override
-    public void onClick(View v) {
-        if (onRecyclerViewItemClickListener != null) {
-            if (v.getId() == R.id.music_download_button)
-                onRecyclerViewItemClickListener.onItemDownloadClick(v, (int) v.getTag());
-            else
-                onRecyclerViewItemClickListener.onItemClick(v, (int) v.getTag());
-        }
     }
 
     @Override

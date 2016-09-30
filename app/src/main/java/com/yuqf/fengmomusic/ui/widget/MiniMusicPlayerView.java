@@ -14,9 +14,9 @@ import android.widget.TextView;
 
 import com.yuqf.fengmomusic.R;
 import com.yuqf.fengmomusic.base.MyApplication;
+import com.yuqf.fengmomusic.interfaces.MusicPlayerListener;
 import com.yuqf.fengmomusic.media.Music;
 import com.yuqf.fengmomusic.media.MusicPlayer;
-import com.yuqf.fengmomusic.media.MusicPlayerListener;
 import com.yuqf.fengmomusic.ui.activity.SingleMusicActivity;
 import com.yuqf.fengmomusic.utils.CommonUtils;
 

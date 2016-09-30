@@ -13,9 +13,9 @@ import android.view.ViewGroup;
 
 import com.yuqf.fengmomusic.R;
 import com.yuqf.fengmomusic.interfaces.OnRecyclerViewItemClickListener;
+import com.yuqf.fengmomusic.interfaces.PlayIndexChangedListener;
 import com.yuqf.fengmomusic.media.Music;
 import com.yuqf.fengmomusic.media.MusicPlayer;
-import com.yuqf.fengmomusic.media.PlayIndexChangedListener;
 import com.yuqf.fengmomusic.ui.adapter.LinearLayoutItemDecoration;
 import com.yuqf.fengmomusic.ui.adapter.MusicRecyclerViewAdapter;
 
@@ -48,7 +48,6 @@ public class PlaylistFragment extends Fragment implements PlayIndexChangedListen
             }
         });
     }
-
 
     @Override
     public void onPlayingIndexChange(Music music, int curPosition, int oldPosition) {

@@ -15,7 +15,6 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.yuqf.fengmomusic.MainActivity;
 import com.yuqf.fengmomusic.R;
-import com.yuqf.fengmomusic.utils.CommonUtils;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -31,8 +30,9 @@ public class SplashActivity extends Activity {
     private final String logTag = "SplashActivity";
     private TimerTask timerTask;
     private Timer timer;
+    private ImageView imageView;
+    private final String ImageUrl = "http://odw0pwf7h.bkt.clouddn.com/fengmo/splash/splash_0922.JPG";
 
-    private final String ImageUrl = "http://e.hiphotos.baidu.com/image/pic/item/21a4462309f79052cc7b95370ef3d7ca7bcbd557.jpg";
     private final Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -65,12 +65,8 @@ public class SplashActivity extends Activity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_splash);
-        ImageView imageView = (ImageView) findViewById(R.id.splash_image_view);
+        imageView = (ImageView) findViewById(R.id.splash_image_view);
         textView = (TextView) findViewById(R.id.text_view_timer);
-
-        int width = CommonUtils.getScreenWidth(this);
-        int height = CommonUtils.getScreenHeight(this);
-        View view = findViewById(R.id.splash_bottom);
 
         Picasso.Builder builder = new Picasso.Builder(this);
         builder.listener(new Picasso.Listener() {
@@ -80,7 +76,7 @@ public class SplashActivity extends Activity {
             }
         });
 
-        builder.build().with(this).load(ImageUrl).resize(width * 3 / 4, (height - view.getHeight() - textView.getHeight()) * 3 / 4).into(imageView, new Callback() {
+        builder.build().with(this).load(ImageUrl)/**.resize(width * 3 / 4, (height - view.getHeight() - textView.getHeight()) * 3 / 4)**/.into(imageView, new Callback() {
             @Override
             public void onSuccess() {
                 Log.d(logTag, "load image success");
@@ -102,7 +98,6 @@ public class SplashActivity extends Activity {
     }
 
     private void startTimer() {
-        textView.setText("");
         textView.setText("3");
         textView.setVisibility(View.VISIBLE);
 

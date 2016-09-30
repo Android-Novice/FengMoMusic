@@ -14,4 +14,6 @@ public class UrlHelper {
     public final static String Lyric_Base_Url = "http://lyrics.kugou.com/";
 
     public final static String Singer_Info_Base_Url = "http://search.kuwo.cn/";
+
+    public final static String Music_Get_Url = "http://antiserver.kuwo.cn/anti.s?rid=MUSIC_%d&response=url&type=convert_url&format=mp3|aac";
 }

@@ -20,6 +20,8 @@ import com.squareup.picasso.Target;
 import com.yuqf.fengmomusic.R;
 import com.yuqf.fengmomusic.base.ActivityMgr;
 import com.yuqf.fengmomusic.base.MyApplication;
+import com.yuqf.fengmomusic.interfaces.MusicPlayerListener;
+import com.yuqf.fengmomusic.interfaces.PlayIndexChangedListener;
 import com.yuqf.fengmomusic.ui.entity.RetrofitServices;
 import com.yuqf.fengmomusic.utils.CommonUtils;
 import com.yuqf.fengmomusic.utils.Global;
@@ -330,7 +332,7 @@ public class MusicPlayer {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         RetrofitServices.MusicService musicService = retrofit.create(RetrofitServices.MusicService.class);
-        Call<ResponseBody> call = musicService.getMusicUrl("MUSIC_" + String.valueOf(id), "url", "convert_url", "mp3|aac");
+        Call<ResponseBody> call = musicService.getMusicUrl("MUSIC_" + String.valueOf(id), "url", "convert_url", "aac|mp3");
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
