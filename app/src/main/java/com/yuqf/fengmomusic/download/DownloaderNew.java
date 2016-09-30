@@ -160,11 +160,16 @@ public class DownloaderNew {
             @Override
             public void run() {
                 Log.d(logTag, "============download:\n=========10");
-                handler.sendEmptyMessage(READY_WHAT);
-                handler.sendEmptyMessage(STARTED_WHAT);
-                handler.sendEmptyMessage(PROGRESS_WHAT);
-                Log.d(logTag, "============download:\n=========11");
-                downloadByBreakPoint(false);
+                getMusicUrl();
+                if (!TextUtils.isEmpty(musicUrl)) {
+                    handler.sendEmptyMessage(READY_WHAT);
+                    handler.sendEmptyMessage(STARTED_WHAT);
+                    handler.sendEmptyMessage(PROGRESS_WHAT);
+                    Log.d(logTag, "============download:\n=========11");
+                    downloadByBreakPoint(false);
+                } else {
+                    handleResult(false);
+                }
             }
         }).start();
     }
@@ -173,39 +178,44 @@ public class DownloaderNew {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                try {
-                    Log.d(logTag, "============download:\n=========12");
-                    handler.sendEmptyMessage(READY_WHAT);
-                    Log.d(logTag, "download ready......\n");
-                    URL url = new URL(String.format(Locale.getDefault(), UrlHelper.Music_Get_Url, music.getId()));
-                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                    connection.setConnectTimeout(5000);
-                    connection.connect();
-                    if (isCancel) return;
-                    if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                        StringBuilder builder = new StringBuilder();
-                        InputStream stream = connection.getInputStream();
-                        InputStreamReader inputStreamReader = new InputStreamReader(stream);
-                        BufferedReader reader = new BufferedReader(inputStreamReader);
-                        String curStr;
-                        while (!TextUtils.isEmpty(curStr = reader.readLine())) {
-                            builder.append(curStr);
-                        }
-                        stream.close();
-                        connection.disconnect();
-                        musicUrl = builder.toString().trim();
-                        if (!TextUtils.isEmpty(musicUrl)) {
-                            Log.d(logTag, "============download:\n=========13");
-                            downloadByBreakPoint(true);
-                            return;
-                        }
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
+                getMusicUrl();
+                if (!TextUtils.isEmpty(musicUrl)) {
+                    Log.d(logTag, "============download:\n=========13");
+                    Log.d(logTag, musicUrl);
+                    downloadByBreakPoint(true);
+                } else {
+                    handleResult(false);
                 }
-                handleResult(false);
             }
         }).start();
+    }
+
+    private void getMusicUrl() {
+        try {
+            Log.d(logTag, "============download:\n=========12");
+            handler.sendEmptyMessage(READY_WHAT);
+            Log.d(logTag, "download ready......\n");
+            URL url = new URL(String.format(Locale.getDefault(), UrlHelper.Music_Get_Url, music.getId()));
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setConnectTimeout(5000);
+            connection.connect();
+            if (isCancel) return;
+            if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                StringBuilder builder = new StringBuilder();
+                InputStream stream = connection.getInputStream();
+                InputStreamReader inputStreamReader = new InputStreamReader(stream);
+                BufferedReader reader = new BufferedReader(inputStreamReader);
+                String curStr;
+                while (!TextUtils.isEmpty(curStr = reader.readLine())) {
+                    builder.append(curStr);
+                }
+                stream.close();
+                connection.disconnect();
+                musicUrl = builder.toString().trim();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -422,7 +432,7 @@ public class DownloaderNew {
         public void run() {
             Log.d(logTag, "============download:\n=========32");
             HttpURLConnection connection = getUrlConnection(false);
-            if (partMusic.getThreadIndex() + 1 < threadCount)
+            if (partMusic.getThreadIndex() + 1 < partMusic.getThreadCount())
                 connection.setRequestProperty("Range", "bytes=" + startPos + "-" + endPos);
             else
                 connection.setRequestProperty("Range", "bytes=" + startPos + "-");

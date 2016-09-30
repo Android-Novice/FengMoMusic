@@ -1,6 +1,10 @@
 package com.yuqf.fengmomusic;
 
+import android.content.ComponentName;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -12,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.yuqf.fengmomusic.base.BaseActivity;
+import com.yuqf.fengmomusic.media.MusicService;
 import com.yuqf.fengmomusic.ui.fragment.MineFragment;
 import com.yuqf.fengmomusic.ui.fragment.RankingFragment;
 import com.yuqf.fengmomusic.ui.fragment.SearchFragment;
@@ -29,6 +34,8 @@ public class MainActivity extends BaseActivity {
     private ViewPagerPageChangeListener pageChangeListener;
     private final String logTag = "MainActivity";
 
+    private boolean isBind;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,6 +46,19 @@ public class MainActivity extends BaseActivity {
 
         initViewPager();
         initTopViews();
+
+        Intent intent = new Intent(this, MusicService.class);
+        bindService(intent, connection, BIND_AUTO_CREATE);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+//        if (!isBind) {
+//            isBind = true;
+//            Intent intent = new Intent(this, MusicService.class);
+//            bindService(intent, connection, BIND_AUTO_CREATE);
+//        }
     }
 
     private void initViewPager() {
@@ -167,4 +187,18 @@ public class MainActivity extends BaseActivity {
             selectedIndex = curIndex;
         }
     }
+
+    ServiceConnection connection = new ServiceConnection() {
+        private MusicService musicService;
+
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            musicService = ((MusicService.MusicPlayerBinder) service).getService();
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            musicService = null;
+        }
+    };
 }

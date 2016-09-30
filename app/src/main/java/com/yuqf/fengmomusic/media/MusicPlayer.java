@@ -1,32 +1,27 @@
 package com.yuqf.fengmomusic.media;
 
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v7.app.NotificationCompat;
 import android.text.TextUtils;
 import android.util.Log;
-import android.widget.RemoteViews;
 
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 import com.yuqf.fengmomusic.R;
-import com.yuqf.fengmomusic.base.ActivityMgr;
 import com.yuqf.fengmomusic.base.MyApplication;
 import com.yuqf.fengmomusic.interfaces.MusicPlayerListener;
 import com.yuqf.fengmomusic.interfaces.PlayIndexChangedListener;
 import com.yuqf.fengmomusic.ui.entity.RetrofitServices;
 import com.yuqf.fengmomusic.utils.CommonUtils;
+import com.yuqf.fengmomusic.utils.FileUtils;
 import com.yuqf.fengmomusic.utils.Global;
 import com.yuqf.fengmomusic.utils.UrlHelper;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +32,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+
+import static android.R.attr.id;
 
 public class MusicPlayer {
 
@@ -53,7 +50,6 @@ public class MusicPlayer {
     private boolean isBuffering;
 
     private AudioManager audioManager;
-    private NotificationManager manager;
     private int audioResult = -1;
     private PlayingStatus playingStatus = PlayingStatus.None;
     private final int MSG_WHAT = 110;
@@ -84,7 +80,6 @@ public class MusicPlayer {
         changedListenerList = new ArrayList<>();
         playingMusics = new ArrayList<>();
         audioManager = MyApplication.getAudioManager();
-        manager = MyApplication.getNotificationManager();
     }
 
     public void releasePlayer() {
@@ -137,7 +132,7 @@ public class MusicPlayer {
                 mediaPlayer.pause();
                 playingStatus = PlayingStatus.Pause;
             }
-            showNotification(curMusic);
+            notifyListeners(MusicState.PlayState);
         }
     }
 
@@ -158,7 +153,6 @@ public class MusicPlayer {
             } else {
                 mediaPlayer.start();
             }
-            showNotification(curMusic);
             notifyListeners(MusicState.PlayState);
         }
     }
@@ -175,6 +169,12 @@ public class MusicPlayer {
             audioResult = audioManager.requestAudioFocus(new AudioFocusChangedListener(), AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
         }
         if (audioResult != AudioManager.AUDIOFOCUS_REQUEST_GRANTED) return;
+        if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+            mediaPlayer.stop();
+            mediaPlayer.reset();
+            mediaPlayer.release();
+            mediaPlayer = null;
+        }
         if (showBufferingToast()) return;
 
         if (playIndex != position || playingStatus == PlayingStatus.Error) {
@@ -185,6 +185,7 @@ public class MusicPlayer {
             playIndex = position;
 
             curMusic = playingMusics.get(playIndex);
+
             if (!curMusic.isLocal()) {
                 isBuffering = true;
                 for (PlayIndexChangedListener changedListener : changedListenerList) {
@@ -193,14 +194,23 @@ public class MusicPlayer {
                 }
                 notifyListeners(MusicState.Preparing);
                 notifyListeners(MusicState.StartBuffering);
-                playWebMusic(curMusic.getId());
+
+                String musicPath = FileUtils.getMusicPath(curMusic.getName(), curMusic.getArtist());
+                File file = new File(musicPath);
+                if (!file.exists()) {
+                    playWebMusic(curMusic.getId());
+                } else {
+                    initMediaPlayer(musicPath);
+                    loadMusicCover();
+                }
+            } else {
+
             }
         } else {
             playingStatus = PlayingStatus.Playing;
             if (!mediaPlayer.isPlaying())
                 mediaPlayer.start();
         }
-        showNotification(curMusic);
     }
 
     class AudioFocusChangedListener implements AudioManager.OnAudioFocusChangeListener {
@@ -341,8 +351,6 @@ public class MusicPlayer {
                         String url = response.body().string();
                         if (!TextUtils.isEmpty(url)) {
                             initMediaPlayer(url);
-//                            mediaPlayer.setDataSource(url);
-//                            mediaPlayer.prepareAsync();
                             return;
                         }
                     } catch (IOException e) {
@@ -353,10 +361,15 @@ public class MusicPlayer {
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
+                t.printStackTrace();
                 notifyListeners(MusicState.Error);
             }
         });
 
+        loadMusicCover();
+    }
+
+    private void loadMusicCover() {
         Retrofit retrofit1 = new Retrofit.Builder()
                 .baseUrl(UrlHelper.Music_Cover_Base_Url)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -425,12 +438,10 @@ public class MusicPlayer {
                         break;
                     case CoverLoaded:
                         listener.onMusicCoverLoaded(curMusic);
-                        showNotification(curMusic);
                         break;
                     case Error:
                         isBuffering = false;
                         listener.onError();
-                        showNotification(curMusic);
                         break;
                     case PlayedDuration:
                         listener.onPlayedDurationChanged(curMusic);
@@ -448,56 +459,6 @@ public class MusicPlayer {
                 }
             }
         }
-    }
-
-    private void showNotification(Music music) {
-        Log.d(logTag, "showNotification\n");
-        String packageName = MyApplication.getContext().getPackageName();
-        RemoteViews remoteViews = new RemoteViews(packageName, R.layout.custom_notification_layout);
-        remoteViews.setTextViewText(R.id.music_name_tv, music.getName());
-        remoteViews.setTextViewText(R.id.singer_name_tv, music.getArtist());
-
-        if (music.getCover() != null) {
-            Log.d(logTag, "showNotification\n have cover");
-            remoteViews.setImageViewBitmap(R.id.music_cover_iv, music.getCover());
-        } else {
-            remoteViews.setImageViewResource(R.id.music_cover_iv, R.drawable.music_white);
-        }
-
-        if (mediaPlayer == null || mediaPlayer.isPlaying() || isBuffering)
-            remoteViews.setImageViewResource(R.id.btn_play_pause, R.drawable.pause_white);
-        else
-            remoteViews.setImageViewResource(R.id.btn_play_pause, R.drawable.play_arrow_white);
-
-        Intent buttonIntent = new Intent(Global.RECEIVER_ACTION);
-
-        buttonIntent.putExtra(Global.ACTION_KEY, Global.ACTION_PLAY);
-        PendingIntent ppPendingIntent = PendingIntent.getBroadcast(MyApplication.getContext(), 0, buttonIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        remoteViews.setOnClickPendingIntent(R.id.btn_play_pause, ppPendingIntent);
-
-        buttonIntent.putExtra(Global.ACTION_KEY, Global.ACTION_NEXT);
-        PendingIntent nextPendingIntent = PendingIntent.getBroadcast(MyApplication.getContext(), 1, buttonIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        remoteViews.setOnClickPendingIntent(R.id.btn_next, nextPendingIntent);
-
-        buttonIntent.putExtra(Global.ACTION_KEY, Global.ACTION_CLOSE);
-        PendingIntent closePendingIntent = PendingIntent.getBroadcast(MyApplication.getContext(), 2, buttonIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        remoteViews.setOnClickPendingIntent(R.id.btn_play_close, closePendingIntent);
-
-        Intent viewIntent = new Intent(MyApplication.getContext(), ActivityMgr.getActivityMgr().getLastActivity().getClass());
-        viewIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        PendingIntent startPendingIntent = PendingIntent.getActivity(MyApplication.getContext(), 0, viewIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        remoteViews.setOnClickPendingIntent(R.id.music_cover_iv, startPendingIntent);
-
-        Notification notification = new NotificationCompat.Builder(MyApplication.getContext())
-                .setContent(remoteViews)
-                .setAutoCancel(false)
-                .setTicker(music.getName())
-                .setSmallIcon(R.drawable.ic_launcher_36)
-                .setOngoing(true)
-                .build();
-        notification.priority = Notification.PRIORITY_HIGH;
-        notification.flags = Notification.FLAG_NO_CLEAR | Notification.FLAG_ONGOING_EVENT;
-        manager.notify(Global.NOTIFICATION_ID, notification);
     }
 
     enum MusicState {

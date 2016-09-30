@@ -35,8 +35,15 @@
         </activity>
         <activity android:name=".ui.activity.MusicListActivity" />
 
+        <!--<receiver-->
+        <!--android:name=".media.MusicPlayerBroadcastReceiver"-->
+        <!--android:exported="false">-->
+        <!--<intent-filter>-->
+        <!--<action android:name="com.yuqf.fengmo.musicplayer.receiver" />-->
+        <!--</intent-filter>-->
+        <!--</receiver>-->
         <receiver
-            android:name=".media.MusicPlayerBroadcastReceiver"
+            android:name=".media.MusicService$MusicPlayerBroadcastReceiver"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.yuqf.fengmo.musicplayer.receiver" />
@@ -45,6 +52,8 @@
 
         <activity android:name=".ui.activity.SingleMusicActivity" />
         <activity android:name=".ui.activity.DownloadActivity"></activity>
+
+        <service android:name=".media.MusicService" />
     </application>
 
 </manifest>

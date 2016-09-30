@@ -79,17 +79,15 @@ public class MusicLyricFragment extends Fragment {
         showLoadState(0);
         if (music == null) return;
         artist = music.getArtist();
+        artist = FileUtils.removeFileNameInvalidChars(artist);
         if (artist.contains("&")) {
             String[] array = artist.split("&");
             if (array.length > 2)
                 artist = array[0];
         }
         name = music.getName();
-        if (name.contains("(")) {
-            name = name.substring(0, name.indexOf("("));
-            if (name.endsWith("-"))
-                name = name.substring(0, name.length() - 1);
-        }
+        name = FileUtils.removeFileNameInvalidChars(name);
+
         String lyric = FileUtils.readLyric(artist, name, music.getId());
         if (!TextUtils.isEmpty(lyric)) {
             showLoadState(2);
@@ -155,7 +153,7 @@ public class MusicLyricFragment extends Fragment {
         String song = lyricInfo.getSong();
         String name = music.getName();
         String singer = lyricInfo.getSinger();
-        final String artist = music.getArtist();
+//        final String artist = music.getArtist();
         int songDuration = lyricInfo.getDuration();
         int musicDuration = music.getDuration() * 1000;
         String printStr = "Position:%d\nSong:%s\nname:%s\nsinger:%s\nartist:%s\nDuration1:%d\nDuration2:%d\n";

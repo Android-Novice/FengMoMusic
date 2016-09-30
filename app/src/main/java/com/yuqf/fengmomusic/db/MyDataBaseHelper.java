@@ -8,7 +8,7 @@ import com.yuqf.fengmomusic.base.MyApplication;
 
 public class MyDataBaseHelper extends SQLiteOpenHelper {
 
-    private static final int DB_VERSION = 1;
+    private static final int DB_VERSION = 2;
     private static final String DB_NAME = "fengmo.db";
     private static MyDataBaseHelper helper;
 
@@ -55,6 +55,8 @@ public class MyDataBaseHelper extends SQLiteOpenHelper {
                     + FavouriteDao.PLAY_URL + " TEXT, "
                     + FavouriteDao.DURATION + " INTEGER);";
 
+    private final String Downloading_Table_DELETE_ALL_V2 = "DELETE FROM " + DownloadingDao.TABLE_NAME;
+
     public static MyDataBaseHelper getInstance() {
         if (helper == null) {
             helper = new MyDataBaseHelper(MyApplication.getContext(), DB_NAME, null, DB_VERSION);
@@ -77,7 +79,7 @@ public class MyDataBaseHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         if (oldVersion < 2) {
-
+//            db.execSQL(Downloading_Table_DELETE_ALL_V2);
         }
         if (oldVersion < 3) {
 

@@ -12,9 +12,9 @@ public class PlayedListDao {
     public final static String PLAY_URL = "play_url";
     public final static String DURATION = "duration";
 
-    private PlayedListDao playedListDao;
+    private static PlayedListDao playedListDao;
 
-    public PlayedListDao getInstance() {
+    public static PlayedListDao getInstance() {
         if (playedListDao == null) {
             playedListDao = new PlayedListDao();
         }

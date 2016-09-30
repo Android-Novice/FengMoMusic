@@ -239,6 +239,7 @@ public class FileUtils {
         String filePath = getMusicRootPath();
         artist = artist.replace("&", "+");
         File fileDir = new File(filePath);
+        music = FileUtils.removeFileNameInvalidChars(music);
         if (!fileDir.exists())
             fileDir.mkdirs();
         return String.format(Locale.getDefault(), "%s/%s-%s.mp3", filePath, artist, music);
@@ -252,5 +253,26 @@ public class FileUtils {
         if (TextUtils.isEmpty(filePath))
             filePath = MyApplication.getContext().getFilesDir().getPath();
         return filePath;
+    }
+
+    public static String removeFileNameInvalidChars(String fileName) {
+        fileName = removeFileNameInvalidChar(fileName, "(", ")");
+        fileName = removeFileNameInvalidChar(fileName, "[", "]");
+        fileName = removeFileNameInvalidChar(fileName, "¡¾", "¡¿");
+        return fileName;
+    }
+
+    private static String removeFileNameInvalidChar(String fileName, String leftChar, String rightChar) {
+        if (fileName.contains(leftChar) && fileName.contains(rightChar)) {
+            int leftIndex = fileName.indexOf(leftChar);
+            int rightIndex = fileName.indexOf(rightChar);
+            if (leftIndex < rightIndex) {
+                String redundantStr = fileName.substring(leftIndex, rightIndex + 1);
+                fileName = fileName.replace(redundantStr, "");
+            }
+            if (fileName.endsWith("-"))
+                fileName = fileName.substring(0, fileName.length() - 1);
+        }
+        return fileName;
     }
 }

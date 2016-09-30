@@ -59,7 +59,7 @@
 
     <ImageButton
         android:id="@+id/music_download_button"
-        android:layout_width="25dp"
+        android:layout_width="40dp"
         android:layout_height="25dp"
         android:layout_marginRight="8dp"
         android:background="@android:color/transparent"

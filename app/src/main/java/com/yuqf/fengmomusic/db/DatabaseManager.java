@@ -265,7 +265,7 @@ class DatabaseManager {
     /**
      * 获取正在下载音乐的分段列表
      **/
-    public synchronized List<DownloadingPartMusic> getDownloadingMusic(int musicId, String music) {
+    public List<DownloadingPartMusic> getDownloadingMusic(int musicId, String music) {
         SQLiteDatabase sqLiteDatabase = helper.getReadableDatabase();
         Log.d(logTag, "getDownloadingMusic....1");
         if (sqLiteDatabase.isOpen()) {
@@ -293,7 +293,7 @@ class DatabaseManager {
     /**
      * 开始下载时，记录歌曲的断点下载的信息
      **/
-    public synchronized void insertDownloadingInfo(List<DownloadingPartMusic> downloadingPartMusics) {
+    public void insertDownloadingInfo(List<DownloadingPartMusic> downloadingPartMusics) {
         SQLiteDatabase sqLiteDatabase = helper.getReadableDatabase();
         Log.d(logTag, "insertDownloadingInfo....1");
         if (sqLiteDatabase.isOpen()) {
@@ -326,18 +326,17 @@ class DatabaseManager {
     /**
      * 下载过程中，修改下载状态信息
      **/
-    public synchronized void updateDownloadingInfo(DownloadingPartMusic downloadingPartMusic, boolean completed) {
+    public void updateDownloadingInfo(DownloadingPartMusic downloadingPartMusic, boolean completed) {
         SQLiteDatabase sqLiteDatabase = helper.getReadableDatabase();
         Log.d(logTag, "updateDownloadingInfo....1");
         if (sqLiteDatabase.isOpen()) {
             ContentValues contentValues = new ContentValues();
-            contentValues.put(DownloadingDao.MUSIC_ID, downloadingPartMusic.getMusicId());
-            contentValues.put(DownloadingDao.THREAD_INDEX, downloadingPartMusic.getThreadIndex());
             contentValues.put(DownloadingDao.COMPLETE_SIZE, downloadingPartMusic.getCompletedSize());
             contentValues.put(DownloadingDao.COMPLETED, completed ? 1 : 0);
             Log.d(logTag, "updateDownloadingInfo....2");
-            long rowId = sqLiteDatabase.replace(DownloadingDao.TABLE_NAME, null, contentValues);
-            sqLiteDatabase.close();
+            sqLiteDatabase.update(DownloadingDao.TABLE_NAME, contentValues,
+                    DownloadingDao.MUSIC_ID + "=? and " + DownloadingDao.THREAD_INDEX + "=?",
+                    new String[]{String.valueOf(downloadingPartMusic.getMusicId()), String.valueOf(downloadingPartMusic.getThreadIndex())});
             Log.d(logTag, "updateDownloadingInfo....3");
         }
     }
@@ -345,7 +344,7 @@ class DatabaseManager {
     /**
      * 下载完成以后，删除正在下载信息
      **/
-    public synchronized boolean deleteDownloadingInfo(int musicId, String music) {
+    public boolean deleteDownloadingInfo(int musicId, String music) {
         SQLiteDatabase sqLiteDatabase = helper.getReadableDatabase();
         Log.d(logTag, "deleteDownloadingInfo....1");
         if (sqLiteDatabase.isOpen()) {
