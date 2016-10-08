@@ -13,13 +13,17 @@ import android.widget.TextView;
 
 import com.yuqf.fengmomusic.R;
 import com.yuqf.fengmomusic.base.MyApplication;
+import com.yuqf.fengmomusic.db.DownloadedDao;
+import com.yuqf.fengmomusic.db.DownloadedMusic;
 import com.yuqf.fengmomusic.interfaces.OnRecyclerViewItemClickListener;
 import com.yuqf.fengmomusic.media.Music;
 import com.yuqf.fengmomusic.ui.entity.GsonRMusicList;
 import com.yuqf.fengmomusic.ui.entity.GsonSMusicList;
 import com.yuqf.fengmomusic.utils.CommonUtils;
+import com.yuqf.fengmomusic.utils.FileUtils;
 import com.yuqf.fengmomusic.utils.Global;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -124,10 +128,23 @@ public class MusicRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
                 imageView.setVisibility(View.VISIBLE);
             } else
                 imageView.setVisibility(View.INVISIBLE);
+            ((MusicHolder) holder).downloadButton.setVisibility(isDownloaded(music) ? View.INVISIBLE : View.VISIBLE);
         } else if (holder instanceof FooterHolder) {
             ((FooterHolder) holder).loadMoreView.setVisibility(isLoading ? View.GONE : View.VISIBLE);
             ((FooterHolder) holder).loadingView.setVisibility(isLoading ? View.VISIBLE : View.GONE);
         }
+    }
+
+    private boolean isDownloaded(Music curMusic) {
+        String path = FileUtils.getMusicPath(curMusic.getName(), curMusic.getArtist());
+        File file = new File(path);
+        if (file.exists()) {
+            DownloadedMusic music = DownloadedDao.getInstance().getDownloadedMusic(curMusic.getId(), curMusic.getName());
+            if (music != null) {
+                return true;
+            }
+        }
+        return false;
     }
 
 //    public Music getMusicByPosition(int position) {

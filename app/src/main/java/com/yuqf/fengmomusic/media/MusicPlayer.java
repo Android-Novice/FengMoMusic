@@ -33,8 +33,6 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-import static android.R.attr.id;
-
 public class MusicPlayer {
 
     private static MusicPlayer musicPlayer;
@@ -53,6 +51,7 @@ public class MusicPlayer {
     private int audioResult = -1;
     private PlayingStatus playingStatus = PlayingStatus.None;
     private final int MSG_WHAT = 110;
+    private final int SMALL_COVER_SIZE = 70;
 
     private Handler handler = new Handler(new Handler.Callback() {
         @Override
@@ -201,7 +200,7 @@ public class MusicPlayer {
                     playWebMusic(curMusic.getId());
                 } else {
                     initMediaPlayer(musicPath);
-                    loadMusicCover();
+                    loadMusicCover(curMusic.getId());
                 }
             } else {
 
@@ -366,22 +365,35 @@ public class MusicPlayer {
             }
         });
 
-        loadMusicCover();
+        loadMusicCover(id);
     }
 
-    private void loadMusicCover() {
+    private void loadMusicCover(int id) {
+
+        Bitmap bitmap = FileUtils.getMusicCover(id, SMALL_COVER_SIZE);
+        if (bitmap != null) {
+            Log.d(logTag, "=====cover70=====has saved");
+            curMusic.setCover(bitmap);
+            notifyListeners(MusicState.CoverLoaded);
+            return;
+        }
+
         Retrofit retrofit1 = new Retrofit.Builder()
                 .baseUrl(UrlHelper.Music_Cover_Base_Url)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         RetrofitServices.MusicService musicService1 = retrofit1.create(RetrofitServices.MusicService.class);
-        Call<ResponseBody> call1 = musicService1.getCoverUrl("rid_pic", "url", 70, id);
+        Call<ResponseBody> call1 = musicService1.getCoverUrl("rid_pic", "url", SMALL_COVER_SIZE, id);
+        Log.d(logTag, String.format("http://artistpicserver.kuwo.cn/pic.web?type=rid_pic&pictype=url&size=70&rid=%d", id));
+
+        final int musicId = id;
         call1.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful()) {
                     try {
                         String coverUrl = response.body().string();
+                        Log.d(logTag, "=====cover70=====: " + coverUrl);
                         if (!TextUtils.isEmpty(coverUrl)) {
                             MyApplication.getPicasso().load(coverUrl).into(new Target() {
                                 @Override
@@ -390,6 +402,7 @@ public class MusicPlayer {
                                     if (bitmap != null) {
                                         curMusic.setCover(bitmap);
                                         notifyListeners(MusicState.CoverLoaded);
+                                        FileUtils.saveMusicCover(bitmap, musicId, SMALL_COVER_SIZE);
                                     }
                                 }
 

@@ -75,7 +75,7 @@ public class MusicLyricFragment extends Fragment {
         showLyric();
     }
 
-    public void showLyric() {
+    private void showLyric() {
         showLoadState(0);
         if (music == null) return;
         artist = music.getArtist();

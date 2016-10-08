@@ -13,8 +13,8 @@
 
 4. RatingBar设置Style的时候，用【attr】后动态rating赋值有效，但是用【@style/样式】后动态rating赋值无效果；
 
-5. 自定义Notification中的TextView属性Marquee无效；
+5. 自定义Notification中的TextView属性Marquee无效；【经过验证发现，是部分手机不支持，在华为上面滚动无效，但是三星的手机可以】
 
-6. App被强制Kill后，如何监听消息，并且把Notification关闭？
+6. App被强制Kill后，如何监听消息，并且把Notification关闭？【已经找到解决方案】
 
 

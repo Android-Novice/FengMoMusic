@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.yuqf.fengmomusic.base.BaseActivity;
+import com.yuqf.fengmomusic.base.MyApplication;
 import com.yuqf.fengmomusic.media.MusicService;
 import com.yuqf.fengmomusic.ui.fragment.MineFragment;
 import com.yuqf.fengmomusic.ui.fragment.RankingFragment;
@@ -34,8 +35,6 @@ public class MainActivity extends BaseActivity {
     private ViewPagerPageChangeListener pageChangeListener;
     private final String logTag = "MainActivity";
 
-    private boolean isBind;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,19 +46,23 @@ public class MainActivity extends BaseActivity {
         initViewPager();
         initTopViews();
 
+        ///**在这里启动服务，当程序被强制Kill以后，前台服务也就被干掉了**/
         Intent intent = new Intent(this, MusicService.class);
         bindService(intent, connection, BIND_AUTO_CREATE);
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-//        if (!isBind) {
-//            isBind = true;
-//            Intent intent = new Intent(this, MusicService.class);
-//            bindService(intent, connection, BIND_AUTO_CREATE);
-//        }
-    }
+    ServiceConnection connection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            MusicService musicService = ((MusicService.MusicPlayerBinder) service).getService();
+            MyApplication.setMusicService(musicService);
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            MyApplication.setMusicService(null);
+        }
+    };
 
     private void initViewPager() {
         circlePointIV = (ImageView) findViewById(R.id.selected_category_iv);
@@ -187,18 +190,4 @@ public class MainActivity extends BaseActivity {
             selectedIndex = curIndex;
         }
     }
-
-    ServiceConnection connection = new ServiceConnection() {
-        private MusicService musicService;
-
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            musicService = ((MusicService.MusicPlayerBinder) service).getService();
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-            musicService = null;
-        }
-    };
 }

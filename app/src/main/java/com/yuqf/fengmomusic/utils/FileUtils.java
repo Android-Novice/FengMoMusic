@@ -258,7 +258,6 @@ public class FileUtils {
     public static String removeFileNameInvalidChars(String fileName) {
         fileName = removeFileNameInvalidChar(fileName, "(", ")");
         fileName = removeFileNameInvalidChar(fileName, "[", "]");
-        fileName = removeFileNameInvalidChar(fileName, "¡¾", "¡¿");
         return fileName;
     }
 
