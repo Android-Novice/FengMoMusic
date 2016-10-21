@@ -134,12 +134,8 @@ public class SingerListFragment extends Fragment implements SwipeRefreshLayout.O
         recyclerView.setAdapter(adapter);
         int screenWidth = CommonUtils.getScreenWidth(getActivity());
         int spanCount = 2;
-        if (screenWidth >= 720 && screenWidth <= 900)
+        if (screenWidth >= 720)
             spanCount = 3;
-        else if (screenWidth > 900 && screenWidth <= 1200)
-            spanCount = 4;
-        else if (screenWidth > 1200)
-            spanCount = 5;
         final GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), spanCount);
         gridLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(gridLayoutManager);

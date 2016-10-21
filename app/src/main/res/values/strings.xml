@@ -25,6 +25,11 @@
 
     <string name="no_found_singer_info">没有找到匹配的歌手信息...</string>
 
+    <string name="search_input_tip">请输入搜索内容</string>
+    <string name="no_search_history">没有搜索记录</string>
+    <string name="search_history_list">搜索记录</string>
+    <string name="clear_history_list">清空历史记录</string>
+    <string name="search_content_recommend">以下搜索项你可能感兴趣：</string>
 
     <string-array name="singer_order_list">
         <item>热门</item>

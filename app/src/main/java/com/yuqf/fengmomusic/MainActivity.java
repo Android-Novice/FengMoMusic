@@ -46,7 +46,6 @@ public class MainActivity extends BaseActivity {
         initViewPager();
         initTopViews();
 
-        ///**在这里启动服务，当程序被强制Kill以后，前台服务也就被干掉了**/
         Intent intent = new Intent(this, MusicService.class);
         bindService(intent, connection, BIND_AUTO_CREATE);
     }

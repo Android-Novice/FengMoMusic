@@ -120,12 +120,8 @@ public class RankingFragment extends Fragment implements SwipeRefreshLayout.OnRe
         recyclerView.setAdapter(adapter);
         int screenWidth = CommonUtils.getScreenWidth(getActivity());
         int spanCount = 2;
-        if (screenWidth >= 800 && screenWidth <= 860)
+        if (screenWidth >= 1200)
             spanCount = 3;
-        else if (screenWidth > 960 && screenWidth <= 1200)
-            spanCount = 4;
-        else if (screenWidth > 1200)
-            spanCount = 5;
 
         final StaggeredGridLayoutManager gridLayoutManager = new StaggeredGridLayoutManager(spanCount, StaggeredGridLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(gridLayoutManager);

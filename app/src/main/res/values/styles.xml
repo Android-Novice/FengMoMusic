@@ -10,6 +10,12 @@
         <item name="android:textColorSecondary">@color/colorAccent</item>
     </style>
 
-    <style name="AppTheme" parent="BaseAppTheme" />
+    <style name="PopupWindowAnimation">
+        <item name="android:windowEnterAnimation">@anim/popup_fade_out</item>
+        <item name="android:windowExitAnimation">@anim/popup_fade_in</item>
+        <!--<item name="android:windowHideAnimation">@anim/popup_fade_out</item>-->
+        <!--<item name="android:windowShowAnimation">@anim/popup_fade_in</item>-->
+    </style>
 
+    <style name="AppTheme" parent="BaseAppTheme" />
 </resources>

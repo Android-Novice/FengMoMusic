@@ -17,4 +17,8 @@
 
 6. App被强制Kill后，如何监听消息，并且把Notification关闭？【已经找到解决方案】
 
+7. PopupWindow + ListView, ItemClick不响应，即使添加了setFocusable(true)仍旧没响应；
+
+8. PopupWindow + EditText，输入时弹出Popupwindow，键盘输入失效
+
 

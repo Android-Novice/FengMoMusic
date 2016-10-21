@@ -88,6 +88,12 @@ public class RetrofitServices {
                                  @Query("accesskey") String accessKey);
     }
 
+    public interface SearchService {
+        //t.s?type=2014&c=mbox&w=
+        @GET("t.s?type=2014&c=mbox")
+        Call<ResponseBody> getRecommendString(@Query(value = "w", encoded = true) String pinyin);
+    }
+
 //    public static class SingerConverterFactory extends Converter.Factory {
 //
 //        private static SingerConverterFactory factory;
