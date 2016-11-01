@@ -274,6 +274,11 @@ public class MusicRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
         notifyDataSetChanged();
     }
 
+    public void removeAll(){
+        musicList.clear();
+        notifyDataSetChanged();
+    }
+
     public class FooterHolder extends RecyclerView.ViewHolder {
         private View loadingView;
         public View loadMoreView;

@@ -1,6 +1,5 @@
 package com.yuqf.fengmomusic.ui.fragment;
 
-
 import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;

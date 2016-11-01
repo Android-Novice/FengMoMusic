@@ -2,12 +2,16 @@ package com.yuqf.fengmomusic.ui.activity;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -19,6 +23,10 @@ import android.widget.TextView;
 
 import com.yuqf.fengmomusic.R;
 import com.yuqf.fengmomusic.base.BaseActivity;
+import com.yuqf.fengmomusic.interfaces.OnRecyclerViewItemClickListener;
+import com.yuqf.fengmomusic.media.Music;
+import com.yuqf.fengmomusic.ui.adapter.LinearLayoutItemDecoration;
+import com.yuqf.fengmomusic.ui.adapter.MusicRecyclerViewAdapter;
 import com.yuqf.fengmomusic.ui.entity.RetrofitServices;
 import com.yuqf.fengmomusic.utils.CommonUtils;
 import com.yuqf.fengmomusic.utils.PinYinUtils;
@@ -41,7 +49,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class SearchActivity extends BaseActivity implements View.OnClickListener, ListView.OnItemClickListener {
+public class SearchActivity extends BaseActivity implements View.OnClickListener {
 
     private final String logTag = "SearchActivity";
     private final String SP_FILE_NAME = "Search_History";
@@ -71,12 +79,17 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
     private Button btnClearHistory;
     private List<HashMap<String, String>> searchTipsList;
     private SimpleAdapter simpleAdapter;
+    private int searchPageIndex = -1;
+    private final int PerPageCount = 300;
+    private String curGBEncodeSearchStr;
+    private RecyclerView recyclerView;
+    private MusicRecyclerViewAdapter musicAdapter;
+    private int lastVisibleItemIndex;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
-
         initTopBars();
         hideToolBar();
 
@@ -98,8 +111,6 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
         historyListContent = findViewById(R.id.search_history_content);
         historyLeftLV = (ListView) findViewById(R.id.list_view_history1);
         historyRightLV = (ListView) findViewById(R.id.list_view_history2);
-        historyLeftLV.setOnItemClickListener(this);
-        historyRightLV.setOnItemClickListener(this);
 
         btnClearText = (ImageButton) findViewById(R.id.btn_clear_text);
         btnHome = (ImageButton) findViewById(R.id.btn_home);
@@ -109,9 +120,20 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
         btnClearText.setOnClickListener(this);
 
         sharedPreferences = getSharedPreferences(SP_FILE_NAME, MODE_PRIVATE);
-        loadSearchHistory();
         initEditText();
+        initRecycler();
+
+        loadSearchHistory();
     }
+
+    ListView.OnItemClickListener listener = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            TextView historyTV = (TextView) view.findViewById(R.id.history_list_item_tv);
+            String searchText = historyTV.getText().toString();
+            startSearch(searchText);
+        }
+    };
 
     @Override
     public void onClick(View v) {
@@ -125,9 +147,7 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
                 break;
             case R.id.btn_clear_text:
                 editTextSearch.setText("");
-                searchTipsContent.setVisibility(View.INVISIBLE);
-                historyContent.setVisibility(View.VISIBLE);
-                loadSearchHistory();
+                setViewsVisibility(1, 3, 3);
                 break;
             case R.id.btn_home:
                 finish();
@@ -135,7 +155,31 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
         }
     }
 
+    @SuppressWarnings("ResourceType")
+    private void setViewsVisibility(int historyStatus, int recommendStatus, int resultStatus) {
+        int historyVisible = getVisibility(historyStatus);
+        int tipsVisible = getVisibility(recommendStatus);
+        int resultVisible = getVisibility(resultStatus);
+        historyContent.setVisibility(historyVisible);
+        searchTipsContent.setVisibility(tipsVisible);
+        recyclerView.setVisibility(resultVisible);
+    }
+
+    private Integer getVisibility(int status) {
+        switch (status) {
+            case 1:
+                return View.VISIBLE;
+            case 2:
+                return View.INVISIBLE;
+            case 3:
+                return View.GONE;
+            default:
+                return View.VISIBLE;
+        }
+    }
+
     private void loadSearchHistory() {
+        setViewsVisibility(1, 3, 3);
         searchedStrList = getSearchHistory();
         if (searchedStrList.size() == 0) {
             noHistoryTV.setVisibility(View.VISIBLE);
@@ -154,14 +198,49 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
             }
             historyLeftLV.setAdapter(new ArrayAdapter<>(this, R.layout.history_list_view_left_item, R.id.history_list_item_tv, leftList));
             historyRightLV.setAdapter(new ArrayAdapter<>(this, R.layout.history_list_view_right_item, R.id.history_list_item_tv, rightList));
+
+            historyLeftLV.setOnItemClickListener(listener);
+            historyRightLV.setOnItemClickListener(listener);
         }
     }
 
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        TextView historyTV = (TextView) view.findViewById(R.id.history_list_item_tv);
-        String searchText = historyTV.getText().toString();
-        startSearch(searchText);
+    private void initRecycler() {
+        musicAdapter = new MusicRecyclerViewAdapter(false, true);
+        musicAdapter.setOnRecyclerViewItemClickListener(new OnRecyclerViewItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+
+            }
+
+            @Override
+            public void onItemDownloadClick(View view, int position) {
+
+            }
+        });
+        recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.addItemDecoration(new LinearLayoutItemDecoration(false));
+        final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setAdapter(musicAdapter);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                if (newState == RecyclerView.SCROLL_STATE_IDLE && lastVisibleItemIndex == musicAdapter.getItemCount() - 1) {
+                    musicAdapter.notifyLoadStatus(true);
+                    doSearch();
+                }
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                lastVisibleItemIndex = layoutManager.findLastCompletelyVisibleItemPosition();
+                super.onScrolled(recyclerView, dx, dy);
+            }
+        });
     }
 
     private void initEditText() {
@@ -204,44 +283,115 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
         public void afterTextChanged(Editable s) {
             if (!TextUtils.isEmpty(s.toString())) {
                 btnClearText.setVisibility(View.VISIBLE);
+                setViewsVisibility(3, 3, 3);
             } else {
+                loadSearchHistory();
                 btnClearText.setVisibility(View.INVISIBLE);
             }
         }
     };
 
     private void startSearch(String searchText) {
+        if (TextUtils.isEmpty(searchText)) return;
+        setViewsVisibility(3, 3, 1);
 //        String searchText = editTextSearch.getText().toString();
         editTextSearch.removeTextChangedListener(watcher);
         editTextSearch.setText(searchText);
         editTextSearch.addTextChangedListener(watcher);
         addSearchHistory(searchText);
         try {
-            String gbStr = URLEncoder.encode(searchText, "GB2312");
-            Log.d("SearchTextDecode", gbStr + "\n");
+            musicAdapter.removeAll();
+            curGBEncodeSearchStr = URLEncoder.encode(searchText, "GB2312");
+            InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+            inputMethodManager.hideSoftInputFromWindow(editTextSearch.getWindowToken(), 0);
+            doSearch();
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-        try {
-            String utfStr = URLEncoder.encode(searchText, "utf-8");
-            Log.d("SearchTextDecode", utfStr + "\n");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-        try {
-            String asciiStr = URLEncoder.encode(searchText, "ascii");
-            Log.d("SearchTextDecode", asciiStr + "\n");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-        try {
-            String unicodeStr = URLEncoder.encode(searchText, "unicode");
-            Log.d("SearchTextDecode", unicodeStr + "\n");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-
         CommonUtils.showToast("开始搜索啦~", true);
+    }
+
+    private void doSearch() {
+        searchPageIndex++;
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(UrlHelper.Search_Songs_Base_Url)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        RetrofitServices.SearchService searchService = retrofit.create(RetrofitServices.SearchService.class);
+        Call<ResponseBody> call = searchService.getSearchString(curGBEncodeSearchStr, searchPageIndex, PerPageCount);
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful()) {
+                    try {
+                        String content = response.body().string();
+                        if (!TextUtils.isEmpty(content)) {
+                            parseMusicList(content);
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+            }
+        });
+    }
+
+    private void parseMusicList(String content) {
+        //SONGNAME=追梦人 ARTIST=白若溪 ALBUM=中国新歌声 第六期
+        // SCORE=3 NSIG1=1412109533 NSIG2=2635023571
+        // MUSICRID=MUSIC_8722832 MKVNSIG1=0 MKVNSIG2=0 HASECHO=0
+        // WMACODE=WMA128 MKVCODE= FORMATS=WMA96|WMA128|MP3128|MP3192|MP3H|AAC48|AL
+        // ALBUMID=1044144 ARTISTID=11056 APPROVESN= HASKDAT=0 PLAYCNT=11434
+        // SCORE100=67 RELEASEDATE=2016-08-19
+        // IS_POINT=0 MUTI_VER=0 ONLINE=1 NEW=0 PAY=0 COPYRIGHT=0
+        content = content.replace("\r\n", "");
+        String[] splitArr = content.split("SONGNAME=");
+        List<Music> musics = new ArrayList<>();
+        for (String split : splitArr) {
+            if (split.contains("ARTIST=") && split.contains("MUSICRID=MUSIC_")) {
+                try {
+                    int artistIndex = split.indexOf("ARTIST=");
+                    int albumIndex = split.indexOf("ALBUM=");
+                    int scoreIndex = split.indexOf("SCORE=");
+                    int musicIdIndex = split.indexOf("MUSICRID=MUSIC_");
+                    int mkvnsigIndex = split.indexOf("MKVNSIG1");
+                    int albumIdIndex = split.indexOf("ALBUMID=");
+                    int artistIdIndex = split.indexOf("ARTISTID=");
+                    int approvesnIndex = split.indexOf("APPROVESN=");
+                    int score100Index = split.indexOf("SCORE100=");
+                    int releaseIndex = split.indexOf("RELEASEDATE=");
+
+                    int id = Integer.parseInt(split.substring(musicIdIndex + 15, mkvnsigIndex));
+                    String name = split.substring(0, artistIndex);
+
+                    String artist = split.substring(artistIndex + 7, albumIndex);
+                    String artistId = split.substring(artistIdIndex + 9, approvesnIndex);
+
+                    String album = split.substring(albumIndex + 6, scoreIndex);
+                    int albumId = Integer.parseInt(split.substring(albumIdIndex + 8, artistIdIndex));
+
+                    int score = Integer.parseInt(split.substring(score100Index + 9, releaseIndex));
+
+                    Music music = new Music();
+                    music.setAlbum(album);
+                    music.setAlbumId(albumId);
+                    music.setArtist(artist);
+                    music.setArtistId(artistId);
+                    music.setId(id);
+                    music.setLocal(false);
+                    music.setName(name);
+                    music.setRating(score);
+                    musics.add(music);
+                } catch (Exception ex) {
+                }
+            }
+        }
+        musicAdapter.addMusicList(musics);
     }
 
     private List<String> getSearchHistory() {

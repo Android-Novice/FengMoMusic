@@ -18,4 +18,6 @@ public class UrlHelper {
     public final static String Music_Get_Url = "http://antiserver.kuwo.cn/anti.s?rid=MUSIC_%d&response=url&type=convert_url&format=mp3|aac";
 
     public final static String SEARCH_RECOMMEND_URL = "http://tips.kuwo.cn/";
+
+    public final static String Search_Songs_Base_Url = "http://search.kuwo.cn/";
 }
