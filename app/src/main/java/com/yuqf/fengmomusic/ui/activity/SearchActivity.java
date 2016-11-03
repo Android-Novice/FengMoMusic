@@ -25,9 +25,11 @@ import com.yuqf.fengmomusic.R;
 import com.yuqf.fengmomusic.base.BaseActivity;
 import com.yuqf.fengmomusic.interfaces.OnRecyclerViewItemClickListener;
 import com.yuqf.fengmomusic.media.Music;
+import com.yuqf.fengmomusic.media.MusicPlayer;
 import com.yuqf.fengmomusic.ui.adapter.LinearLayoutItemDecoration;
 import com.yuqf.fengmomusic.ui.adapter.MusicRecyclerViewAdapter;
 import com.yuqf.fengmomusic.ui.entity.RetrofitServices;
+import com.yuqf.fengmomusic.ui.widget.MiniMusicPlayerView;
 import com.yuqf.fengmomusic.utils.CommonUtils;
 import com.yuqf.fengmomusic.utils.PinYinUtils;
 import com.yuqf.fengmomusic.utils.UrlHelper;
@@ -49,7 +51,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class SearchActivity extends BaseActivity implements View.OnClickListener {
+public class SearchActivity extends BaseActivity implements View.OnClickListener, ListView.OnItemClickListener {
 
     private final String logTag = "SearchActivity";
     private final String SP_FILE_NAME = "Search_History";
@@ -85,6 +87,7 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
     private RecyclerView recyclerView;
     private MusicRecyclerViewAdapter musicAdapter;
     private int lastVisibleItemIndex;
+    private MiniMusicPlayerView playerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,6 +114,8 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
         historyListContent = findViewById(R.id.search_history_content);
         historyLeftLV = (ListView) findViewById(R.id.list_view_history1);
         historyRightLV = (ListView) findViewById(R.id.list_view_history2);
+        historyLeftLV.setOnItemClickListener(this);
+        historyRightLV.setOnItemClickListener(this);
 
         btnClearText = (ImageButton) findViewById(R.id.btn_clear_text);
         btnHome = (ImageButton) findViewById(R.id.btn_home);
@@ -120,20 +125,20 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
         btnClearText.setOnClickListener(this);
 
         sharedPreferences = getSharedPreferences(SP_FILE_NAME, MODE_PRIVATE);
+        playerView = (MiniMusicPlayerView) findViewById(R.id.music_player);
+        MusicPlayer.getInstance().addPlayerListener(playerView);
         initEditText();
         initRecycler();
 
         loadSearchHistory();
     }
 
-    ListView.OnItemClickListener listener = new AdapterView.OnItemClickListener() {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            TextView historyTV = (TextView) view.findViewById(R.id.history_list_item_tv);
-            String searchText = historyTV.getText().toString();
-            startSearch(searchText);
-        }
-    };
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        TextView historyTV = (TextView) view.findViewById(R.id.history_list_item_tv);
+        String searchText = historyTV.getText().toString();
+        startSearch(searchText);
+    }
 
     @Override
     public void onClick(View v) {
@@ -198,9 +203,6 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
             }
             historyLeftLV.setAdapter(new ArrayAdapter<>(this, R.layout.history_list_view_left_item, R.id.history_list_item_tv, leftList));
             historyRightLV.setAdapter(new ArrayAdapter<>(this, R.layout.history_list_view_right_item, R.id.history_list_item_tv, rightList));
-
-            historyLeftLV.setOnItemClickListener(listener);
-            historyRightLV.setOnItemClickListener(listener);
         }
     }
 
@@ -297,6 +299,7 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
 //        String searchText = editTextSearch.getText().toString();
         editTextSearch.removeTextChangedListener(watcher);
         editTextSearch.setText(searchText);
+        editTextSearch.setSelection(searchText.length());
         editTextSearch.addTextChangedListener(watcher);
         addSearchHistory(searchText);
         try {
@@ -308,7 +311,7 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-        CommonUtils.showToast("开始搜索啦~", true);
+        CommonUtils.showToast("开始搜索啦~", false);
     }
 
     private void doSearch() {
@@ -485,84 +488,4 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
             simpleAdapter.notifyDataSetChanged();
         }
     }
-
-//    private PopupMenu popupMenu;
-//    private void showPopupMenu(List<String> recommendList) {
-//        closePopupMenu();
-//        if (recommendList.size() == 0) return;
-//        popupMenu = new PopupMenu(this, editTextSearch);
-//        Menu menu = popupMenu.getMenu();
-//        for (String item : recommendList) {
-//            menu.add(item);
-//        }
-//        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-//            @Override
-//            public boolean onMenuItemClick(MenuItem item) {
-//                String searchText = item.getTitle().toString();
-//                editTextSearch.setText(searchText);
-////                startSearch();
-//                return true;
-//            }
-//        });
-//        popupMenu.show();
-//    }
-//
-//    private void closePopupMenu() {
-//        if (popupMenu != null) {
-//            popupMenu.dismiss();
-//            popupMenu = null;
-//        }
-//    }
-//
-//    private PopupWindow popupWindow;
-//    private List<String> recommendList;
-//    private ArrayAdapter adapter;
-//
-//    private void showPopupWindow() {
-//        View contentView = LayoutInflater.from(this).inflate(R.layout.recommend_search_tips_layout, null);
-//        if (popupWindow == null) {
-//            popupWindow = new PopupWindow(this);
-//            popupWindow.setContentView(contentView);
-//            popupWindow.setWidth(editTextSearch.getWidth());
-//            popupWindow.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
-//            popupWindow.getContentView().setOnTouchListener(new View.OnTouchListener() {
-//                @Override
-//                public boolean onTouch(View v, MotionEvent event) {
-//                    Log.d(logTag, "click popupwindow\n");
-//                    popupWindow.setFocusable(false);
-//                    popupWindow.dismiss();
-//                    return true;
-//                }
-//            });
-//            popupWindow.setFocusable(true);
-//            popupWindow.setTouchable(true);
-////            popupWindow.setOutsideTouchable(true);
-//            popupWindow.setBackgroundDrawable(new ColorDrawable(Color.GRAY));
-////            popupWindow.setAnimationStyle(R.style.PopupWindowAnimation);
-//        }
-//        final ListView listView = (ListView) contentView.findViewById(R.id.list_view_tips);
-//        adapter = new ArrayAdapter<String>(this, R.layout.history_list_view_left_item, R.id.history_list_item_tv, recommendList);
-//        listView.setAdapter(adapter);
-//
-//        popupWindow.showAsDropDown(editTextSearch, 0, 0);
-//
-//        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                Log.d(logTag, "click listview item\n");
-//                TextView textView = (TextView) view.findViewById(R.id.history_list_item_tv);
-//                String searchText = textView.getText().toString();
-//                editTextSearch.setFocusable(true);
-//                editTextSearch.setText(searchText);
-//            }
-//        });
-//    }
-//
-//    private void closePopupWindow() {
-//        if (popupWindow != null) {
-//            popupWindow.dismiss();
-//            popupWindow = null;
-//        }
-//    }
-
 }

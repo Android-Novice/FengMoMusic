@@ -55,7 +55,7 @@ public class SingerListFragment extends Fragment implements SwipeRefreshLayout.O
 
     private int category = -1;//0-10,singer kind
     private int pageIndex = -1; //current kind showing page index
-    private final int PAGE_COUNT = 100;
+    private final int PAGE_COUNT = 20;
     private final String URL_TYPE = "artistlist";
     private final String URL_ORDER = "hot";
     private int prefix = -1;

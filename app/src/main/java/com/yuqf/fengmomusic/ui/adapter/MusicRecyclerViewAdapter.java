@@ -56,18 +56,15 @@ public class MusicRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
 
     @Override
     public int getItemViewType(int position) {
-        if (position == musicList.size() + 1)
-            if (showFooter)
-                return Type_Footer;
-            else
-                return Type_Music;
-        else if (position == 0) {
+        int totalCount = getItemCount();
+        if (position == 0) {
             if (showHeader)
                 return HeaderType;
-            else
-                return Type_Music;
-        } else
-            return Type_Music;
+        } else if (position == totalCount - 1) {
+            if (showFooter)
+                return Type_Footer;
+        }
+        return Type_Music;
     }
 
     @Override
@@ -274,7 +271,7 @@ public class MusicRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
         notifyDataSetChanged();
     }
 
-    public void removeAll(){
+    public void removeAll() {
         musicList.clear();
         notifyDataSetChanged();
     }
