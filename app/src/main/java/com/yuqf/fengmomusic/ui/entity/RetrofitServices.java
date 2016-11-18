@@ -93,12 +93,16 @@ public class RetrofitServices {
         @GET("t.s?type=2014&c=mbox")
         Call<ResponseBody> getRecommendString(@Query(value = "w", encoded = true) String pinyin);
 
-//        http://search.kuwo.cn/r.s?client=kt&all=ai%25%25*****%25%C4%E3&pn=0&rn=1000
+        //        http://search.kuwo.cn/r.s?client=kt&all=ai%25%25*****%25%C4%E3&pn=0&rn=1000
 //        &ft=music&plat=pc&cluster=0&result=json&strategy=2012&itemset=newkm&ver=mbox&show_copyright_off=1&vipver=MUSIC_8.4.0.0_W2
         @GET("r.s?client=kt&&ft=music&plat=pc&cluster=0&result=json&strategy=2012&itemset=newkm&ver=mbox&show_copyright_off=1&vipver=MUSIC_8.4.0.0_W2")
         Call<ResponseBody> getSearchString(@Query(value = "all", encoded = true) String searchStr,
                                            @Query("pn") int pageIndex,
                                            @Query("rn") int number);
+
+        //        http://www.kuwo.cn/pc/index/playListMore
+        @GET("pc/index/playListMore")
+        Call<GSonHotRecommend> getHotRecommend();
     }
 
 //    public static class SingerConverterFactory extends Converter.Factory {

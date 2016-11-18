@@ -274,4 +274,16 @@ public class FileUtils {
         }
         return fileName;
     }
+
+    public static String getHotRecommendCoverPath(String picUrl) {
+//        String extension = picUrl.substring(picUrl.lastIndexOf("."));
+        String md5Name = CommonUtils.md5(picUrl);
+        String rootPath = getSRDirPath() + "/" + "HotRecommend";
+        File file = new File(rootPath);
+        if (!file.exists())
+            file.mkdirs();
+
+        String fileName = rootPath + "/" + md5Name;
+        return fileName;
+    }
 }

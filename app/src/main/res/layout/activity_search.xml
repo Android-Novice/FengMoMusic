@@ -33,22 +33,16 @@
             android:layout_gravity="center_vertical"
             android:layout_weight="1">
 
-            <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="34dp"
-                android:layout_marginStart="34dp"
-                android:src="@drawable/ic_search_white_48dp" />
-
             <EditText
                 android:id="@+id/search_edit_text"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="40dp"
+                android:layout_centerVertical="true"
                 android:layout_marginEnd="10dp"
-                android:layout_marginLeft="30dp"
+                android:layout_marginLeft="25dp"
                 android:layout_marginRight="10dp"
-                android:layout_marginStart="30dp"
+                android:layout_marginStart="25dp"
+                android:background="@drawable/edittext_style"
                 android:ellipsize="none"
                 android:hint="@string/search_input_tip"
                 android:imeOptions="actionSearch"
@@ -60,16 +54,26 @@
                 android:textColorHint="@android:color/darker_gray"
                 android:textSize="18sp" />
 
-            <ImageButton
-                android:id="@+id/btn_clear_text"
+            <ImageView
                 android:layout_width="20dp"
                 android:layout_height="20dp"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="29dp"
+                android:layout_marginStart="29dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_search_white_48dp" />
+
+            <ImageButton
+                android:id="@+id/btn_clear_text"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:layout_marginEnd="14dp"
-                android:layout_marginRight="14dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginRight="16dp"
                 android:background="@android:color/transparent"
+                android:scaleType="centerInside"
                 android:src="@drawable/close_white_48dp" />
         </RelativeLayout>
 
@@ -107,10 +111,10 @@
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recycler_view"
-            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scrollbars="vertical" />
+            android:scrollbars="vertical"
+            android:visibility="gone" />
 
         <LinearLayout
             android:id="@+id/history_related_content"

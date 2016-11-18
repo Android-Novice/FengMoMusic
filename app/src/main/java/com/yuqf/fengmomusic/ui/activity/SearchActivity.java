@@ -1,5 +1,6 @@
 package com.yuqf.fengmomusic.ui.activity;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -31,6 +32,7 @@ import com.yuqf.fengmomusic.ui.adapter.MusicRecyclerViewAdapter;
 import com.yuqf.fengmomusic.ui.entity.RetrofitServices;
 import com.yuqf.fengmomusic.ui.widget.MiniMusicPlayerView;
 import com.yuqf.fengmomusic.utils.CommonUtils;
+import com.yuqf.fengmomusic.utils.Global;
 import com.yuqf.fengmomusic.utils.PinYinUtils;
 import com.yuqf.fengmomusic.utils.UrlHelper;
 
@@ -131,6 +133,14 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
         initRecycler();
 
         loadSearchHistory();
+
+        Intent intent = getIntent();
+        if (intent != null) {
+            String searchText = intent.getStringExtra(Global.INTENT_HOT_RECOMMEND_KEY);
+            Log.d(logTag, "============searchText: " + searchText);
+            if (!TextUtils.isEmpty(searchText) || searchText != null)
+                startSearch(searchText);
+        }
     }
 
     @Override

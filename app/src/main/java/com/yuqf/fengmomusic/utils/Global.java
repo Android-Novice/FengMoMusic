@@ -25,4 +25,6 @@ public class Global {
 
     public static final int Round_Image_Size = 300;
     public static final int Blurred_Image_Size = 500;
+
+    public static final String INTENT_HOT_RECOMMEND_KEY = "HotRecommend";
 }
