@@ -27,4 +27,7 @@ public class Global {
     public static final int Blurred_Image_Size = 500;
 
     public static final String INTENT_HOT_RECOMMEND_KEY = "HotRecommend";
+
+    public static final String INTENT_HR_ITEM_ID= "HRItem_Id";
+    public static final String INTENT_HR_ITEM_NAME = "HRItem_Name";
 }

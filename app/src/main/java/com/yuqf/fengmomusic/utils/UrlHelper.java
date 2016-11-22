@@ -22,5 +22,5 @@ public class UrlHelper {
     public final static String Search_Songs_Base_Url = "http://search.kuwo.cn/";
 
     public final static String Hot_Recommend_Base_Url = "http://www.kuwo.cn/";
-//    http://nplserver.kuwo.cn/pl.svc?op=getlistinfo&pid=1929043096&pn=0&rn=50&encode=utf-8&keyset=pl2012
+    public final static String Hot_Recommend_Music_Url = "http://nplserver.kuwo.cn/";
 }

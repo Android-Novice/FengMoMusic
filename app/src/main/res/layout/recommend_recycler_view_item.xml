@@ -32,14 +32,14 @@
             android:ellipsize="marquee"
             android:lines="1"
             android:text="心动吧，咆哮吧~"
-            android:textSize="16sp" />
+            android:textSize="14sp" />
 
         <TextView
             android:id="@+id/recommend_item_info_tv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="20首歌曲"
-            android:textSize="14sp" />
+            android:textSize="13sp" />
     </LinearLayout>
 
     <ImageView

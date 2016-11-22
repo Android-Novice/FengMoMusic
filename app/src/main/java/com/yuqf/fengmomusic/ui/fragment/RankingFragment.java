@@ -10,7 +10,6 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,8 +28,7 @@ import com.yuqf.fengmomusic.utils.CommonUtils;
 import com.yuqf.fengmomusic.utils.Global;
 import com.yuqf.fengmomusic.utils.UrlHelper;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -70,14 +68,12 @@ public class RankingFragment extends Fragment implements SwipeRefreshLayout.OnRe
                 String second = curItem.getSourceid();
 
                 String second1 = curItem.getName();
-                List<Pair<String, String>> pairs = new ArrayList<Pair<String, String>>();
-                Pair<String, String> pair = new Pair<>(Global.INTENT_CONTENT_KEY, second);
-                Pair<String, String> pair1 = new Pair<>(Global.INTENT_TITLE_KEY, second1);
-                pairs.add(pair);
-                pairs.add(pair1);
-                pairs.add(new Pair<>(Global.INTENT_FROM_KEY, Global.INTENT_FROM_RANKING));
-                pairs.add(new Pair<>(Global.INTENT_COVER_KEY, curItem.getPicPath()));
-                CommonUtils.startActivity(getActivity(), MusicListActivity.class, pairs);
+                HashMap<String,String> hashMap = new HashMap<String, String>();
+                hashMap.put(Global.INTENT_CONTENT_KEY, second);
+                hashMap.put(Global.INTENT_TITLE_KEY, second1);
+                hashMap.put(Global.INTENT_FROM_KEY, Global.INTENT_FROM_RANKING);
+                hashMap.put(Global.INTENT_COVER_KEY, curItem.getPicPath());
+                CommonUtils.startActivity(getActivity(), MusicListActivity.class, hashMap);
             }
 
             @Override

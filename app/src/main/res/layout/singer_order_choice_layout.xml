@@ -8,4 +8,4 @@
     android:minWidth="40dp"
     android:text="A"
     android:textColor="@color/singer_fragment_top_text_style"
-    android:textSize="18sp" />
+    android:textSize="14sp" />

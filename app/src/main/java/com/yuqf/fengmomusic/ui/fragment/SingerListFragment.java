@@ -11,7 +11,6 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,7 +31,7 @@ import com.yuqf.fengmomusic.utils.Global;
 import com.yuqf.fengmomusic.utils.UrlHelper;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import okhttp3.ResponseBody;
@@ -98,12 +97,12 @@ public class SingerListFragment extends Fragment implements SwipeRefreshLayout.O
                 String titleV = singer.getName();
 
                 String contentV = String.valueOf(singer.getId());
-                List<Pair<String, String>> pairList = new ArrayList<Pair<String, String>>();
-                pairList.add(new Pair<>(Global.INTENT_TITLE_KEY, titleV));
-                pairList.add(new Pair<>(Global.INTENT_FROM_KEY, Global.INTENT_FROM_SINGER));
-                pairList.add(new Pair<>(Global.INTENT_CONTENT_KEY, contentV));
-                pairList.add(new Pair<>(Global.INTENT_COVER_KEY, singer.getPic()));
-                CommonUtils.startActivity(getActivity(), MusicListActivity.class, pairList);
+                HashMap<String,String> hashMap = new HashMap<String, String>();
+                hashMap.put(Global.INTENT_TITLE_KEY, titleV);
+                hashMap.put(Global.INTENT_FROM_KEY, Global.INTENT_FROM_SINGER);
+                hashMap.put(Global.INTENT_CONTENT_KEY, contentV);
+                hashMap.put(Global.INTENT_COVER_KEY, singer.getPic());
+                CommonUtils.startActivity(getActivity(), MusicListActivity.class, hashMap);
             }
 
             @Override

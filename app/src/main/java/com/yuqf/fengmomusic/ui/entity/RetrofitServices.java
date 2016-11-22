@@ -103,6 +103,10 @@ public class RetrofitServices {
         //        http://www.kuwo.cn/pc/index/playListMore
         @GET("pc/index/playListMore")
         Call<GSonHotRecommend> getHotRecommend();
+
+//        pl.svc?op=getlistinfo&pid=1929043096&pn=0&rn=50&encode=utf-8&keyset=pl2012
+        @GET("pl.svc?op=getlistinfo&pn=0&rn=100&encode=utf-8&keyset=pl2012")
+        Call<GSonHotMusicList> getHotMusicList(@Query("pid") String sourceId);
     }
 
 //    public static class SingerConverterFactory extends Converter.Factory {

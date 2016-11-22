@@ -20,6 +20,7 @@ public class BaseActivity extends AppCompatActivity {
     private View statusBarReplaceView;
     private Toolbar toolbar;
     public View toolbarContent;
+    //    private TextView toolbarTitle;
     private final String logTag = "BaseActivity";
 
     @Override
@@ -44,6 +45,7 @@ public class BaseActivity extends AppCompatActivity {
             toolbarContent = findViewById(R.id.toolbar);
             statusBarReplaceView = findViewById(R.id.tb_status_bkg);
             toolbar = (Toolbar) findViewById(R.id.tb_toolbar);
+//            toolbarTitle = (TextView) findViewById(R.toolbar_title);
             if (statusBarReplaceView != null)
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
                     statusBarReplaceView.setVisibility(View.GONE);
@@ -73,6 +75,7 @@ public class BaseActivity extends AppCompatActivity {
     public void showToolBar() {
         if (toolbar != null) {
             getSupportActionBar().show();
+//            getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
     }
 
@@ -86,7 +89,7 @@ public class BaseActivity extends AppCompatActivity {
 
     public void setToolbarTitle(String title) {
         if (toolbar != null) {
-//            toolbar.setTitle(title);
+//            toolbarTitle.setText(title);
             getSupportActionBar().setTitle(title);
         }
     }

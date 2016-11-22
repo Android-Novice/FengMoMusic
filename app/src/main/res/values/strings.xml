@@ -30,6 +30,7 @@
     <string name="search_history_list">搜索记录</string>
     <string name="clear_history_list">清空历史记录</string>
     <string name="search_content_recommend">以下搜索项你可能感兴趣：</string>
+    <string name="search_hint_prefix">大家都在搜索：</string>
 
     <string-array name="singer_order_list">
         <item>热门</item>
@@ -73,5 +74,14 @@
         <item>欧美女歌手</item>
         <item>欧美组合</item>
         <item>其他</item>
+    </string-array>
+    <string-array name="hot_search_word_list">
+        <item>刘德华 笨小孩</item>
+        <item>锦绣未央</item>
+        <item>桃花源 宋茜</item>
+        <item>张学友</item>
+        <item>Andy刘</item>
+        <item>陈奕迅 浮夸</item>
+        <item>Baby Come on</item>
     </string-array>
 </resources>

@@ -63,7 +63,7 @@ public class HotRecommendAdapter extends RecyclerView.Adapter<HotRecommendAdapte
         holder.titleTV.setText(item.getName());
         holder.countTV.setText(item.getInFo());
         holder.itemView.setTag(position);
-//        holder.gifImageView.setImageResource(R.drawable.file_download_white);
+        holder.gifImageView.setImageResource(R.drawable.ic_launcher_72);
         final HotRecommendHolder curHolder = holder;
         new AsyncTask<String, Void, File>() {
             @Override
@@ -114,6 +114,13 @@ public class HotRecommendAdapter extends RecyclerView.Adapter<HotRecommendAdapte
     public void setHotRecommendItemList(List<GSonHotRecommend.HotRecommendSecond.HotRecommendList.HotRecommendItem> hotRecommendItemList) {
         this.hotRecommendItemList = hotRecommendItemList;
         notifyDataSetChanged();
+    }
+
+    public GSonHotRecommend.HotRecommendSecond.HotRecommendList.HotRecommendItem getHotRecommendItem(int position) {
+        if (position < hotRecommendItemList.size()) {
+            return hotRecommendItemList.get(position);
+        }
+        return null;
     }
 
     class HotRecommendHolder extends RecyclerView.ViewHolder {

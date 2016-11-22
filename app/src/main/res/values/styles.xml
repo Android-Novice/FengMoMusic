@@ -18,4 +18,11 @@
     </style>
 
     <style name="AppTheme" parent="BaseAppTheme" />
+
+    <style name="toolbar_title" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:gravity">center</item>
+        <item name="android:homeAsUpIndicator">@drawable/arrow_back_white_24dp</item>
+    </style>
 </resources>

@@ -121,6 +121,15 @@ public class MusicPlayer {
         this.playingMusics = playingMusics;
     }
 
+    public void setPlayingMusic(Music music) {
+        if (showBufferingToast()) return;
+        playIndex = -1;
+        if (this.playingMusics == null)
+            playingMusics = new ArrayList<>();
+        playingMusics.clear();
+        this.playingMusics.add(music);
+    }
+
     public List<Music> getPlayingMusics() {
         return playingMusics;
     }

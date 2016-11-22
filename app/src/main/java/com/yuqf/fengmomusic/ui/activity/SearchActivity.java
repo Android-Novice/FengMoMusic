@@ -24,6 +24,7 @@ import android.widget.TextView;
 
 import com.yuqf.fengmomusic.R;
 import com.yuqf.fengmomusic.base.BaseActivity;
+import com.yuqf.fengmomusic.download.DownloaderNew;
 import com.yuqf.fengmomusic.interfaces.OnRecyclerViewItemClickListener;
 import com.yuqf.fengmomusic.media.Music;
 import com.yuqf.fengmomusic.media.MusicPlayer;
@@ -52,6 +53,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+
+import static com.yuqf.fengmomusic.base.MyApplication.getContext;
 
 public class SearchActivity extends BaseActivity implements View.OnClickListener, ListView.OnItemClickListener {
 
@@ -138,9 +141,15 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
         if (intent != null) {
             String searchText = intent.getStringExtra(Global.INTENT_HOT_RECOMMEND_KEY);
             Log.d(logTag, "============searchText: " + searchText);
-            if (!TextUtils.isEmpty(searchText) || searchText != null)
+            if (!TextUtils.isEmpty(searchText) || searchText != null) {
+                editTextSearch.setFocusable(false);
+                InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                inputMethodManager.hideSoftInputFromWindow(editTextSearch.getWindowToken(), 0);
                 startSearch(searchText);
-        }
+            } else
+                editTextSearch.setFocusable(true);
+        } else
+            editTextSearch.setFocusable(true);
     }
 
     @Override
@@ -163,6 +172,8 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
             case R.id.btn_clear_text:
                 editTextSearch.setText("");
                 setViewsVisibility(1, 3, 3);
+                editTextSearch.setFocusable(true);
+                editTextSearch.setFocusableInTouchMode(true);
                 break;
             case R.id.btn_home:
                 finish();
@@ -221,12 +232,17 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
         musicAdapter.setOnRecyclerViewItemClickListener(new OnRecyclerViewItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-
+                MusicPlayer.getInstance().setPlayingMusic(musicAdapter.getMusicList().get(position));
+                MusicPlayer.getInstance().play(position);
             }
 
             @Override
             public void onItemDownloadClick(View view, int position) {
-
+                Music music = musicAdapter.getMusicList().get(position);
+                DownloaderNew downloader = new DownloaderNew(music);
+                Intent intent = new Intent(getContext(), DownloadActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                getContext().startActivity(intent);
             }
         });
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
@@ -306,7 +322,7 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
     private void startSearch(String searchText) {
         if (TextUtils.isEmpty(searchText)) return;
         setViewsVisibility(3, 3, 1);
-//        String searchText = editTextSearch.getText().toString();
+        btnClearText.setVisibility(View.VISIBLE);
         editTextSearch.removeTextChangedListener(watcher);
         editTextSearch.setText(searchText);
         editTextSearch.setSelection(searchText.length());
@@ -315,6 +331,8 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
         try {
             musicAdapter.removeAll();
             curGBEncodeSearchStr = URLEncoder.encode(searchText, "GB2312");
+            curGBEncodeSearchStr = curGBEncodeSearchStr.replace("+", "%20");
+            Log.d(logTag, "Search Encode: " + curGBEncodeSearchStr);
             InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
             inputMethodManager.hideSoftInputFromWindow(editTextSearch.getWindowToken(), 0);
             doSearch();
@@ -338,7 +356,10 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
                 if (response.isSuccessful()) {
                     try {
                         String content = response.body().string();
+                        Log.d(logTag, "SearchContent: \n" + content);
                         if (!TextUtils.isEmpty(content)) {
+                            InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                            inputMethodManager.hideSoftInputFromWindow(editTextSearch.getWindowToken(), 0);
                             parseMusicList(content);
                         }
                     } catch (IOException e) {

@@ -32,7 +32,7 @@
             android:gravity="center"
             android:lines="1"
             android:textColor="@color/progressbar_second"
-            android:textSize="18sp" />
+            android:textSize="16sp" />
 
         <TextView
             android:id="@+id/music_count_tv"
@@ -40,7 +40,8 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="3dp"
             android:gravity="center"
-            android:textColor="@color/progressbar_second" />
+            android:textColor="@color/progressbar_second"
+            android:textSize="13sp" />
 
         <TextView
             android:id="@+id/play_count_tv"

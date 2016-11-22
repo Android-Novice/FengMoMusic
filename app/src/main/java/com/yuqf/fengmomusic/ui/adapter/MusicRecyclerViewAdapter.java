@@ -17,6 +17,7 @@ import com.yuqf.fengmomusic.db.DownloadedDao;
 import com.yuqf.fengmomusic.db.DownloadedMusic;
 import com.yuqf.fengmomusic.interfaces.OnRecyclerViewItemClickListener;
 import com.yuqf.fengmomusic.media.Music;
+import com.yuqf.fengmomusic.ui.entity.GSonHotMusicList;
 import com.yuqf.fengmomusic.ui.entity.GsonRMusicList;
 import com.yuqf.fengmomusic.ui.entity.GsonSMusicList;
 import com.yuqf.fengmomusic.utils.CommonUtils;
@@ -271,6 +272,15 @@ public class MusicRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
         notifyDataSetChanged();
     }
 
+    public void addHotMusicList(List<GSonHotMusicList.HotMusic> hotMusics) {
+        musicList.clear();
+        for (GSonHotMusicList.HotMusic hotMusic : hotMusics) {
+            Music music = parseHotMusic(hotMusic);
+            musicList.add(music);
+        }
+        notifyDataSetChanged();
+    }
+
     public void removeAll() {
         musicList.clear();
         notifyDataSetChanged();
@@ -311,6 +321,19 @@ public class MusicRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
     }
 
     public Music parseRMusic(GsonRMusicList.RMusic music) {
+        Music newMusic = new Music();
+        newMusic.setId(music.getId());
+        newMusic.setArtist(music.getArtist());
+        newMusic.setArtistId(music.getArtistid());
+        newMusic.setAlbum(music.getAlbum());
+        newMusic.setAlbumId(music.getAlbumid());
+        newMusic.setRating(music.getScore100());
+        newMusic.setName(music.getName());
+        newMusic.setLocal(false);
+        return newMusic;
+    }
+
+    public Music parseHotMusic(GSonHotMusicList.HotMusic music) {
         Music newMusic = new Music();
         newMusic.setId(music.getId());
         newMusic.setArtist(music.getArtist());

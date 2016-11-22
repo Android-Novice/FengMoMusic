@@ -10,4 +10,6 @@
     <color name="progressbar_second">#919191</color>
     <color name="progressbar_default">#878787</color>
     <color name="progressbar_buffer">#787878</color>
+
+    <color name="darker_gray">#aaa</color>
 </resources>

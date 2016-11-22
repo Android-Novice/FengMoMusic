@@ -15,7 +15,7 @@
         android:layout_weight="1"
         android:ellipsize="marquee"
         android:textColor="@color/colorAccent"
-        android:textSize="16sp" />
+        android:textSize="14sp" />
 
     <TextView
         android:id="@+id/text_view_search_times"
@@ -23,5 +23,5 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:textColor="@color/colorAccent"
-        android:textSize="16sp" />
+        android:textSize="14sp" />
 </LinearLayout>

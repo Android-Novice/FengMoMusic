@@ -17,7 +17,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="40dp"
                 android:layout_marginEnd="2dp"
                 android:layout_marginLeft="2dp"
                 android:layout_marginRight="2dp"
@@ -26,17 +26,12 @@
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
-                <EditText
-                    android:id="@+id/search_edit_text"
+                <TextSwitcher
+                    android:id="@+id/text_switcher"
                     android:layout_width="0dp"
-                    android:layout_height="40dp"
+                    android:layout_height="36dp"
                     android:layout_weight="1"
-                    android:background="@drawable/edittext_style"
-                    android:focusable="false"
-                    android:focusableInTouchMode="false"
-                    android:hint="大家都在搜索：刘德华"
-                    android:textColor="@color/colorAccent"
-                    android:textColorHint="@android:color/darker_gray" />
+                    android:background="@drawable/edittext_style" />
 
                 <ImageButton
                     android:id="@+id/go_search_btn"
@@ -44,27 +39,22 @@
                     android:layout_height="26dp"
                     android:layout_marginLeft="5dp"
                     android:layout_marginStart="5dp"
-                    android:scaleType="fitCenter"
                     android:background="@android:color/transparent"
+                    android:scaleType="fitCenter"
                     android:src="@drawable/ic_search_white_48dp" />
             </LinearLayout>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="@color/colorAccent"
                 android:layout_marginBottom="2dp"
-                android:layout_marginTop="2dp" />
+                android:layout_marginTop="2dp"
+                android:background="@color/colorAccent" />
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recycler_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
         </LinearLayout>
-
-        <com.yuqf.fengmomusic.ui.widget.MiniMusicPlayerView
-            android:id="@+id/media_player"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
     </LinearLayout>
 </FrameLayout>

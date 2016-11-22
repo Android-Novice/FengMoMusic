@@ -111,11 +111,11 @@ public class SingerFragment extends Fragment {
     private void initTopChoiceItem(int curIndex, int actualIndex, int length, View view, TextView textView) {
         ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
         if (curIndex == 0) {
-            ((ViewGroup.MarginLayoutParams) layoutParams).setMargins(0, 0, 3, 0);
+            ((ViewGroup.MarginLayoutParams) layoutParams).setMargins(0, 0, 2, 0);
         } else if (curIndex == length - 1) {
-            ((ViewGroup.MarginLayoutParams) layoutParams).setMargins(3, 0, 0, 0);
+            ((ViewGroup.MarginLayoutParams) layoutParams).setMargins(2, 0, 0, 0);
         } else {
-            ((ViewGroup.MarginLayoutParams) layoutParams).setMargins(3, 0, 3, 0);
+            ((ViewGroup.MarginLayoutParams) layoutParams).setMargins(4, 0, 4, 0);
         }
         if (actualIndex == curIndex) {
             textView.setSelected(true);

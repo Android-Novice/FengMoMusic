@@ -8,7 +8,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="35dp"
+        android:layout_height="30dp"
         android:orientation="horizontal">
 
         <TextView
@@ -19,7 +19,8 @@
             android:gravity="center_horizontal|bottom"
             android:paddingBottom="5dp"
             android:text="@string/category_singer"
-            android:textColor="@color/colorAccent" />
+            android:textColor="@color/colorAccent"
+            android:textSize="15sp" />
 
         <TextView
             android:id="@+id/text_view_ranking"
@@ -29,7 +30,8 @@
             android:gravity="center_horizontal|bottom"
             android:paddingBottom="5dp"
             android:text="@string/category_ranking"
-            android:textColor="@color/colorAccent" />
+            android:textColor="@color/colorAccent"
+            android:textSize="15sp" />
 
         <TextView
             android:id="@+id/text_view_search"
@@ -39,7 +41,8 @@
             android:gravity="center_horizontal|bottom"
             android:paddingBottom="5dp"
             android:text="@string/category_search"
-            android:textColor="@color/colorAccent" />
+            android:textColor="@color/colorAccent"
+            android:textSize="15sp" />
 
         <TextView
             android:id="@+id/text_view_mine"
@@ -49,14 +52,16 @@
             android:gravity="center_horizontal|bottom"
             android:paddingBottom="5dp"
             android:text="@string/category_mine"
-            android:textColor="@color/colorAccent" />
+            android:textColor="@color/colorAccent"
+            android:textSize="15sp" />
     </LinearLayout>
 
     <ImageView
         android:id="@+id/selected_category_iv"
-        android:layout_width="10dp"
-        android:layout_height="10dp"
+        android:layout_width="6dp"
+        android:layout_height="6dp"
         android:layout_marginLeft="43dp"
+        android:scaleType="centerInside"
         android:src="@drawable/white_circle_point" />
 
     <View
