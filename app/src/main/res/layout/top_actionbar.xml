@@ -15,23 +15,9 @@
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/tb_toolbar"
-        app:titleTextAppearance="@style/toolbar_title"
         android:layout_width="match_parent"
-        android:layout_height="48dp">
+        android:layout_height="48dp"
+        android:minHeight="48dp"
+        app:titleTextAppearance="@style/toolbar_title" />
 
-        <!--<TextView-->
-        <!--android:id="@+id/toolbar_title"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:layout_marginLeft="40dp"-->
-        <!--android:layout_marginStart="40dp"-->
-        <!--android:gravity="center_vertical"-->
-        <!--android:textColor="@color/colorAccent"-->
-        <!--android:textSize="16sp" />-->
-    </android.support.v7.widget.Toolbar>
-
-    <!--<View-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="1dp"-->
-    <!--android:background="@color/colorAccent" />-->
 </LinearLayout>

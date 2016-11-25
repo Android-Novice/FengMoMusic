@@ -32,6 +32,17 @@
     <string name="search_content_recommend">以下搜索项你可能感兴趣：</string>
     <string name="search_hint_prefix">大家都在搜索：</string>
 
+    <string name="not_logged_in">未登录</string>
+    <string name="local_music">本地音乐</string>
+    <string name="downloaded_music">我的下载</string>
+    <string name="recent_play">最近播放</string>
+    <string name="my_playlist">我的歌单</string>
+    <string name="my_favorite">我的收藏</string>
+    <string name="my_settings">设置</string>
+    <string name="check_update">检查更新</string>
+    <string name="feedback">问题反馈</string>
+    <string name="app_about">关于</string>
+
     <string-array name="singer_order_list">
         <item>热门</item>
         <item>A</item>

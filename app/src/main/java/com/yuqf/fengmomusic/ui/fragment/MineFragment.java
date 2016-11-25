@@ -14,6 +14,7 @@ import com.yuqf.fengmomusic.R;
  */
 public class MineFragment extends Fragment {
 
+    private View rootView;
 
     public MineFragment() {
         // Required empty public constructor
@@ -23,8 +24,15 @@ public class MineFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_mine, container, false);
+        if (rootView == null) {
+            rootView = inflater.inflate(R.layout.fragment_mine, container, false);
+        } else {
+            ViewGroup parent = (ViewGroup) rootView.getParent();
+            if (parent != null) {
+                parent.removeView(rootView);
+            }
+        }
+        return rootView;
     }
 
 }

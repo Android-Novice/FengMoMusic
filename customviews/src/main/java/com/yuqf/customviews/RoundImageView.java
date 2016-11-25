@@ -20,13 +20,16 @@ public class RoundImageView extends ImageView {
     private int shadowColor = Color.RED;
     private int borderWidth = 5;
     private int borderColor = Color.WHITE;
+    private int backColor = Color.LTGRAY;
     private Paint borderPaint;
     private Paint paint;
+    private Paint backPaint;
     private Bitmap roundImage;
     private Drawable oldDrawable;
     private Bitmap dstBitmap;
     private int startX;
     private int startY;
+    private final String logTag = "RoundImageView";
 
     public RoundImageView(Context context) {
         this(context, null);
@@ -43,6 +46,7 @@ public class RoundImageView extends ImageView {
         borderColor = typedArray.getColor(R.styleable.RoundImageView_border_color, Color.WHITE);
         shadowRadius = typedArray.getLayoutDimension(R.styleable.RoundImageView_shadow_width, 4);
         shadowColor = typedArray.getColor(R.styleable.RoundImageView_shadow_color, Color.BLACK);
+        backColor = typedArray.getColor(R.styleable.RoundImageView_back_color, Color.LTGRAY);
         typedArray.recycle();
 
         setPaints();
@@ -52,11 +56,17 @@ public class RoundImageView extends ImageView {
         borderPaint = new Paint();
         borderPaint.setAntiAlias(true);
         borderPaint.setColor(borderColor);
-        borderPaint.setShadowLayer(shadowRadius, 0, 0, shadowColor);
-        this.setLayerType(LAYER_TYPE_HARDWARE, borderPaint);
+        if (!isInEditMode()) {
+            borderPaint.setShadowLayer(shadowRadius, 0, 0, shadowColor);
+            this.setLayerType(LAYER_TYPE_HARDWARE, borderPaint);
+        }
 
         paint = new Paint();
         paint.setAntiAlias(true);
+
+        backPaint = new Paint();
+        backPaint.setAntiAlias(true);
+        backPaint.setColor(backColor);
     }
 
     public int getShadowRadius() {
@@ -132,6 +142,8 @@ public class RoundImageView extends ImageView {
         int imageRadius = canvasSize - shadowRadius * 2 - borderWidth * 2;
         canvas.drawCircle(canvasSize / 2, canvasSize / 2, imageRadius / 2 + borderWidth, borderPaint);
 
+        canvas.drawCircle(canvasSize / 2, canvasSize / 2, imageRadius / 2, backPaint);
+
         Bitmap dstBitmap = getRoundBitmap(bitmap, imageRadius);
         canvas.drawBitmap(dstBitmap, borderWidth + shadowRadius, borderWidth + shadowRadius, null);
 
@@ -139,9 +151,10 @@ public class RoundImageView extends ImageView {
     }
 
     private Bitmap getRoundBitmap(Bitmap bitmap, int imageRadius) {
-        if (bitmap.getWidth() != imageRadius)
+        if (bitmap.getWidth() != imageRadius) {
             bitmap = Bitmap.createScaledBitmap(bitmap, imageRadius, imageRadius, false);
-
+        }
+        Log.d(logTag, "RoundBmp Size: " + "/n Width:" + bitmap.getWidth() + "\n Height:" + bitmap.getHeight() + "\nrealRadius:" + imageRadius);
         Bitmap dstBitmap = Bitmap.createBitmap(imageRadius, imageRadius, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(dstBitmap);
         canvas.drawARGB(0, 0, 0, 0);
@@ -154,7 +167,8 @@ public class RoundImageView extends ImageView {
 
         canvas.drawCircle(imageRadius / 2, imageRadius / 2, imageRadius / 2, paint);
         paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
-        canvas.drawBitmap(bitmap, (imageRadius - bitmap.getWidth()) / 2, (imageRadius - bitmap.getHeight()) / 2, paint);
+
+        canvas.drawBitmap(bitmap, 0, 0, paint);
         roundImage = dstBitmap.copy(Bitmap.Config.ARGB_8888, true);
         return dstBitmap;
     }
@@ -163,11 +177,18 @@ public class RoundImageView extends ImageView {
         Bitmap copyBmp = srcBmp.copy(Bitmap.Config.ARGB_8888, true);
         int bmpWidth = copyBmp.getWidth();
         int bmpHeight = copyBmp.getHeight();
+        Log.d(logTag, "SrcBmp Size: " + "/n Width:" + bmpWidth + "\n Height:" + bmpHeight);
+
+        if (bmpWidth == bmpHeight) {
+            return copyBmp;
+        }
         if (bmpWidth > bmpHeight) {
             copyBmp = Bitmap.createBitmap(copyBmp, (bmpWidth - bmpHeight) / 2, 0, bmpHeight, bmpHeight);
         } else {
             copyBmp = Bitmap.createBitmap(copyBmp, 0, (bmpHeight - bmpWidth) / 2, bmpWidth, bmpWidth);
         }
+
+        Log.d(logTag, "ScaleBmp Size: " + "/n Width:" + bmpWidth + "\n Height:" + bmpHeight);
         return copyBmp;
     }
 

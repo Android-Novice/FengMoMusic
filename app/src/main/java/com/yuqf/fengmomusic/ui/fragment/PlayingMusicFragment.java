@@ -204,8 +204,8 @@ public class PlayingMusicFragment extends Fragment implements Button.OnClickList
                         String coverUrl = response.body().string();
                         Log.d(logTag, "300 pic: " + coverUrl);
                         MyApplication.getPicasso().load(coverUrl)
-                                .placeholder(R.drawable.ic_audiotrack_white_48dp)
-                                .error(R.drawable.ic_audiotrack_white_48dp)
+                                .placeholder(R.drawable.player_cover)
+                                .error(R.drawable.player_cover)
                                 .into(target300);
                     } catch (IOException e) {
                         e.printStackTrace();

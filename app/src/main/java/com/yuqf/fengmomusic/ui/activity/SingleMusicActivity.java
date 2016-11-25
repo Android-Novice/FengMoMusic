@@ -342,8 +342,8 @@ public class SingleMusicActivity extends BaseActivity implements MusicPlayerList
         Picasso picasso = builder.build();
 
         picasso.load(url)
-                .placeholder(R.drawable.ic_audiotrack_white_48dp)
-                .error(R.drawable.ic_audiotrack_white_48dp)
+                .placeholder(R.drawable.player_cover)
+                .error(R.drawable.player_cover)
                 .into(target500);
     }
 
