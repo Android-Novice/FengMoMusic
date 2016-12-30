@@ -19,9 +19,9 @@ import com.yuqf.fengmomusic.base.BaseActivity;
 import com.yuqf.fengmomusic.base.MyApplication;
 import com.yuqf.fengmomusic.media.MusicService;
 import com.yuqf.fengmomusic.ui.fragment.MineFragment;
+import com.yuqf.fengmomusic.ui.fragment.PopularFragment;
 import com.yuqf.fengmomusic.ui.fragment.RankingFragment;
-import com.yuqf.fengmomusic.ui.fragment.SearchFragment;
-import com.yuqf.fengmomusic.ui.fragment.SingerFragment;
+import com.yuqf.fengmomusic.ui.fragment.RecommendFragment;
 import com.yuqf.fengmomusic.utils.CommonUtils;
 
 public class MainActivity extends BaseActivity {
@@ -67,9 +67,9 @@ public class MainActivity extends BaseActivity {
         circlePointIV = (ImageView) findViewById(R.id.selected_category_iv);
 
         fragments = new Fragment[4];
-        fragments[0] = new SingerFragment();
+        fragments[0] = new RecommendFragment();
         fragments[1] = new RankingFragment();
-        fragments[2] = new SearchFragment();
+        fragments[2] = new PopularFragment();
         fragments[3] = new MineFragment();
 
         viewPager = (ViewPager) findViewById(R.id.viewpager_main);
@@ -86,9 +86,9 @@ public class MainActivity extends BaseActivity {
         screenWidth = CommonUtils.getScreenWidth(this);
         Log.d(logTag, "screenWidth: " + String.valueOf(screenWidth));
         topTextViews = new TextView[4];
-        topTextViews[0] = (TextView) findViewById(R.id.text_view_singer);
+        topTextViews[0] = (TextView) findViewById(R.id.text_view_recommend);
         topTextViews[1] = (TextView) findViewById(R.id.text_view_ranking);
-        topTextViews[2] = (TextView) findViewById(R.id.text_view_search);
+        topTextViews[2] = (TextView) findViewById(R.id.text_view_popular);
         topTextViews[3] = (TextView) findViewById(R.id.text_view_mine);
         TopTextViewClickListener listener = new TopTextViewClickListener();
         for (TextView tv : topTextViews) {
@@ -113,7 +113,7 @@ public class MainActivity extends BaseActivity {
         }
     }
 
-    private class ViewPagerPageChangeListener implements android.support.v4.view.ViewPager.OnPageChangeListener {
+    private class ViewPagerPageChangeListener implements ViewPager.OnPageChangeListener {
         final ViewGroup.LayoutParams params = circlePointIV.getLayoutParams();
 
         @Override
@@ -143,27 +143,29 @@ public class MainActivity extends BaseActivity {
 
         @Override
         public void onPageScrollStateChanged(int state) {
+            int position = viewPager.getCurrentItem();
+            Log.d("ViewPagerListener", "========state: " + String.valueOf(state) + "\n\n========state: " + String.valueOf(position));
             if (state == 0) {
-                int position = viewPager.getCurrentItem();
+//                int position = viewPager.getCurrentItem();
                 Log.d("ViewPagerListener", "viewPager currentItem: " + String.valueOf(position));
                 moveSelectedView(position, false);
             }
         }
     }
 
-    private class TopTextViewClickListener implements android.view.View.OnClickListener {
+    private class TopTextViewClickListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
             Log.d(logTag, "TopTextViewClickListener");
             int curIndex = -1;
             switch (v.getId()) {
-                case R.id.text_view_singer:
+                case R.id.text_view_recommend:
                     curIndex = 0;
                     break;
                 case R.id.text_view_ranking:
                     curIndex = 1;
                     break;
-                case R.id.text_view_search:
+                case R.id.text_view_popular:
                     curIndex = 2;
                     break;
                 case R.id.text_view_mine:

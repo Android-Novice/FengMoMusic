@@ -6,6 +6,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 
 import com.yuqf.fengmomusic.R;
@@ -30,38 +31,49 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 import static com.yuqf.fengmomusic.base.MyApplication.getContext;
 
-public class HRItemMusicListActivity extends BaseActivity {
+public class CommonMusicListActivity extends BaseActivity {
 
     private RecyclerView recyclerView;
     private MiniMusicPlayerView musicPlayer;
     private MusicRecyclerViewAdapter adapter;
+    private final String logTag = "CommonMusicListActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_hritem_music_list);
-        musicPlayer = (MiniMusicPlayerView) findViewById(R.id.media_player);
-        MusicPlayer.getInstance().addPlayerListener(musicPlayer);
 
-        Intent intent = getIntent();
-        final String itemId = intent.getStringExtra(Global.INTENT_HR_ITEM_ID);
-        String name = intent.getStringExtra(Global.INTENT_HR_ITEM_NAME);
+        setContentView(R.layout.activity_common_music_list);
 
         initTopBars();
         showToolBar();
         setToolbarHomeAsUp();
-        if (!TextUtils.isEmpty(name)) {
-            setToolbarTitle(name);
-        }
 
-        initRecycler();
+        musicPlayer = (MiniMusicPlayerView) findViewById(R.id.media_player);
+        MusicPlayer.getInstance().addPlayerListener(musicPlayer);
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                getHotMusicListById(itemId);
+        Intent intent = getIntent();
+        String kind = intent.getStringExtra(Global.INTENT_LOAD_MUSIC_KIND);
+        Log.d(logTag, "the transferred kind: " + kind);
+        if (kind.equals(Global.INTENT_LOAD_HOTRECOMMEND)) {
+            Log.d(logTag, "start load hot recommend music list ...");
+            final String itemId = intent.getStringExtra(Global.INTENT_HR_ITEM_ID);
+            String name = intent.getStringExtra(Global.INTENT_HR_ITEM_NAME);
+
+            if (!TextUtils.isEmpty(name)) {
+                setToolbarTitle(name);
             }
-        }).start();
+
+            initRecycler();
+
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    getHotMusicListById(itemId);
+                }
+            }).start();
+        } else if (kind == Global.INTENT_LOAD_LOCAL) {
+            /*本地音乐不再从这里获取*/
+        }
     }
 
     private void initRecycler() {

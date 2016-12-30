@@ -22,7 +22,7 @@ android {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile project(':customviews')
-    testCompile 'junit:junit:4.12'
+    compile files('libs/pinyin4j-2.5.0.jar')
     compile 'com.android.support:appcompat-v7:23.2.1'
     compile 'com.android.support:support-v4:23.2.1'
     compile 'com.android.support:recyclerview-v7:23.2.1'
@@ -33,5 +33,5 @@ dependencies {
     compile 'com.squareup.okhttp3:okhttp:3.4.1'
     compile 'com.google.code.gson:gson:2.7'
     compile 'pl.droidsonroids.gif:android-gif-drawable:1.2.2'
-    compile files('libs/pinyin4j-2.5.0.jar')
+    testCompile 'junit:junit:4.12'
 }

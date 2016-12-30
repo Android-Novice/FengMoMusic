@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_enabled="true">
+        <bitmap android:src="@drawable/subtab_normal_middle_transparent" />
+    </item>
+    <item android:state_pressed="true">
+        <bitmap android:src="@drawable/subtab_normal_middle_transparent" />
+    </item>
+    <item android:state_checked="true">
+        <bitmap android:src="@drawable/subtab_actived_middle_transparent" />
+    </item>
+    <item android:state_selected="true">
+        <bitmap android:src="@drawable/subtab_actived_middle_transparent" />
+    </item>
+</selector>

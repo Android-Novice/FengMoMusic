@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:orientation="horizontal"
+    android:paddingEnd="15dp"
+    android:paddingLeft="15dp"
+    android:paddingStart="15dp">
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="@drawable/local_left_button_style"
+        android:clickable="true"
+        android:gravity="center"
+        android:paddingEnd="20dp"
+        android:paddingLeft="20dp"
+        android:paddingStart="20dp"
+        android:text="@string/local_song"
+        android:textColor="@color/colorAccent"
+        android:textSize="15sp" />
+
+    <View
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:alpha=".3"
+        android:background="@color/colorAccent" />
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="@drawable/subtab_normal_middle_transparent"
+        android:gravity="center"
+        android:text="@string/local_singer"
+        android:textColor="@color/colorAccent"
+        android:textSize="15sp" />
+
+    <View
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:alpha=".3"
+        android:background="@color/colorAccent" />
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="@drawable/local_middle_button_style"
+        android:gravity="center"
+        android:text="@string/local_album"
+        android:textColor="@color/colorAccent"
+        android:textSize="15sp" />
+
+    <View
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:alpha=".3"
+        android:background="@color/colorAccent" />
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="@drawable/local_right_button_style"
+        android:gravity="center"
+        android:text="@string/local_music_folder"
+        android:textColor="@color/colorAccent"
+        android:textSize="15sp" />
+</LinearLayout>

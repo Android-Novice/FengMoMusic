@@ -110,6 +110,11 @@ public class MusicPlayer {
             listenerList.add(playerListener);
     }
 
+    public void removePlayerListener(MusicPlayerListener playerListener) {
+        if (!listenerList.contains(playerListener) && playerListener != null)
+            listenerList.remove(playerListener);
+    }
+
     public void addChangedListener(PlayIndexChangedListener changedListener) {
         if (changedListener != null && !changedListenerList.contains(changedListener))
             changedListenerList.add(changedListener);

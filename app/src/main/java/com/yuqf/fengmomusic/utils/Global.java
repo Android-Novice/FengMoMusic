@@ -28,6 +28,11 @@ public class Global {
 
     public static final String INTENT_HOT_RECOMMEND_KEY = "HotRecommend";
 
-    public static final String INTENT_HR_ITEM_ID= "HRItem_Id";
+    public static final String INTENT_HR_ITEM_ID = "HRItem_Id";
     public static final String INTENT_HR_ITEM_NAME = "HRItem_Name";
+
+    /*加载的音乐类型：1代表Hot Recommend；2代表本地音乐*/
+    public static final String INTENT_LOAD_MUSIC_KIND = "Load_Music_Kind";
+    public static final String INTENT_LOAD_HOTRECOMMEND = "1";
+    public static final String INTENT_LOAD_LOCAL = "2";
 }

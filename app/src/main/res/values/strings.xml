@@ -1,10 +1,10 @@
 <resources>
     <string name="app_name">疯魔音乐</string>
 
-    //主页面的四个tab名称
+    <!--主页面的四个tab名称-->
     <string name="category_ranking">排行榜</string>
-    <string name="category_singer">歌手</string>
-    <string name="category_search">搜索</string>
+    <string name="category_recommend">推荐</string>
+    <string name="category_popular">热门</string>
     <string name="category_mine">我的</string>
 
     <!-- TODO: Remove or change this placeholder text -->
@@ -42,6 +42,10 @@
     <string name="check_update">检查更新</string>
     <string name="feedback">问题反馈</string>
     <string name="app_about">关于</string>
+    <string name="local_song">歌曲</string>
+    <string name="local_singer">歌手</string>
+    <string name="local_album">专辑</string>
+    <string name="local_music_folder">文件夹</string>
 
     <string-array name="singer_order_list">
         <item>热门</item>

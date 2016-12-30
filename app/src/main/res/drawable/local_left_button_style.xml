@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/subtab_normal_left_transparent" android:state_enabled="true" />
+    <item android:drawable="@drawable/subtab_normal_left_transparent" android:state_pressed="true" />
+    <item android:drawable="@drawable/subtab_actived_left_transparent" android:state_checked="true" />
+    <item android:drawable="@drawable/subtab_actived_left_transparent" android:state_selected="true" />
+
+    <!--&lt;!&ndash;<item android:state_enabled="true">&ndash;&gt;-->
+        <!--&lt;!&ndash;<bitmap android:gravity="center" android:src="@drawable/subtab_normal_left_transparent" android:tileMode="disabled" />&ndash;&gt;-->
+    <!--&lt;!&ndash;</item>&ndash;&gt;-->
+    <!--&lt;!&ndash;<item android:state_pressed="true">&ndash;&gt;-->
+        <!--&lt;!&ndash;<bitmap android:gravity="center" android:src="@drawable/subtab_normal_left_transparent" android:tileMode="disabled" />&ndash;&gt;-->
+    <!--&lt;!&ndash;</item>&ndash;&gt;-->
+    <!--&lt;!&ndash;<item android:state_checked="true">&ndash;&gt;-->
+        <!--&lt;!&ndash;<bitmap android:gravity="center" android:src="@drawable/subtab_actived_left_transparent" android:tileMode="disabled" />&ndash;&gt;-->
+    <!--&lt;!&ndash;</item>&ndash;&gt;-->
+    <!--&lt;!&ndash;<item android:state_selected="true">&ndash;&gt;-->
+        <!--&lt;!&ndash;<bitmap android:gravity="center" android:src="@drawable/subtab_actived_left_transparent" android:tileMode="disabled" />&ndash;&gt;-->
+    <!--</item>-->
+</selector>

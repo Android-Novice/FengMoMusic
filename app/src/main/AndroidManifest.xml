@@ -58,7 +58,9 @@
         <service android:name=".media.MusicService" />
 
         <activity android:name=".ui.activity.SearchActivity" />
-        <activity android:name=".ui.activity.HRItemMusicListActivity"></activity>
+        <activity android:name=".ui.activity.CommonMusicListActivity" />
+        <activity android:name=".ui.activity.LocalMusicActivity" />
+        <activity android:name=".ui.activity.SingerListActivity"/>
     </application>
 
 </manifest>

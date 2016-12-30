@@ -99,6 +99,14 @@ public class MiniMusicPlayerView extends FrameLayout implements ImageButton.OnCl
     }
 
     @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        if (!isInEditMode()) {
+            MusicPlayer.getInstance().removePlayerListener(this);
+        }
+    }
+
+    @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_previous:
