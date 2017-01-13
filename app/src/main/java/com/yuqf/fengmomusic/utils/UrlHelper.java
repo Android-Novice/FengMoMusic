@@ -23,4 +23,7 @@ public class UrlHelper {
 
     public final static String Hot_Recommend_Base_Url = "http://www.kuwo.cn/";
     public final static String Hot_Recommend_Music_Url = "http://nplserver.kuwo.cn/";
+
+    public final static String Recommend_Page_Base_Url = "http://www.kuwo.cn/";
+    public final static String Recommend_Album_Base_Url = "http://search.kuwo.cn/";
 }

@@ -62,10 +62,12 @@ public class MusicLyricFragment extends Fragment {
     }
 
     public void notifyPlayedDuration() {
+        if (rootView == null) return;
         lyricTV.setPlayingIndex(music.getPlayedPosition());
     }
 
     public void nextMusicLyric() {
+        if (rootView == null) return;
         showLoadState(0);
     }
 

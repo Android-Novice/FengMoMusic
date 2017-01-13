@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -20,6 +21,10 @@ import com.yuqf.fengmomusic.utils.CommonUtils;
 import com.yuqf.fengmomusic.utils.FileUtils;
 import com.yuqf.fengmomusic.utils.Global;
 
+import java.io.File;
+
+import static android.graphics.Bitmap.createBitmap;
+
 public class MusicListActivity extends BaseActivity {
 
     private final String logTag = "MusicListActivity";
@@ -32,7 +37,6 @@ public class MusicListActivity extends BaseActivity {
     private FrameLayout photoContentView;
     private ImageView backgroundBlurredIV;
     private ImageView backgroundNormalIV;
-    private Bitmap blurredBmp;
     private float scrolledTopRate = .5f;
     private float scrolledAlpha = 0.55f;
 
@@ -83,7 +87,11 @@ public class MusicListActivity extends BaseActivity {
         String coverUrl = intent.getStringExtra(Global.INTENT_COVER_KEY);
         try {
             String title = intent.getStringExtra(Global.INTENT_TITLE_KEY);
-            setBitmap(title, coverUrl);
+            if (from.equals(Global.INTENT_FROM_RECOMMEND) || from.equals(Global.INTENT_FROM_ALBUM)) {
+                setRecommendBitmap(coverUrl);
+            } else {
+                setBitmap(title, coverUrl);
+            }
 
             if (!TextUtils.isEmpty(title)) {
                 setToolbarTitle(title);
@@ -93,10 +101,15 @@ public class MusicListActivity extends BaseActivity {
         }
     }
 
+    private boolean hasLoaded;
+
     @Override
     protected void onStart() {
         super.onStart();
-        musicListFragment.loadMusic(from, contentId);
+        if (!hasLoaded) {
+            hasLoaded = true;
+            musicListFragment.loadMusic(from, contentId);
+        }
     }
 
     private void setBitmap(String title, String coverUrl) {
@@ -121,17 +134,17 @@ public class MusicListActivity extends BaseActivity {
             }
         }
         Log.d(logTag, "5....\n");
-        Bitmap blurringBmp = Bitmap.createBitmap(normalBmp);
+        Bitmap blurringBmp = createBitmap(normalBmp);
 //        normalBmp = CommonUtils.scaleBitmap(normalBmp, screenWidth, Global.HEADER_HEIGHT);
         normalIV.setImageBitmap(normalBmp);
 
         int height = (int) (normalBmp.getHeight() * Global.HEADER_HEIGHT * scrolledTopRate / screenWidth);
 
-        Bitmap bottomNormalBkg = Bitmap.createBitmap(normalBmp, 0, normalBmp.getHeight() - height, normalBmp.getWidth(), height);
+        Bitmap bottomNormalBkg = createBitmap(normalBmp, 0, normalBmp.getHeight() - height, normalBmp.getWidth(), height);
         backgroundNormalIV.setImageBitmap(bottomNormalBkg);
 
         Log.d(logTag, "6....\n");
-        blurredBmp = null;
+        Bitmap blurredBmp = null;
         if (from.equals(Global.INTENT_FROM_RANKING)) {
             if (hasWebCover) {
                 Log.d(logTag, "7....\n");
@@ -172,7 +185,33 @@ public class MusicListActivity extends BaseActivity {
         Log.d(logTag, "15....\n");
         blurredIV.setImageBitmap(blurredBmp);
 
-        Bitmap bottomBkg = Bitmap.createBitmap(blurredBmp, 0, blurredBmp.getHeight() - 5, blurredBmp.getWidth(), 5);
+        Bitmap bottomBkg = createBitmap(blurredBmp, 0, blurredBmp.getHeight() - 5, blurredBmp.getWidth(), 5);
         backgroundBlurredIV.setImageBitmap(bottomBkg);
+    }
+
+    /*设置小美推歌或者是老王推歌时的背景方法*/
+    private void setRecommendBitmap(String url) {
+
+        photoContentView.setVisibility(View.GONE);
+
+        String path = FileUtils.getRecommendPlayImagePath(url, false);
+        File normalFile = new File(path);
+        if (normalFile.exists()) {
+            Bitmap normalBmp = BitmapFactory.decodeFile(path);
+            Matrix matrix = new Matrix();
+            matrix.postRotate(90);
+            normalBmp = Bitmap.createBitmap(normalBmp, 0, 0, normalBmp.getWidth(), normalBmp.getHeight(), matrix, true);
+
+            Bitmap blurringBmp = Bitmap.createBitmap(normalBmp);
+
+            Bitmap blurredBmp = Blur.fastblur(this, blurringBmp, 13);
+            String blurPath = FileUtils.getRecommendPlayImagePath(url, true);
+            FileUtils.saveBitmap(blurredBmp, blurPath);
+
+            backgroundBlurredIV.setScaleType(ImageView.ScaleType.FIT_CENTER);
+            backgroundNormalIV.setScaleType(ImageView.ScaleType.FIT_CENTER);
+            backgroundNormalIV.setImageBitmap(normalBmp);
+            backgroundBlurredIV.setImageBitmap(blurredBmp);
+        }
     }
 }

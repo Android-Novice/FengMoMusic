@@ -58,6 +58,16 @@
         android:numStars="5"
         android:rating="2.2" />
 
+    <TextView
+        android:id="@+id/music_recommend_tv"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:gravity="left|center_vertical"
+        android:lines="3"
+        android:textColor="@color/colorAccent"
+        android:textSize="13sp" />
+
     <ImageButton
         android:id="@+id/music_download_button"
         android:layout_width="40dp"

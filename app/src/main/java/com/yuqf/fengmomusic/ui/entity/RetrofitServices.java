@@ -104,9 +104,18 @@ public class RetrofitServices {
         @GET("pc/index/playListMore")
         Call<GSonHotRecommend> getHotRecommend();
 
-//        pl.svc?op=getlistinfo&pid=1929043096&pn=0&rn=50&encode=utf-8&keyset=pl2012
+        //        pl.svc?op=getlistinfo&pid=1929043096&pn=0&rn=50&encode=utf-8&keyset=pl2012
         @GET("pl.svc?op=getlistinfo&pn=0&rn=100&encode=utf-8&keyset=pl2012")
         Call<GSonHotMusicList> getHotMusicList(@Query("pid") String sourceId);
+    }
+
+    public interface RecommendService {
+        @GET("pc/index/info")
+        Call<ResponseBody> getAllRecommendInfo();
+
+        //        r.s?pn=0&rn=1000&stype=albuminfo&albumid=1375274&show_copyright_off=1&alflac=1&vipver=MUSIC_8.5.0.0_BCS53
+        @GET("r.s?pn=0&rn=1000&stype=albuminfo&show_copyright_off=1&alflac=1&vipver=MUSIC_8.5.0.0_BCS53")
+        Call<ResponseBody> getRecommendAlbum(@Query("albumid") String albumId);
     }
 
 //    public static class SingerConverterFactory extends Converter.Factory {

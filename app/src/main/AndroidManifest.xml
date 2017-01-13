@@ -60,7 +60,8 @@
         <activity android:name=".ui.activity.SearchActivity" />
         <activity android:name=".ui.activity.CommonMusicListActivity" />
         <activity android:name=".ui.activity.LocalMusicActivity" />
-        <activity android:name=".ui.activity.SingerListActivity"/>
+        <activity android:name=".ui.activity.SingerListActivity" />
+        <activity android:name=".ui.activity.WebBrowserActivity"></activity>
     </application>
 
 </manifest>

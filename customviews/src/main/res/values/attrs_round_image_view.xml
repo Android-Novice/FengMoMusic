@@ -40,6 +40,16 @@
         <attr name="normal_color" format="color" />
         <attr name="normal_size" format="dimension" />
     </declare-styleable>
+
+    <declare-styleable name="BannerView">
+        <attr name="indicator_radius" format="dimension" />
+        <attr name="indicator_container_padding_left" format="dimension" />
+        <attr name="indicator_container_padding_right" format="dimension" />
+        <attr name="indicator_container_padding_top" format="dimension" />
+        <attr name="indicator_container_padding_bottom" format="dimension" />
+        <attr name="indicator_item_text_size" format="dimension" />
+        <attr name="auto_play_delay_seconds" format="integer" />
+    </declare-styleable>
 </resources>
 
 

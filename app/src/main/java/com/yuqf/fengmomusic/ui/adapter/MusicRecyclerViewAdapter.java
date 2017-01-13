@@ -1,6 +1,7 @@
 package com.yuqf.fengmomusic.ui.adapter;
 
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +19,7 @@ import com.yuqf.fengmomusic.db.DownloadedMusic;
 import com.yuqf.fengmomusic.interfaces.OnRecyclerViewItemClickListener;
 import com.yuqf.fengmomusic.media.Music;
 import com.yuqf.fengmomusic.ui.entity.GSonHotMusicList;
+import com.yuqf.fengmomusic.ui.entity.GSonRecommendAlbum;
 import com.yuqf.fengmomusic.ui.entity.GsonRMusicList;
 import com.yuqf.fengmomusic.ui.entity.GsonSMusicList;
 import com.yuqf.fengmomusic.utils.CommonUtils;
@@ -116,9 +118,18 @@ public class MusicRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
             TextView musicNameTV = ((MusicHolder) holder).musicNameTV;
             musicNameTV.setText(music.getName());
             ((MusicHolder) holder).singerNameTV.setText(music.getArtist());
-            float rating = ((float) music.getRating()) / 20;
-            Log.d("MusicRecyclerAdapter", String.valueOf(music.getRating()) + "\n rating: " + String.valueOf(rating));
-            ((MusicHolder) holder).ratingBar.setRating(rating);
+
+            TextView recommendTV = ((MusicHolder) holder).musicRecommendTV;
+            if (!TextUtils.isEmpty(music.getMusicDescribe())) {
+                ((MusicHolder) holder).ratingBar.setVisibility(View.GONE);
+                recommendTV.setText(music.getMusicDescribe());
+            } else {
+                recommendTV.setVisibility(View.GONE);
+                float rating = ((float) music.getRating()) / 20;
+                Log.d("MusicRecyclerAdapter", String.valueOf(music.getRating()) + "\n rating: " + String.valueOf(rating));
+                ((MusicHolder) holder).ratingBar.setRating(rating);
+            }
+
             holder.itemView.setTag(newPosition);
             ImageView imageView = ((MusicHolder) holder).playingStatusIV;
             if (playingMusic == music) {
@@ -281,6 +292,26 @@ public class MusicRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
         notifyDataSetChanged();
     }
 
+    public void addAlbumMusicList(List<GSonRecommendAlbum.MusicItem> albumMusicList) {
+        musicList.clear();
+        for (GSonRecommendAlbum.MusicItem item : albumMusicList) {
+            Music music = parseAlbumMusicItem(item);
+            musicList.add(music);
+        }
+        notifyDataSetChanged();
+    }
+
+    private Music parseAlbumMusicItem(GSonRecommendAlbum.MusicItem oldItem) {
+        Music music = new Music();
+        music.setId(oldItem.getId());
+        music.setArtist(oldItem.getArtist());
+        music.setArtistId(oldItem.getArtistid());
+        music.setName(oldItem.getName());
+        music.setLocal(false);
+        music.setRating(oldItem.getScore100());
+        return music;
+    }
+
     public void removeAll() {
         musicList.clear();
         notifyDataSetChanged();
@@ -418,6 +449,7 @@ public class MusicRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
         public TextView singerNameTV;
         public RatingBar ratingBar;
         public ImageButton downloadButton;
+        public TextView musicRecommendTV;
 
         public MusicHolder(View itemView) {
             super(itemView);
@@ -426,6 +458,7 @@ public class MusicRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
             singerNameTV = (TextView) itemView.findViewById(R.id.singer_name_tv);
             ratingBar = (RatingBar) itemView.findViewById(R.id.music_rating_bar);
             downloadButton = (ImageButton) itemView.findViewById(R.id.music_download_button);
+            musicRecommendTV = (TextView) itemView.findViewById(R.id.music_recommend_tv);
         }
     }
 }

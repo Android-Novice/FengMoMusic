@@ -286,4 +286,18 @@ public class FileUtils {
         String fileName = rootPath + "/" + md5Name;
         return fileName;
     }
+
+    /*获取首页图片轮播中图片的存储位置*/
+    public static String getRecommendPlayImagePath(String picUrl, boolean isBlurred) {
+        String md5 = CommonUtils.md5(picUrl);
+        String rootPath = FileUtils.getSRDirPath();
+        String dirPath = rootPath + "/recommend";
+        if (isBlurred)
+            dirPath += "/blur";
+        File file = new File(dirPath);
+        if (!file.exists())
+            file.mkdirs();
+        String imagePath = dirPath + "/" + md5;
+        return imagePath;
+    }
 }

@@ -18,6 +18,16 @@ public class Music {
     private int bufferingProgress;
     private String coverUrl;
     private String playUrl;
+    /*小美推歌和老王推歌时会有值*/
+    private String musicDescribe;
+
+    public String getMusicDescribe() {
+        return musicDescribe;
+    }
+
+    public void setMusicDescribe(String musicDescribe) {
+        this.musicDescribe = musicDescribe;
+    }
 
     public String getPlayUrl() {
         return playUrl;

@@ -21,7 +21,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_weight="1"
-            android:ellipsize="marquee" />
+            android:ellipsize="marquee"
+            android:textColor="@color/colorAccent" />
 
         <View
             android:layout_width="5dp"

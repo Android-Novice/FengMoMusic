@@ -29,9 +29,12 @@ import com.yuqf.fengmomusic.media.MusicPlayer;
 import com.yuqf.fengmomusic.ui.activity.DownloadActivity;
 import com.yuqf.fengmomusic.ui.adapter.LinearLayoutItemDecoration;
 import com.yuqf.fengmomusic.ui.adapter.MusicRecyclerViewAdapter;
+import com.yuqf.fengmomusic.ui.entity.GSonRecommendAlbum;
 import com.yuqf.fengmomusic.ui.entity.GsonRMusicList;
 import com.yuqf.fengmomusic.ui.entity.GsonSMusicList;
 import com.yuqf.fengmomusic.ui.entity.RetrofitServices;
+import com.yuqf.fengmomusic.ui.fragment.RecommendUtils.ParseRecommendHelper;
+import com.yuqf.fengmomusic.ui.fragment.RecommendUtils.RecommendInfoLoadedListener;
 import com.yuqf.fengmomusic.utils.Global;
 import com.yuqf.fengmomusic.utils.UrlHelper;
 
@@ -70,26 +73,6 @@ public class MusicListFragment extends Fragment implements PlayIndexChangedListe
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         MusicPlayer.getInstance().addChangedListener(this);
-        adapter = new MusicRecyclerViewAdapter(true, true);
-        adapter.setOnRecyclerViewItemClickListener(new OnRecyclerViewItemClickListener() {
-            @Override
-            public void onItemClick(View view, int position) {
-                MusicPlayer.getInstance().setPlayingMusics(adapter.getMusicList());
-                MusicPlayer.getInstance().play(position);
-            }
-
-            @Override
-            public void onItemDownloadClick(View view, int position) {
-                Music music = adapter.getMusicList().get(position);
-                DownloaderNew downloader = new DownloaderNew(music);
-                Intent intent = new Intent(getContext(), DownloadActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//                intent.putExtra("artist", music.getArtist());
-//                intent.putExtra("musicId", music.getId());
-//                intent.putExtra("music", music.getName());
-                MyApplication.getContext().startActivity(intent);
-            }
-        });
     }
 
     @Override
@@ -118,12 +101,13 @@ public class MusicListFragment extends Fragment implements PlayIndexChangedListe
         recyclerView.addItemDecoration(new LinearLayoutItemDecoration(true));
         final LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                if (from.equals(Global.INTENT_FROM_RECOMMEND) || from.equals(Global.INTENT_FROM_ALBUM))
+                    return;
                 if (newState == RecyclerView.SCROLL_STATE_IDLE && lastVisibleItemIndex == adapter.getItemCount() - 1) {
                     adapter.notifyLoadStatus(true);
                     loadMusic();
@@ -166,6 +150,10 @@ public class MusicListFragment extends Fragment implements PlayIndexChangedListe
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                if (from.equals(Global.INTENT_FROM_RECOMMEND) || from.equals(Global.INTENT_FROM_ALBUM)) {
+                    finishRefreshing();//双重保险
+                    return;
+                }
                 swipeRefreshLayout.setRefreshing(true);
                 Log.d(logTag, "refreshing....1");
                 refreshAreaView.setVisibility(View.VISIBLE);
@@ -182,7 +170,91 @@ public class MusicListFragment extends Fragment implements PlayIndexChangedListe
             this.contentId = contentId;
             this.from = from;
         }
-        loadMusic();
+        if (this.from.equals(Global.INTENT_FROM_RECOMMEND)) {
+            initAdapter(false, false);
+            swipeRefreshLayout.setDistanceToTriggerSync(10000);//保证其不会触发刷新时间
+            loadRecommendMusicList();
+        } else if (this.from.equals(Global.INTENT_FROM_ALBUM)) {
+            initAdapter(false, false);
+            swipeRefreshLayout.setDistanceToTriggerSync(10000);//保证其不会触发刷新时间
+            loadAlbumMusicList();
+        } else {
+            initAdapter(true, true);
+            loadMusic();
+        }
+    }
+
+    private void initAdapter(boolean showHeader, boolean showFooter) {
+        if (adapter != null) return;
+        adapter = new MusicRecyclerViewAdapter(showHeader, showFooter);
+        adapter.setOnRecyclerViewItemClickListener(new OnRecyclerViewItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                MusicPlayer.getInstance().setPlayingMusics(adapter.getMusicList());
+                MusicPlayer.getInstance().play(position);
+            }
+
+            @Override
+            public void onItemDownloadClick(View view, int position) {
+                Music music = adapter.getMusicList().get(position);
+                DownloaderNew downloader = new DownloaderNew(music);
+                Intent intent = new Intent(getContext(), DownloadActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                intent.putExtra("artist", music.getArtist());
+//                intent.putExtra("musicId", music.getId());
+//                intent.putExtra("music", music.getName());
+                MyApplication.getContext().startActivity(intent);
+            }
+        });
+        recyclerView.setAdapter(adapter);
+    }
+
+    private void loadRecommendMusicList() {
+        ParseRecommendHelper.getInstance().downloadHtmlContent(this.contentId, new RecommendInfoLoadedListener() {
+            @Override
+            public void onLoadCompleted(final boolean success) {
+                MusicListFragment.this.getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        hideLoadingIV();
+                        if (success) {
+                            adapter.addMusicList(ParseRecommendHelper.getInstance().getMusicList());
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+    private void loadAlbumMusicList() {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(UrlHelper.Recommend_Album_Base_Url)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        RetrofitServices.RecommendService service = retrofit.create(RetrofitServices.RecommendService.class);
+        Call<ResponseBody> call = service.getRecommendAlbum(this.contentId);
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                hideLoadingIV();
+                if (response.isSuccessful()) {
+                    try {
+                        String invalidJsonStr = response.body().string();
+                        String validJsonStr = invalidJsonStr.replace("'", "\"");
+                        Gson gson = new Gson();
+                        GSonRecommendAlbum album = gson.fromJson(validJsonStr, GSonRecommendAlbum.class);
+                        adapter.addAlbumMusicList(album.getMusiclist());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                hideLoadingIV();
+            }
+        });
     }
 
     private void loadMusic() {

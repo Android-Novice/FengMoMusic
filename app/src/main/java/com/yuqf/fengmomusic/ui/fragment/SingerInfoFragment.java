@@ -98,6 +98,11 @@ public class SingerInfoFragment extends Fragment {
 
     private void showInfo() {
         Log.d(logTag, "1===============6");
+        //老王推歌或者小美推歌，艺术家id为空
+        if (TextUtils.isEmpty(artistId)) {
+            showContent(false);
+            return;
+        }
         String json = FileUtils.readSingerInfoJson(artist, artistId);
         if (!TextUtils.isEmpty(json)) {
             Log.d(logTag, "1===============7");

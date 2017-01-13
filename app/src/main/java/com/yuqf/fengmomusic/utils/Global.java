@@ -8,6 +8,8 @@ public class Global {
 
     public static final String INTENT_FROM_RANKING = "Ranking";
     public static final String INTENT_FROM_SINGER = "Singer";
+    public static final String INTENT_FROM_RECOMMEND = "RecommendImage";
+    public static final String INTENT_FROM_ALBUM = "Album_Music";
 
     public static final String RECEIVER_ACTION = "com.yuqf.fengmo.musicplayer.receiver";
     public static final String ACTION_KEY = "BUTTON_CLICK";
