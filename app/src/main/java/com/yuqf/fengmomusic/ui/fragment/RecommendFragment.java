@@ -7,7 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.LinearLayout;
 
 import com.yuqf.customviews.Banner.OnBannerClickListener;
 import com.yuqf.customviews.BannerView;
@@ -53,7 +53,7 @@ public class RecommendFragment extends Fragment {
         if (rootView == null) {
             rootView = inflater.inflate(R.layout.fragment_recommend, container, false);
             bannerView = (BannerView) rootView.findViewById(R.id.bannerview);
-            Button button = (Button) rootView.findViewById(R.id.btn_singer);
+            LinearLayout button = (LinearLayout) rootView.findViewById(R.id.btn_all_singer);
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

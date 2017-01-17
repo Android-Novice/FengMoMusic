@@ -5,6 +5,8 @@
         <attr name="back_color" format="color" />
         <attr name="shadow_width" format="dimension" />
         <attr name="shadow_color" format="color" />
+        <attr name="is_circle" format="boolean" />
+        <attr name="round_radius" format="dimension" />
     </declare-styleable>
 
     <declare-styleable name="RoundProgressBar">

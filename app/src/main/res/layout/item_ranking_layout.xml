@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center"
     android:orientation="vertical">
 
-    <ImageView
+    <com.yuqf.customviews.RoundImageView
         android:id="@+id/ranking_iv"
         android:layout_width="150dp"
-        android:layout_height="wrap_content"
+        android:layout_height="150dp"
         android:adjustViewBounds="true"
-        android:maxHeight="@dimen/singer_head_height"
-        android:maxWidth="@dimen/singer_head_width"
-        android:src="@drawable/ranking_default" />
+        android:src="@drawable/ranking_default"
+        app:is_circle="false"
+        app:round_radius="10dp" />
 
     <TextView
         android:id="@+id/ranking_name_tv"

@@ -46,6 +46,8 @@
     <string name="local_singer">歌手</string>
     <string name="local_album">专辑</string>
     <string name="local_music_folder">文件夹</string>
+    <string name="all_categories">全部分类</string>
+    <string name="all_singer">全部歌手</string>
 
     <string-array name="singer_order_list">
         <item>热门</item>

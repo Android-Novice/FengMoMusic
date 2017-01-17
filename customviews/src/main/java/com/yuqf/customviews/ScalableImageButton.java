@@ -9,7 +9,7 @@ import android.widget.ImageButton;
 
 public class ScalableImageButton extends ImageButton {
     private final String logTag = "ScalableImageButton";
-    private float scaleXY = 1.2f;
+    private float scaleXY = 1.5f;
 
     public ScalableImageButton(Context context) {
         super(context);

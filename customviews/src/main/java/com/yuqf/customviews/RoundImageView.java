@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
+import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
@@ -16,6 +17,7 @@ import android.util.Log;
 import android.widget.ImageView;
 
 public class RoundImageView extends ImageView {
+    /*Round: 圆角；Circle：圆形*/
     private int shadowRadius = 4;
     private int shadowColor = Color.RED;
     private int borderWidth = 5;
@@ -30,6 +32,8 @@ public class RoundImageView extends ImageView {
     private int startX;
     private int startY;
     private final String logTag = "RoundImageView";
+    private boolean isCircle;
+    private int roundRadius;
 
     public RoundImageView(Context context) {
         this(context, null);
@@ -47,6 +51,8 @@ public class RoundImageView extends ImageView {
         shadowRadius = typedArray.getLayoutDimension(R.styleable.RoundImageView_shadow_width, 4);
         shadowColor = typedArray.getColor(R.styleable.RoundImageView_shadow_color, Color.BLACK);
         backColor = typedArray.getColor(R.styleable.RoundImageView_back_color, Color.LTGRAY);
+        isCircle = typedArray.getBoolean(R.styleable.RoundImageView_is_circle, true);
+        roundRadius = typedArray.getDimensionPixelSize(R.styleable.RoundImageView_round_radius, 5);
         typedArray.recycle();
 
         setPaints();
@@ -56,7 +62,7 @@ public class RoundImageView extends ImageView {
         borderPaint = new Paint();
         borderPaint.setAntiAlias(true);
         borderPaint.setColor(borderColor);
-        if (!isInEditMode()) {
+        if (!isInEditMode() && isCircle) {
             borderPaint.setShadowLayer(shadowRadius, 0, 0, shadowColor);
             this.setLayerType(LAYER_TYPE_HARDWARE, borderPaint);
         }
@@ -139,14 +145,23 @@ public class RoundImageView extends ImageView {
         Bitmap shadowBmp = Bitmap.createBitmap(canvasSize, canvasSize, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(shadowBmp);
 
-        int imageRadius = canvasSize - shadowRadius * 2 - borderWidth * 2;
-        canvas.drawCircle(canvasSize / 2, canvasSize / 2, imageRadius / 2 + borderWidth, borderPaint);
+        int imageRadius;
+        if (isCircle) {
+            /*如果是圆形，就绘制边框、阴影、背景色，否则都不绘制*/
+            imageRadius = canvasSize - shadowRadius * 2 - borderWidth * 2;
+            canvas.drawCircle(canvasSize / 2, canvasSize / 2, imageRadius / 2 + borderWidth, borderPaint);
 
-        canvas.drawCircle(canvasSize / 2, canvasSize / 2, imageRadius / 2, backPaint);
+            canvas.drawCircle(canvasSize / 2, canvasSize / 2, imageRadius / 2, backPaint);
+        } else {
+            imageRadius = canvasSize;
+        }
 
         Bitmap dstBitmap = getRoundBitmap(bitmap, imageRadius);
-        canvas.drawBitmap(dstBitmap, borderWidth + shadowRadius, borderWidth + shadowRadius, null);
-
+        if (isCircle) {
+            canvas.drawBitmap(dstBitmap, borderWidth + shadowRadius, borderWidth + shadowRadius, null);
+        } else {
+            canvas.drawBitmap(dstBitmap, 0, 0, null);
+        }
         return shadowBmp;
     }
 
@@ -165,7 +180,14 @@ public class RoundImageView extends ImageView {
         paint.setFilterBitmap(true);
         paint.setColor(borderColor);
 
-        canvas.drawCircle(imageRadius / 2, imageRadius / 2, imageRadius / 2, paint);
+        if (isCircle) {
+            canvas.drawCircle(imageRadius / 2, imageRadius / 2, imageRadius / 2, paint);
+        } else {
+            if (roundRadius > imageRadius / 2)
+                roundRadius = imageRadius / 2;
+            canvas.drawRoundRect(new RectF(0, 0, imageRadius, imageRadius), roundRadius, roundRadius, paint);
+        }
+
         paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
 
         canvas.drawBitmap(bitmap, 0, 0, paint);
