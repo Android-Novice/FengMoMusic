@@ -2,4 +2,165 @@
 <resources>
     <color name="colorAccent">#ffff</color>
     <color name="orange">#FFA500</color>
+<!--
+    {
+    "id":"5237384",
+    "name":"逆流成河",
+    "artist":"金南玲",
+    "artistid":"72182",
+    "album":"来生",
+    "albumid":"303535",
+    "score100":"96",
+    "formats":"WMA96|AAC24|WMA128|MP3192|MP3H|AAC48|AL|MP3128|ALFLAC|MP4|MP4L|MV500|MV700",
+    "param":"逆流成河;金南玲;来生;2112385148;4218851748;MUSIC_5237384;2845908544;3879919432;MP3_5237384;1742356744;1057418640;MV_595866;1",
+    "ispoint":"1",
+    "mutiver":"0",
+    "pay":"0",
+    "online":"1",
+    "copyright":"0",
+    "rank_change":"0",
+    "isnew":"0",
+    "duration":"178",
+    "highest_rank":"1",
+    "score":"0",
+    "trend":"e0"
+    }
+
+    获取排行榜单：
+    http://qukudata.kuwo.cn/q.k?op=query&cont=tree&node=2&pn=1&rn=100&fmt=json&src=mbox&level=3
+
+    http://kbangserver.kuwo.cn/ksong.s?from=pc&fmt=json&type=bang&data=content&id=2
+    http://kbangserver.kuwo.cn/ksong.s?from=pc&fmt=json&type=bang&data=content&id=56&pn=0&rn=200
+    http://kbangserver.kuwo.cn/ksong.s?from=pc&fmt=json&type=bang&data=content&id=16
+    http://kbangserver.kuwo.cn/ksong.s?from=pc&fmt=json&type=bang&data=content&id=132
+    http://kbangserver.kuwo.cn/ksong.s?from=pc&fmt=json&type=bang&data=content&id=126 129
+    http://qukudata.kuwo.cn/q.k?op=query&cont=tree&node=2&pn=0&rn=100&fmt=json&src=mbox&level=2&callback=saveClassifyChannelData&_=1471434827690【获取所有的排行榜单】
+    http://qukudata.kuwo.cn/q.k?op=query&cont=ninfo&node=257172&pn=0&rn=10&fmt=json&src=mbox&ttime=116717161&callback=jQuery18309340226496569812_1471436779806&_=1471436780032
+    http://qukudata.kuwo.cn/q.k?op=query&cont=ninfo&node=257172&pn=0&rn=10&fmt=json&src=mbox&ttime=116717161&callback=jQuery18309340226496569812_1471436779806&_=1471436780032
+
+    获取歌曲封面，小图：
+    http://artistpicserver.kuwo.cn/pic.web?type=rid_pic&pictype=url&size=70&rid=5237384【size可以改变】
+    http://artistpicserver.kuwo.cn/pic.web?type=rid_pic&pictype=url&size=70&rid=9860961
+
+    获取音乐文件：
+    http://antiserver.kuwo.cn/anti.s?rid=MUSIC_5237384&response=url&type=convert_url&format=aac|mp3
+
+
+    获取专辑相关图片：
+    http://artistpicserver.kuwo.cn/pic.web?type=big_artist_pic&pictype=url&content=list&&id=0&name=%E7%8E%8B%E8%8F%B2&rid=5354512&from=pc&json=1&version=1&width=1920&height=1080
+
+    获取歌词：
+    http://player.kuwo.cn/webmusic/st/getNewMuiseByRid?rid=MUSIC_7207656
+    http://newlyric.kuwo.cn/newlyricl?DBYAHlReXEpRUEAeCgxVEgAORRgLG0MXCRgaCwoRAB5UAwEaBAkEBhwaXxcAHVReSAsMAVEkOj0wJjpbW19ZT1BT
+
+    http://ttlyrics.duapp.com/api/lrc/?sh?Artist=shakira&Title=try%20everything&api=true
+    http://ttlyrics.duapp.com/api/lrc/?dl?Id=-304546313
+
+    type=lyric&songname= &artist=&filename=&duration=&req=2&lrcx=1&rid=&encode=utf8
+
+
+    搜索时候的下拉tip提示列表：
+    http://tips.kuwo.cn/t.s?type=2014&c=mbox&w=【输入内容】
+    搜索输入词的纠错：
+    http://jiucuo.search.kuwo.cn/correct.s?key=yanyua
+    搜索歌曲
+    http://search.kuwo.cn/r.s?client=kt&all=%D6%D0%B9%FA%C8%CB&pn=0&rn=1000&ft=music
+    http://search.kuwo.cn/r.s?client=kt&all=%D7%B7%C3%CE%C8%CB&pn=0&rn=1000&ft=music&plat=pc&cluster=0&result=json&strategy=2012&itemset=newkm&ver=mbox&show_copyright_off=1&vipver=MUSIC_8.4.0.0_W2
+    http://sou.kuwo.cn/ws/NSearch?key=搜索关键字&type=music&pn=页数&catalog=yueku2016【网页版，暂不考虑】
+
+    推荐列表
+    http://www.kuwo.cn/pc/index/playListMore
+    http://nplserver.kuwo.cn/pl.svc?op=getlistinfo&pid=1929043096&pn=0&rn=50&encode=utf-8&keyset=pl2012
+
+
+    酷我获取歌曲信息
+    http://player.kuwo.cn/webmusic/st/getNewMuiseByRid?rid=MUSIC_7044786
+
+
+    获取歌手列表：【Category：0开始，pn是页面，rn是每页的个数】
+    http://artistlistinfo.kuwo.cn/mb.slist?stype=artistlist&category=1&order=hot&pn=0&rn=100【热门歌手】
+    http://artistlistinfo.kuwo.cn/mb.slist?stype=artistlist&category=1&order=hot&pn=0&rn=100&prefix=a【字母a开头的歌手】
+    歌手头像：
+    http://img1.sycdn.kuwo.cn/star/starheads/120/42/97/3914752958.jpg 【120代表的尺寸，改成240,300】
+    http://star.kuwo.cn/star/starheads/160/70/62/2990715719.jpg
+
+    http://tips.kuwo.cn/t.s?type=2014&c=mbox&w=%D1%A6%D6%AE
+
+
+    网络图片
+    http://e.hiphotos.baidu.com/image/pic/item/21a4462309f79052cc7b95370ef3d7ca7bcbd557.jpg
+
+    http://search.kuwo.cn/r.s?client=kt&all=%D6%D0%B9%FA%C8%CB&pn=0&rn=1000&ft=music&plat=pc&cluster=0&result=json&strategy=2012&itemset=newkm&ver=mbox&show_copyright_off=1&vipver=MUSIC_8.4.0.0_W2
+
+    获取歌手：
+    http://artistlistinfo.kuwo.cn/mb.slist?stype=artistlist&category=1&order=hot&pn=0&rn=100
+    http://artistlistinfo.kuwo.cn/mb.slist?stype=artistlist&category=1&order=hot&pn=0&rn=100&prefix=a
+    category：
+    0：全部歌手   排序：热门
+    a-z
+    #（%23）
+    1：华语男歌手
+    2：华语女歌手
+    3：华语组合
+    4：日韩男歌手
+    5：日韩女歌手
+    6：日韩组合
+    7：欧美男歌手
+    8：欧美女歌手
+    9：欧美组合
+    10：其他
+    http://qukudata.kuwo.cn/q.k?op=query&cont=tree&node=4&pn=0&rn=20&fmt=json&src=mbox&level=2&callback=saveBangChannelData&_=1471434827691【获取上面这个列表】
+
+    歌手信息：
+    http://search.kuwo.cn/r.s?stype=artistinfo&artistid=947
+    根据歌手对应的歌曲
+    http://search.kuwo.cn/r.s?stype=artist2music&artistid=947&pn=0&rn=20
+
+    酷狗搜索歌词API
+    http://lyrics.kugou.com/search?ver=1&man=yes&client=pc&keyword=歌曲名&duration=歌曲总时长(毫秒)&hash=歌曲Hash值
+
+    例如http://lyrics.kugou.com/search?ver=1&man=yes&client=pc&keyword=Impossible&duration=228022&hash=
+    返回的是这样的：
+    {"accesskey":"27B55E2D29634DBD6A49D39CB83338A7","adjust":0,"duration":224156,"id":"16230032","score":10,"singer":"","song":"impossible","uid":"618122938"}],"info":"OK","keyword":"Impossible","proposal":"13182315","status":200}
+
+    酷狗下载歌词API(红色参数通过搜索得到)
+    http://lyrics.kugou.com/download?ver=1&client=pc&id=10515303&accesskey=3A20F6A1933DE370EBA0187297F5477D&fmt=lrc&charset=utf8 （fmt=lrc 或 krc）
+
+
+    *****推荐*****
+
+    第一层：图片滚动
+    URL：http://www.kuwo.cn/pc/index/info
+    json节点名称：focusPicture
+    http://search.kuwo.cn/r.s?pn=0&rn=1000&stype=albuminfo&albumid=1364600&show_copyright_off=1&alflac=1&vipver=MUSIC_8.5.0.0_BCS53
+
+    第二层：
+    歌手    分类
+    搜索功能
+
+    第三层：热门推荐：
+    URL：http://www.kuwo.cn/pc/index/info
+    json节点名称：playList
+
+    http://nplserver.kuwo.cn/pl.svc?op=getlistinfo&pid=1082685104&pn=0&rn=100&encode=utf-8&keyset=pl2012&identity=kuwo&vipver=MUSIC_8.5.0.0_BCS53
+    http://nplserver.kuwo.cn/pl.svc?op=getlistinfo&pid=1929043096&pn=0&rn=50&encode=utf-8&keyset=pl2012
+
+    第四层：个性化推荐
+    http://rcm.kuwo.cn/rec.s?cmd=rcm_keyword_playlist&uid=0&devid=32289075&platform=pc&t=0.5379833483602852
+
+    http://rcm.kuwo.cn/rec.s?cmd=rcm_keyword_playlist&uid=0&devid=32289075&platform=pc&t=0.2899490427225828
+    http://rcm.kuwo.cn/rec.s?cmd=rcm_keyword_playlist&uid=350015241&devid=32289075&platform=pc&t=0.3390435848850757
+
+    http://rcm.kuwo.cn/rec.s?cmd=rcm_keyword_playlist&uid=350015241&devid=32289075&platform=pc
+
+    第五层：音乐周边
+    URL：http://www.kuwo.cn/pc/index/info
+    json节点名称：huoDong
+
+
+    **********分类*************
+    http://qukudata.kuwo.cn/q.k?op=query&cont=tree&node=1&pn=0&rn=20&fmt=json&src=mbox&level=3
+    http://mobileinterfaces.kuwo.cn/er.s?type=get_pc_qz_data&f=web&id=1&prod=pc
+-->
+
 </resources>
