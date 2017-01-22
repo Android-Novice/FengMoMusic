@@ -9,6 +9,8 @@ import com.yuqf.fengmomusic.media.Music;
 import com.yuqf.fengmomusic.ui.activity.MusicListActivity;
 import com.yuqf.fengmomusic.ui.activity.WebBrowserActivity;
 import com.yuqf.fengmomusic.ui.entity.GSonFocusPictureList;
+import com.yuqf.fengmomusic.ui.entity.GSonHotRecommend;
+import com.yuqf.fengmomusic.ui.entity.GsonStarActivityList;
 import com.yuqf.fengmomusic.utils.CommonUtils;
 import com.yuqf.fengmomusic.utils.Global;
 
@@ -42,10 +44,15 @@ public class ParseRecommendHelper {
     final String SPECIAL_FLAG = "specialColumn";
     /*小美或者老王推歌的URL开头*/
     final String XIAOMEI_LAOWANG_FLAG = "http://album.kuwo.cn/album/h/mbox?id=";
+    /*这里是因为为了和主活动中第三个tab页的json解析通用，所以把Json补充一下，保持json格式一致*/
+    final String POPULAR_JSON_START_STR = "{\"data\":{\"total\":16,\"rn\":100,\"pn\":1,\"playList\":";
+    final String POPULAR_JSON_END_STR = "},\"msg\":\"成功\",\"msgs\":null,\"status\":200}";
 
     private GSonFocusPictureList focusPictureList;
     private List<Music> musicList;
     private String newCoverUrl;
+    private List<GSonHotRecommend.HotRecommendSecond.HotRecommendList.HotRecommendItem> hotRecommendItemList;
+    private List<GsonStarActivityList.StartActivity> starActivities;
 
     private static ParseRecommendHelper instance;
 
@@ -65,6 +72,38 @@ public class ParseRecommendHelper {
             GsonBuilder builder = new GsonBuilder();
             focusPictureList = builder.create().fromJson(focusPicJson, GSonFocusPictureList.class);
         }
+    }
+
+    public void parsePopularInfo(String jsonStr) {
+        int popularStartIndex = jsonStr.indexOf(PLAYLIST_FLAG);
+        if (popularStartIndex > 0) {
+            int popularEndIndex = jsonStr.indexOf(END_FLAG, popularStartIndex);
+            String popularJson = jsonStr.substring(popularStartIndex + PLAYLIST_FLAG.length() + 2, popularEndIndex + END_FLAG.length());
+            Log.d("parseRecommendInfo", "====popularJson: \n" + popularJson);
+
+            GsonBuilder builder = new GsonBuilder();
+            GSonHotRecommend popularItem = builder.create().fromJson(POPULAR_JSON_START_STR + popularJson + POPULAR_JSON_END_STR, GSonHotRecommend.class);
+            hotRecommendItemList = popularItem.getData().getPlayList().getList();
+        }
+    }
+
+    public void parseStarActivityList(String jsonStr) {
+        int activityStartIndex = jsonStr.indexOf(HUODONG_FLAG);
+        if (activityStartIndex > 0) {
+            int activityEndIndex = jsonStr.indexOf(END_FLAG, activityStartIndex);
+            String activityJson = jsonStr.substring(activityStartIndex + HUODONG_FLAG.length() + 2, activityEndIndex + END_FLAG.length());
+            GsonBuilder builder = new GsonBuilder();
+            GsonStarActivityList activityList = builder.create().fromJson(activityJson, GsonStarActivityList.class);
+            starActivities = activityList.getList();
+        }
+    }
+
+    public List<GSonHotRecommend.HotRecommendSecond.HotRecommendList.HotRecommendItem> getHotRecommendItemList() {
+        return hotRecommendItemList;
+    }
+
+    public List<GsonStarActivityList.StartActivity> getStarActivities() {
+        return starActivities;
     }
 
     public GSonFocusPictureList getFocusPictureList() {

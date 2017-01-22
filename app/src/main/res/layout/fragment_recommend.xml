@@ -88,6 +88,12 @@
         android:layout_marginTop="5dp"
         android:background="@color/progressbar_second" />
 
-
+    <com.yuqf.fengmomusic.ui.widget.RecyclerViewEx
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        app:more_btn_text="更多>>"
+        app:introduce_area_visibility="gone"
+        app:more_btn_visibility="visible"
+        app:view_title="xxxxxx" />
 
 </LinearLayout>

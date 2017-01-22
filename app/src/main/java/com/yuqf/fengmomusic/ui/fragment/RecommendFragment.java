@@ -84,6 +84,8 @@ public class RecommendFragment extends Fragment {
                     try {
                         String gsonStr = response.body().string();
                         ParseRecommendHelper.getInstance().parseRecommendInfo(gsonStr);
+                        ParseRecommendHelper.getInstance().parsePopularInfo(gsonStr);
+                        ParseRecommendHelper.getInstance().parseStarActivityList(gsonStr);
                         initBannerView();
                     } catch (IOException e) {
                         e.printStackTrace();

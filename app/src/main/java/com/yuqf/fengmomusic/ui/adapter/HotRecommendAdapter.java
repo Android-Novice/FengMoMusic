@@ -31,7 +31,8 @@ public class HotRecommendAdapter extends RecyclerView.Adapter<HotRecommendAdapte
     private LayoutInflater inflater;
     private OnRecyclerViewItemClickListener itemClickListener;
 
-    public HotRecommendAdapter() {
+    /*是否为推荐tab页，第三个tab为推荐页*/
+    public HotRecommendAdapter(boolean isPopular) {
         super();
         hotRecommendItemList = new ArrayList<>();
         inflater = LayoutInflater.from(MyApplication.getContext());
