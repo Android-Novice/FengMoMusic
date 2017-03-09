@@ -4,15 +4,24 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Rect;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.yuqf.fengmomusic.base.MyApplication;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
@@ -108,18 +117,63 @@ public class CommonUtils {
     }
 
     /**
-     * 根据手机的分辨率从 dp 的单位 转成为 px(像素)
+     *  根据手机的分辨率从 dp 的单位 转成为 px(像素)
      */
-    public static int dip2px(Context context,float dpValue) {
+    public static int dip2px(Context context, float dpValue) {
         final float scale = context.getResources().getDisplayMetrics().density;
-        return (int) (dpValue * scale +0.5f);
+        return (int) (dpValue * scale + 0.5f);
     }
 
     /**
-     * 根据手机的分辨率从 px(像素) 的单位 转成为 dp
+     *  根据手机的分辨率从 px(像素) 的单位 转成为 dp
      */
-    public static int px2dip(Context context,float pxValue) {
+    public static int px2dip(Context context, float pxValue) {
         final float scale = context.getResources().getDisplayMetrics().density;
-        return (int) (pxValue / scale +0.5f);
+        return (int) (pxValue / scale + 0.5f);
+    }
+
+    /*
+    * 根据图片地址下载图片，并显示到ImageView
+    * */
+    public static void downloadPic(String picUrl, final ImageView imageView) {
+        new AsyncTask<String, Void, File>() {
+            @Override
+            protected File doInBackground(String... params) {
+                String filePath = FileUtils.getHotRecommendCoverPath(params[0]);
+                File file = new File(filePath);
+                if (!file.exists()) {
+                    HttpURLConnection connection = null;
+                    try {
+                        FileOutputStream fileStream = new FileOutputStream(file);
+
+                        URL url = new URL(params[0]);
+                        connection = (HttpURLConnection) url.openConnection();
+                        connection.setConnectTimeout(20000);
+                        connection.setReadTimeout(10000);
+                        if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                            InputStream stream = connection.getInputStream();
+
+                            byte[] bytes = new byte[1024];
+                            int len;
+                            while ((len = stream.read(bytes)) != -1) {
+                                fileStream.write(bytes, 0, len);
+                            }
+                            stream.close();
+                            fileStream.close();
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } finally {
+                        connection.disconnect();
+                    }
+                }
+                return file;
+            }
+
+            @Override
+            protected void onPostExecute(File file) {
+                imageView.setImageURI(Uri.fromFile(file));
+            }
+        }.execute(picUrl);
     }
 }

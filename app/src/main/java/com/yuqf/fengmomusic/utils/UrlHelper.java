@@ -26,4 +26,6 @@ public class UrlHelper {
 
     public final static String Recommend_Page_Base_Url = "http://www.kuwo.cn/";
     public final static String Recommend_Album_Base_Url = "http://search.kuwo.cn/";
+
+    public final static String Personal_Recommendation_Base_Url = "http://rcm.kuwo.cn/";
 }

@@ -48,6 +48,8 @@
     <string name="local_music_folder">文件夹</string>
     <string name="all_categories">全部分类</string>
     <string name="all_singer">全部歌手</string>
+    <string name="hot_recommend_title">热门推荐</string>
+    <string name="personal_recommendation">个性化推荐</string>
 
     <string-array name="singer_order_list">
         <item>热门</item>

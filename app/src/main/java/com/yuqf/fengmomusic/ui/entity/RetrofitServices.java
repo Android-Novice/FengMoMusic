@@ -116,6 +116,9 @@ public class RetrofitServices {
         //        r.s?pn=0&rn=1000&stype=albuminfo&albumid=1375274&show_copyright_off=1&alflac=1&vipver=MUSIC_8.5.0.0_BCS53
         @GET("r.s?pn=0&rn=1000&stype=albuminfo&show_copyright_off=1&alflac=1&vipver=MUSIC_8.5.0.0_BCS53")
         Call<ResponseBody> getRecommendAlbum(@Query("albumid") String albumId);
+
+        @GET("rec.s?cmd=rcm_keyword_playlist&uid=350015241&devid=32289075&platform=pc")
+        Call<ResponseBody> getPersonalRecommendation();
     }
 
 //    public static class SingerConverterFactory extends Converter.Factory {

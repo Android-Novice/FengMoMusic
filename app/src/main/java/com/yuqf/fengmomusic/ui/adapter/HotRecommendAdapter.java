@@ -1,7 +1,5 @@
 package com.yuqf.fengmomusic.ui.adapter;
 
-import android.net.Uri;
-import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,14 +10,8 @@ import com.yuqf.fengmomusic.R;
 import com.yuqf.fengmomusic.base.MyApplication;
 import com.yuqf.fengmomusic.interfaces.OnRecyclerViewItemClickListener;
 import com.yuqf.fengmomusic.ui.entity.GSonHotRecommend;
-import com.yuqf.fengmomusic.utils.FileUtils;
+import com.yuqf.fengmomusic.utils.CommonUtils;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,17 +22,23 @@ public class HotRecommendAdapter extends RecyclerView.Adapter<HotRecommendAdapte
     private List<GSonHotRecommend.HotRecommendSecond.HotRecommendList.HotRecommendItem> hotRecommendItemList;
     private LayoutInflater inflater;
     private OnRecyclerViewItemClickListener itemClickListener;
+    private boolean isPopular;
 
     /*是否为推荐tab页，第三个tab为推荐页*/
     public HotRecommendAdapter(boolean isPopular) {
         super();
+        this.isPopular = isPopular;
         hotRecommendItemList = new ArrayList<>();
         inflater = LayoutInflater.from(MyApplication.getContext());
     }
 
     @Override
     public HotRecommendHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = inflater.inflate(R.layout.recommend_recycler_view_item, parent, false);
+        View itemView;
+        if (isPopular)
+            itemView = inflater.inflate(R.layout.recommend_recycler_view_item, parent, false);
+        else
+            itemView = inflater.inflate(R.layout.item_recyclerview_ex_layout, parent, false);
         HotRecommendHolder holder = new HotRecommendHolder(itemView);
         itemView.setClickable(true);
         itemView.setOnClickListener(new View.OnClickListener() {
@@ -62,49 +60,11 @@ public class HotRecommendAdapter extends RecyclerView.Adapter<HotRecommendAdapte
     public void onBindViewHolder(HotRecommendHolder holder, int position) {
         GSonHotRecommend.HotRecommendSecond.HotRecommendList.HotRecommendItem item = hotRecommendItemList.get(position);
         holder.titleTV.setText(item.getName());
+        CommonUtils.setTextMarquee(holder.titleTV);
         holder.countTV.setText(item.getInFo());
         holder.itemView.setTag(position);
         holder.gifImageView.setImageResource(R.drawable.ic_launcher_72);
-        final HotRecommendHolder curHolder = holder;
-        new AsyncTask<String, Void, File>() {
-            @Override
-            protected File doInBackground(String... params) {
-                String filePath = FileUtils.getHotRecommendCoverPath(params[0]);
-                File file = new File(filePath);
-                if (!file.exists()) {
-                    HttpURLConnection connection = null;
-                    try {
-                        FileOutputStream fileStream = new FileOutputStream(file);
-
-                        URL url = new URL(params[0]);
-                        connection = (HttpURLConnection) url.openConnection();
-                        connection.setConnectTimeout(20000);
-                        connection.setReadTimeout(10000);
-                        if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                            InputStream stream = connection.getInputStream();
-
-                            byte[] bytes = new byte[1024];
-                            int len;
-                            while ((len = stream.read(bytes)) != -1) {
-                                fileStream.write(bytes, 0, len);
-                            }
-                            stream.close();
-                            fileStream.close();
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    } finally {
-                        connection.disconnect();
-                    }
-                }
-                return file;
-            }
-
-            @Override
-            protected void onPostExecute(File file) {
-                curHolder.gifImageView.setImageURI(Uri.fromFile(file));
-            }
-        }.execute(item.getPic());
+        CommonUtils.downloadPic(item.getPic(), holder.gifImageView);
     }
 
     @Override

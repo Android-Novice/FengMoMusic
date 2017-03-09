@@ -191,4 +191,8 @@ public class MainActivity extends BaseActivity {
             selectedIndex = curIndex;
         }
     }
+
+    public void moveToPopularFragment() {
+        moveSelectedView(2, true);
+    }
 }

@@ -99,33 +99,12 @@ public class RecyclerViewEx extends FrameLayout {
         titleTV.setText(title);
     }
 
-
     public void setMoreBtnVisibility(int visibility) {
-        switch (visibility) {
-            case 0:
-                moreTV.setVisibility(GONE);
-                break;
-            case 1:
-                moreTV.setVisibility(VISIBLE);
-                break;
-            case 2:
-                moreTV.setVisibility(INVISIBLE);
-                break;
-        }
+        moreTV.setVisibility(visibility);
     }
 
     public void setIntroduceAreaVisibility(int visibility) {
-        switch (visibility) {
-            case 0:
-                introduceArea.setVisibility(GONE);
-                break;
-            case 1:
-                introduceArea.setVisibility(VISIBLE);
-                break;
-            case 2:
-                introduceArea.setVisibility(INVISIBLE);
-                break;
-        }
+        introduceArea.setVisibility(visibility);
     }
 
     public void setAdapter(RecyclerView.Adapter adapter, RecyclerView.LayoutManager layoutManager) {
@@ -138,7 +117,7 @@ public class RecyclerViewEx extends FrameLayout {
         }
     }
 
-    public void setClickListener(OnClickListener clickListener) {
+    public void setMoreBtnClickListener(OnClickListener clickListener) {
         this.clickListener = clickListener;
     }
 }

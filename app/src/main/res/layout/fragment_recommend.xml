@@ -1,99 +1,104 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimary"
-    android:orientation="vertical"
-    tools:context=".ui.fragment.RecommendFragment">
+    android:background="@color/colorPrimary">
 
-    <com.yuqf.customviews.BannerView
-        android:id="@+id/bannerview"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="150dp"
-        app:auto_play_delay_seconds="5"
-        app:indicator_container_padding_bottom="2dp"
-        app:indicator_container_padding_left="2dp"
-        app:indicator_container_padding_right="2dp"
-        app:indicator_container_padding_top="2dp"
-        app:indicator_item_text_size="15sp"
-        app:indicator_radius="10px" />
-
-    <com.yuqf.fengmomusic.ui.widget.SearchView
-        android:id="@+id/search_bar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="5dp"
-        android:layout_marginTop="5dp" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_height="match_parent"
+        android:scrollbars="vertical">
 
         <LinearLayout
-            android:id="@+id/btn_all_singer"
-            android:layout_width="0dp"
+            android:id="@+id/recommend_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:clickable="true"
-            android:gravity="center">
 
-            <ImageView
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:scaleType="centerInside"
-                android:src="@drawable/icon_home_singer" />
+            android:orientation="vertical"
+            tools:context=".ui.fragment.RecommendFragment">
 
-            <TextView
-                android:layout_width="wrap_content"
+            <com.yuqf.customviews.BannerView
+                android:id="@+id/bannerview"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                app:auto_play_delay_seconds="5"
+                app:indicator_container_padding_bottom="2dp"
+                app:indicator_container_padding_left="2dp"
+                app:indicator_container_padding_right="2dp"
+                app:indicator_container_padding_top="2dp"
+                app:indicator_item_text_size="15sp"
+                app:indicator_radius="10px" />
+
+            <com.yuqf.fengmomusic.ui.widget.SearchView
+                android:id="@+id/search_bar"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:layout_marginStart="5dp"
-                android:text="@string/all_singer"
-                android:textColor="@color/colorAccent"
-                android:textSize="16sp" />
-        </LinearLayout>
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="5dp" />
 
-        <LinearLayout
-            android:id="@+id/btn_all_categories"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:layout_weight="1"
-            android:clickable="true"
-            android:gravity="center">
-
-            <ImageView
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:scaleType="centerInside"
-                android:src="@drawable/icon_home_classify" />
-
-            <TextView
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:layout_marginStart="5dp"
-                android:text="@string/all_categories"
-                android:textColor="@color/colorAccent"
-                android:textSize="16sp" />
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:id="@+id/btn_all_singer"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:clickable="true"
+                    android:gravity="center">
+
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/icon_home_singer" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginStart="5dp"
+                        android:text="@string/all_singer"
+                        android:textColor="@color/colorAccent"
+                        android:textSize="16sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/btn_all_categories"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:layout_weight="1"
+                    android:clickable="true"
+                    android:gravity="center">
+
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/icon_home_classify" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginStart="5dp"
+                        android:text="@string/all_categories"
+                        android:textColor="@color/colorAccent"
+                        android:textSize="16sp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="5dp"
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="5dp"
+                android:background="@color/progressbar_second" />
+            
         </LinearLayout>
-    </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="5dp"
-        android:layout_marginBottom="5dp"
-        android:layout_marginTop="5dp"
-        android:background="@color/progressbar_second" />
-
-    <com.yuqf.fengmomusic.ui.widget.RecyclerViewEx
-        android:layout_width="match_parent"
-        android:layout_height="150dp"
-        app:more_btn_text="更多>>"
-        app:introduce_area_visibility="gone"
-        app:more_btn_visibility="visible"
-        app:view_title="xxxxxx" />
-
-</LinearLayout>
+    </ScrollView>
+</FrameLayout>

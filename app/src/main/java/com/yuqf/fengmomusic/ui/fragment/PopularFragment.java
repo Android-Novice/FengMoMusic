@@ -64,7 +64,7 @@ public class PopularFragment extends Fragment {
     }
 
     private void initAdapter() {
-        adapter = new HotRecommendAdapter();
+        adapter = new HotRecommendAdapter(true);
         adapter.setItemClickListener(new OnRecyclerViewItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {

@@ -104,6 +104,9 @@ public class CommonMusicListActivity extends BaseActivity {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
     }
 
+    /*
+    * 加载音乐专辑中的音乐
+    * */
     private void getHotMusicListById(String itemId) {
         if (TextUtils.isEmpty(itemId)) return;
         Retrofit retrofit = new Retrofit.Builder()

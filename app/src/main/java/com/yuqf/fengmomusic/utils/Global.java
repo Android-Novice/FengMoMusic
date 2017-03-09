@@ -37,4 +37,6 @@ public class Global {
     public static final String INTENT_LOAD_MUSIC_KIND = "Load_Music_Kind";
     public static final String INTENT_LOAD_HOTRECOMMEND = "1";
     public static final String INTENT_LOAD_LOCAL = "2";
+    /*加载个性化推荐的音乐列表*/
+    public static final String INTENT_LOAD_PERSONAL = "3";
 }
