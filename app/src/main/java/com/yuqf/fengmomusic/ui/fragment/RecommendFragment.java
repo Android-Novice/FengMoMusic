@@ -10,8 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
 import com.yuqf.customviews.Banner.OnBannerClickListener;
 import com.yuqf.customviews.BannerView;
 import com.yuqf.fengmomusic.MainActivity;
@@ -34,7 +32,6 @@ import com.yuqf.fengmomusic.utils.Global;
 import com.yuqf.fengmomusic.utils.UrlHelper;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -55,10 +52,6 @@ public class RecommendFragment extends Fragment {
     private BannerView bannerView;
     private final String logTag = "RecommendFragment";
     private LinearLayout recommendContent;
-    /*
-    * 保存个性化推荐的Json字符串，用于加载展示全部个性化推荐列表
-    * */
-    private String personalJsonStr;
 
     public RecommendFragment() {
         // Required empty public constructor
@@ -133,14 +126,9 @@ public class RecommendFragment extends Fragment {
                         String gsonStr = response.body().string();
                         int subIndex = gsonStr.indexOf("playlist\":");
                         if (subIndex > 0) {
-                            personalJsonStr = gsonStr.substring(subIndex + 10, gsonStr.length() - 1);
-                            Log.d(logTag, personalJsonStr.substring(personalJsonStr.length() - 100));
-                            Log.d(logTag, personalJsonStr);
-                            GsonBuilder builder = new GsonBuilder();
-                            Type type = new TypeToken<ArrayList<GsonPersonalRecommendationItem>>() {
-                            }.getType();
-                            List<GsonPersonalRecommendationItem> personalList = builder.create().fromJson(personalJsonStr, type);
-                            initPersonalRecommendation(personalList);
+                            String personalJsonStr = gsonStr.substring(subIndex + 10, gsonStr.length() - 1);
+                            ParseRecommendHelper.getInstance().parsePersonalRecommendList(personalJsonStr);
+                            initPersonalRecommendation(ParseRecommendHelper.getInstance().getPersonalRecommendationItems());
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -238,7 +226,7 @@ public class RecommendFragment extends Fragment {
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(MyApplication.getContext());
             linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
             int spanCount = list.size() > 3 ? 3 : list.size();
-            PersonalRecommendAdapter adapter = new PersonalRecommendAdapter();
+            PersonalRecommendAdapter adapter = new PersonalRecommendAdapter(true);
             adapter.setPersonalList(list.subList(0, spanCount));
             recyclerViewEx.setAdapter(adapter, linearLayoutManager);
 
@@ -264,7 +252,11 @@ public class RecommendFragment extends Fragment {
             recyclerViewEx.setMoreBtnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
+//                    INTENT_LOAD_PERSONAL
+                    HashMap<String, String> hashMap = new HashMap<String, String>();
+                    hashMap.put(Global.INTENT_LOAD_MUSIC_KIND, Global.INTENT_LOAD_PERSONAL);
+                    hashMap.put(Global.INTENT_HR_ITEM_NAME, getString(R.string.personal_recommendation));
+                    CommonUtils.startActivity(MyApplication.getContext(), CommonMusicListActivity.class, hashMap);
                 }
             });
         }

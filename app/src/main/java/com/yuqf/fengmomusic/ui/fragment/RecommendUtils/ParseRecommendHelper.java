@@ -4,12 +4,15 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import com.yuqf.fengmomusic.base.MyApplication;
 import com.yuqf.fengmomusic.media.Music;
 import com.yuqf.fengmomusic.ui.activity.MusicListActivity;
 import com.yuqf.fengmomusic.ui.activity.WebBrowserActivity;
 import com.yuqf.fengmomusic.ui.entity.GSonFocusPictureList;
 import com.yuqf.fengmomusic.ui.entity.GSonHotRecommend;
+import com.yuqf.fengmomusic.ui.entity.GSonNewDiscItem;
+import com.yuqf.fengmomusic.ui.entity.GsonPersonalRecommendationItem;
 import com.yuqf.fengmomusic.ui.entity.GsonStarActivityList;
 import com.yuqf.fengmomusic.utils.CommonUtils;
 import com.yuqf.fengmomusic.utils.Global;
@@ -18,6 +21,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -29,31 +33,35 @@ import java.util.List;
  */
 public class ParseRecommendHelper {
     /*Json通用结束标志*/
-    final String END_FLAG = "}]}";
+    private final String END_FLAG = "}]}";
     /*活动Json开始标志*/
-    final String HUODONG_FLAG = "huoDong";
+    private final String HUODONG_FLAG = "huoDong";
     /*原创精选Json开始标志*/
-    final String ORIGINAL_Str = "original";
+    private final String ORIGINAL_Str = "original";
     /*新碟上架的Json开始标志*/
-    final String NEWDISC_FLAG = "newDiscShelves";
+    private final String NEWDISC_FLAG = "newDiscShelves";
     /*图片轮播的Json开始标志*/
-    final String FOCUSPICTURE_FLAG = "focusPicture";
+    private final String FOCUSPICTURE_FLAG = "focusPicture";
     /*推荐播放列表Json开始标志*/
-    final String PLAYLIST_FLAG = "playList";
+    private final String PLAYLIST_FLAG = "playList";
     /*魔性列表JSon开始标志*/
-    final String SPECIAL_FLAG = "specialColumn";
+    private final String SPECIAL_FLAG = "specialColumn";
     /*小美或者老王推歌的URL开头*/
-    final String XIAOMEI_LAOWANG_FLAG = "http://album.kuwo.cn/album/h/mbox?id=";
+    private final String XIAOMEI_LAOWANG_FLAG = "http://album.kuwo.cn/album/h/mbox?id=";
     /*这里是因为为了和主活动中第三个tab页的json解析通用，所以把Json补充一下，保持json格式一致*/
-    final String POPULAR_JSON_START_STR = "{\"data\":{\"total\":16,\"rn\":100,\"pn\":1,\"playList\":";
-    final String POPULAR_JSON_END_STR = "},\"msg\":\"成功\",\"msgs\":null,\"status\":200}";
+    private final String POPULAR_JSON_START_STR = "{\"data\":{\"total\":16,\"rn\":100,\"pn\":1,\"playList\":";
+    private final String POPULAR_JSON_END_STR = "},\"msg\":\"成功\",\"msgs\":null,\"status\":200}";
 
     private GSonFocusPictureList focusPictureList;
     private List<Music> musicList;
     private String newCoverUrl;
     private List<GSonHotRecommend.HotRecommendSecond.HotRecommendList.HotRecommendItem> hotRecommendItemList;
+    /*明星活动*/
     private List<GsonStarActivityList.StartActivity> starActivities;
-
+    /*个性化推荐列表*/
+    private String personalRecommendJsonStr;
+    private List<GsonPersonalRecommendationItem> personalRecommendationItems;
+    private List<GSonNewDiscItem> newDiscItemList;
     private static ParseRecommendHelper instance;
 
     public static ParseRecommendHelper getInstance() {
@@ -74,17 +82,41 @@ public class ParseRecommendHelper {
         }
     }
 
+    public void parseNewDiscInfo(String jsonStr) {
+        int newDiscStartIndex = jsonStr.indexOf(NEWDISC_FLAG);
+        if (newDiscStartIndex > 0) {
+            int newDiscEndIndex = jsonStr.indexOf(END_FLAG, newDiscStartIndex);
+            String newDiscFullJson = jsonStr.substring(newDiscStartIndex + NEWDISC_FLAG.length() + 2, newDiscEndIndex + END_FLAG.length());
+            Log.d("parseNewDiscInfo", "=====NewDisc:\n" + newDiscFullJson);
+            String newDiscListJson = newDiscFullJson.substring(newDiscFullJson.indexOf("list") + 4 + 2, newDiscFullJson.length() - 1);
+            GsonBuilder builder = new GsonBuilder();
+            Type type = new TypeToken<ArrayList<GSonNewDiscItem>>() {
+            }.getType();
+            newDiscItemList = builder.create().fromJson(newDiscListJson, type);
+        }
+    }
+
     public void parsePopularInfo(String jsonStr) {
         int popularStartIndex = jsonStr.indexOf(PLAYLIST_FLAG);
         if (popularStartIndex > 0) {
             int popularEndIndex = jsonStr.indexOf(END_FLAG, popularStartIndex);
             String popularJson = jsonStr.substring(popularStartIndex + PLAYLIST_FLAG.length() + 2, popularEndIndex + END_FLAG.length());
-            Log.d("parseRecommendInfo", "====popularJson: \n" + popularJson);
+            Log.d("parseRecommendInfo", "====popularJson: \n" + popularJson)
 
             GsonBuilder builder = new GsonBuilder();
             GSonHotRecommend popularItem = builder.create().fromJson(POPULAR_JSON_START_STR + popularJson + POPULAR_JSON_END_STR, GSonHotRecommend.class);
             hotRecommendItemList = popularItem.getData().getPlayList().getList();
         }
+    }
+
+    public void parsePersonalRecommendList(String jsonStr) {
+        Log.d("PersonalRecommend", jsonStr.substring(jsonStr.length() - 100));
+        Log.d("PersonalRecommend", jsonStr);
+        this.personalRecommendJsonStr = jsonStr;
+        GsonBuilder builder = new GsonBuilder();
+        Type type = new TypeToken<ArrayList<GsonPersonalRecommendationItem>>() {
+        }.getType();
+        personalRecommendationItems = builder.create().fromJson(personalRecommendJsonStr, type);
     }
 
     public void parseStarActivityList(String jsonStr) {
@@ -104,6 +136,10 @@ public class ParseRecommendHelper {
 
     public List<GsonStarActivityList.StartActivity> getStarActivities() {
         return starActivities;
+    }
+
+    public List<GsonPersonalRecommendationItem> getPersonalRecommendationItems() {
+        return personalRecommendationItems;
     }
 
     public GSonFocusPictureList getFocusPictureList() {

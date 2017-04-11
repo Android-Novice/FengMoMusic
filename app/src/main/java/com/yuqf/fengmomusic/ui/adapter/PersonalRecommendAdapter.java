@@ -20,21 +20,26 @@ import pl.droidsonroids.gif.GifImageView;
 /**
  * Created by Yuqf on 2017/3/1.
  */
-
 public class PersonalRecommendAdapter extends RecyclerView.Adapter<PersonalRecommendAdapter.PersonalViewHolder> {
 
     private List<GsonPersonalRecommendationItem> personalList;
     private LayoutInflater inflater;
     private OnRecyclerViewItemClickListener itemClickListener;
+    private boolean isLargeIcon;
 
-    public PersonalRecommendAdapter() {
+    public PersonalRecommendAdapter(boolean isLargeIcon) {
+        this.isLargeIcon = isLargeIcon;
         personalList = new ArrayList<>();
         inflater = LayoutInflater.from(MyApplication.getContext());
     }
 
     @Override
     public PersonalViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = inflater.inflate(R.layout.item_recyclerview_ex_layout, parent, false);
+        View itemView;
+        if (isLargeIcon)
+            itemView = inflater.inflate(R.layout.item_recyclerview_ex_layout, parent, false);
+        else
+            itemView = inflater.inflate(R.layout.recommend_recycler_view_item, parent, false);
         PersonalViewHolder viewHolder = new PersonalViewHolder(itemView);
         itemView.setClickable(true);
         itemView.setOnClickListener(new View.OnClickListener() {
