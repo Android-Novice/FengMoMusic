@@ -101,7 +101,7 @@ public class ParseRecommendHelper {
         if (popularStartIndex > 0) {
             int popularEndIndex = jsonStr.indexOf(END_FLAG, popularStartIndex);
             String popularJson = jsonStr.substring(popularStartIndex + PLAYLIST_FLAG.length() + 2, popularEndIndex + END_FLAG.length());
-            Log.d("parseRecommendInfo", "====popularJson: \n" + popularJson)
+            Log.d("parseRecommendInfo", "====popularJson: \n" + popularJson);
 
             GsonBuilder builder = new GsonBuilder();
             GSonHotRecommend popularItem = builder.create().fromJson(POPULAR_JSON_START_STR + popularJson + POPULAR_JSON_END_STR, GSonHotRecommend.class);
