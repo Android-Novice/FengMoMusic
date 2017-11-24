@@ -30,7 +30,7 @@ public class GsonPersonalRecommendationItem {
     private int source;
     private String extend;
     private String name;
-    private int sourceid;
+    private long sourceid;
     private String pic;
     private int isnew;
     private String disname;
@@ -64,7 +64,7 @@ public class GsonPersonalRecommendationItem {
         this.name = name;
     }
 
-    public int getSourceid() {
+    public long getSourceid() {
         return sourceid;
     }
 
